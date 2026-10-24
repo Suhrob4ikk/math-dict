@@ -549,5 +549,290 @@
       "f-string",
       "tuple"
     ]
+  },
+  {
+    "id": "numpy-array",
+    "english": "NumPy array (ndarray)",
+    "russian": "массив NumPy: вектор или матрица чисел",
+    "spoken": "x is a vector in R n. In Python code: n p dot array",
+    "transcription": "нам-пай э́рэй",
+    "latex": "\\mathbf{x} \\in \\mathbb{R}^{n}",
+    "python": "import numpy as np\nx = np.array([1.0, 2.0, 3.0])\nx.dtype  # dtype('float64') — все элементы одного типа",
+    "category": "Python/pandas",
+    "related": [
+      "array-shape",
+      "broadcasting",
+      "dot-product",
+      "numpy"
+    ]
+  },
+  {
+    "id": "array-shape",
+    "english": "array shape",
+    "russian": "форма массива: размер по каждой оси",
+    "spoken": "X is an m by n matrix. In Python code: X dot shape",
+    "transcription": "э́рэй шейп",
+    "latex": "X \\in \\mathbb{R}^{m \\times n}",
+    "python": "X = np.array([[1, 2, 3], [4, 5, 6]])\nX.shape    # (2, 3): 2 строки, 3 столбца\nX.reshape(3, 2).shape  # (3, 2)",
+    "category": "Python/pandas",
+    "related": [
+      "numpy-array",
+      "transpose",
+      "axis"
+    ]
+  },
+  {
+    "id": "axis",
+    "english": "axis (axis=0, axis=1)",
+    "russian": "ось: по какому направлению считать агрегат",
+    "spoken": "x bar sub j equals one over m times the sum over i of X sub i j. In Python code: X dot mean, axis equals zero",
+    "transcription": "э́ксис",
+    "latex": "\\bar{x}_j = \\frac{1}{m}\\sum_{i=1}^{m} X_{ij}",
+    "python": "X = np.array([[1, 2], [3, 4]])\nX.mean(axis=0)  # array([2., 3.]) — среднее по столбцам\nX.mean(axis=1)  # array([1.5, 3.5]) — среднее по строкам",
+    "category": "Python/pandas",
+    "related": [
+      "mean",
+      "array-shape",
+      "sum"
+    ]
+  },
+  {
+    "id": "broadcasting",
+    "english": "broadcasting",
+    "russian": "транслирование: операция между массивами разной формы без циклов",
+    "spoken": "x sub i minus x bar, for every i. In Python code: x minus x dot mean",
+    "transcription": "бро́дкастинг",
+    "latex": "x_i - \\bar{x}, \\quad i = 1, \\dots, n",
+    "python": "x = np.array([2, 4, 6])\nx - x.mean()  # array([-2., 0., 2.])\n# скаляр «растягивается» до формы x, цикл не нужен",
+    "category": "Python/pandas",
+    "related": [
+      "numpy-array",
+      "mean",
+      "standard-scaler"
+    ]
+  },
+  {
+    "id": "dataframe",
+    "english": "DataFrame",
+    "russian": "таблица pandas: строки — объекты, столбцы — признаки",
+    "spoken": "the data set D of pairs x sub i, y sub i, for i from one to m. In Python code: p d dot data frame",
+    "transcription": "дэ́йта-фрейм",
+    "latex": "D = \\{(\\mathbf{x}_i, y_i)\\}_{i=1}^{m}",
+    "python": "import pandas as pd\ndf = pd.DataFrame({\"city\": [\"A\", \"B\"], \"price\": [100, 250]})\ndf.head()  # первые строки таблицы",
+    "category": "Python/pandas",
+    "related": [
+      "groupby",
+      "iloc",
+      "boolean-mask",
+      "pandas"
+    ]
+  },
+  {
+    "id": "iloc",
+    "english": "iloc and loc (indexing)",
+    "russian": "индексация: iloc — по номеру, loc — по метке",
+    "spoken": "X sub i j, the element in row i and column j. In Python code: d f dot i loc, i comma j",
+    "transcription": "ай-лок, лок",
+    "latex": "X_{ij}",
+    "python": "df.iloc[0, 1]          # строка 0, столбец 1 (по позиции)\ndf.loc[0, \"price\"]     # строка с меткой 0, столбец price",
+    "category": "Python/pandas",
+    "related": [
+      "dataframe",
+      "boolean-mask"
+    ]
+  },
+  {
+    "id": "boolean-mask",
+    "english": "boolean mask (filtering)",
+    "russian": "булева маска: отбор строк по условию",
+    "spoken": "the set of x sub i such that x sub i is greater than c. In Python code: d f, where d f price is greater than one hundred",
+    "transcription": "бу́лиан маск",
+    "latex": "\\{\\, x_i : x_i > c \\,\\}",
+    "python": "df[df[\"price\"] > 100]   # только строки, где price > 100\n(df[\"price\"] > 100).sum()  # сколько таких строк",
+    "category": "Python/pandas",
+    "related": [
+      "dataframe",
+      "iloc"
+    ]
+  },
+  {
+    "id": "missing-values",
+    "english": "missing values (NaN)",
+    "russian": "пропущенные значения: NaN, «не число»",
+    "spoken": "x sub i is not a number. In Python code: d f dot is n a, dot sum. N a N is read nan, or not a number",
+    "transcription": "ми́ссинг вэ́льюз, нэн",
+    "latex": "x_i = \\text{NaN}",
+    "python": "df.isna().sum()          # число пропусков в каждом столбце\ndf[\"price\"].fillna(df[\"price\"].mean())  # заполнить средним",
+    "category": "Python/pandas",
+    "related": [
+      "dataframe",
+      "mean",
+      "pandas"
+    ]
+  },
+  {
+    "id": "train-test-split",
+    "english": "train-test split",
+    "russian": "разбиение на обучающую и тестовую выборки",
+    "spoken": "D equals D train union D test. In Python code: train test split",
+    "transcription": "трейн-тест сплит",
+    "latex": "D = D_{\\text{train}} \\cup D_{\\text{test}}",
+    "python": "from sklearn.model_selection import train_test_split\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42)  # 20% — в тест",
+    "category": "Python/pandas",
+    "related": [
+      "fit-predict",
+      "accuracy-score",
+      "scikit-learn"
+    ]
+  },
+  {
+    "id": "fit-predict",
+    "english": "fit and predict",
+    "russian": "обучить модель и получить предсказания",
+    "spoken": "y hat equals f of x. In Python code: model dot fit, X comma y. Then: model dot predict, X",
+    "transcription": "фит, придикт",
+    "latex": "\\hat{y} = f(\\mathbf{x})",
+    "python": "model.fit(X_train, y_train)      # подбираем параметры по данным\ny_pred = model.predict(X_test)   # предсказания y hat",
+    "category": "Python/pandas",
+    "related": [
+      "y-hat",
+      "train-test-split",
+      "linear-regression"
+    ]
+  },
+  {
+    "id": "linear-regression",
+    "english": "linear regression",
+    "russian": "линейная регрессия",
+    "spoken": "y hat equals X w plus b. In Python code: linear regression, dot fit, X comma y",
+    "transcription": "ли́ниэр регрэ́шн",
+    "latex": "\\hat{\\mathbf{y}} = X\\mathbf{w} + b",
+    "python": "from sklearn.linear_model import LinearRegression\nmodel = LinearRegression().fit(X, y)\nmodel.coef_, model.intercept_  # w и b",
+    "category": "Python/pandas",
+    "related": [
+      "fit-predict",
+      "mse",
+      "matmul-operator"
+    ]
+  },
+  {
+    "id": "standard-scaler",
+    "english": "standardization (StandardScaler)",
+    "russian": "стандартизация: среднее 0, стандартное отклонение 1",
+    "spoken": "z equals x minus mu, over sigma. In Python code: standard scaler, dot fit transform, X",
+    "transcription": "стэ́ндэрд скейлер",
+    "latex": "z = \\frac{x - \\mu}{\\sigma}",
+    "python": "from sklearn.preprocessing import StandardScaler\nscaler = StandardScaler()\nX_scaled = scaler.fit_transform(X_train)  # fit только на train!",
+    "category": "Python/pandas",
+    "related": [
+      "mean",
+      "standard-deviation",
+      "broadcasting",
+      "scikit-learn"
+    ]
+  },
+  {
+    "id": "accuracy-score",
+    "english": "accuracy",
+    "russian": "доля верных ответов (точность классификации)",
+    "spoken": "accuracy equals one over n times the sum of the indicator that y hat sub i equals y sub i. In Python code: accuracy score, y true comma y pred",
+    "transcription": "э́кьюраси",
+    "latex": "\\text{acc} = \\frac{1}{n}\\sum_{i=1}^{n} \\mathbb{1}[\\hat{y}_i = y_i]",
+    "python": "from sklearn.metrics import accuracy_score\naccuracy_score([1, 0, 1, 1], [1, 0, 0, 1])  # 0.75",
+    "category": "Python/pandas",
+    "related": [
+      "fit-predict",
+      "y-hat"
+    ]
+  },
+  {
+    "id": "plot",
+    "english": "line plot (plt.plot)",
+    "russian": "линейный график функции или ряда",
+    "spoken": "the graph of y equals f of x. In Python code: p l t dot plot, x comma y",
+    "transcription": "плот",
+    "latex": "y = f(x)",
+    "python": "import matplotlib.pyplot as plt\nx = np.linspace(-3, 3, 100)\nplt.plot(x, x ** 2)\nplt.xlabel(\"x\"); plt.ylabel(\"y\")\nplt.show()",
+    "category": "Python/pandas",
+    "related": [
+      "histogram",
+      "sigmoid",
+      "matplotlib"
+    ]
+  },
+  {
+    "id": "histogram",
+    "english": "histogram (plt.hist)",
+    "russian": "гистограмма: сколько значений попало в каждый интервал",
+    "spoken": "n sub k equals the number of i such that x sub i is in bin k. In Python code: p l t dot hist, x, bins equals twenty",
+    "transcription": "хи́стограм",
+    "latex": "n_k = \\left|\\{\\, i : x_i \\in \\text{bin}_k \\,\\}\\right|",
+    "python": "x = np.random.randn(1000)\nplt.hist(x, bins=20)  # 20 интервалов\nplt.show()",
+    "category": "Python/pandas",
+    "related": [
+      "plot",
+      "variance",
+      "matplotlib"
+    ]
+  },
+  {
+    "id": "tensor",
+    "english": "tensor (torch.tensor)",
+    "russian": "тензор: многомерный массив PyTorch, умеет считать градиенты",
+    "spoken": "X is in R, b by c by h by w. In Python code: torch dot tensor",
+    "transcription": "тэ́нсор",
+    "latex": "X \\in \\mathbb{R}^{b \\times c \\times h \\times w}",
+    "python": "import torch\nx = torch.tensor([1.0, 2.0, 3.0])\nx.shape        # torch.Size([3])\nx.numpy()      # обратно в NumPy",
+    "category": "Python/pandas",
+    "related": [
+      "numpy-array",
+      "array-shape",
+      "backward",
+      "pytorch"
+    ]
+  },
+  {
+    "id": "backward",
+    "english": "backpropagation (loss.backward)",
+    "russian": "обратное распространение: автоматический расчёт градиентов",
+    "spoken": "the partial derivative of L with respect to w. In Python code: loss dot backward, then w dot grad",
+    "transcription": "бэ́квэрд",
+    "latex": "\\frac{\\partial L}{\\partial w}",
+    "python": "w = torch.tensor(2.0, requires_grad=True)\nloss = (w - 5) ** 2\nloss.backward()\nw.grad  # tensor(-6.) = 2·(w − 5)",
+    "category": "Python/pandas",
+    "related": [
+      "partial-derivative",
+      "gradient",
+      "optimizer-step",
+      "pytorch"
+    ]
+  },
+  {
+    "id": "optimizer-step",
+    "english": "optimizer step (optimizer.step)",
+    "russian": "шаг оптимизатора: обновление весов по градиенту",
+    "spoken": "w gets w minus eta times the gradient of L. In Python code: optimizer dot step",
+    "transcription": "о́птимайзер стэп",
+    "latex": "w \\leftarrow w - \\eta \\nabla L(w)",
+    "python": "opt = torch.optim.SGD([w], lr=0.1)  # lr — это eta\nopt.zero_grad()  # обнулить старые градиенты\nloss.backward()\nopt.step()       # w = w - lr * w.grad",
+    "category": "Python/pandas",
+    "related": [
+      "gradient-descent",
+      "backward"
+    ]
+  },
+  {
+    "id": "relu",
+    "english": "ReLU (rectified linear unit)",
+    "russian": "функция активации ReLU: отрицательное → 0",
+    "spoken": "ReLU of x equals the maximum of zero and x. In Python code: torch dot relu, x. ReLU is read ray loo",
+    "transcription": "рэ́й-лу",
+    "latex": "\\operatorname{ReLU}(x) = \\max(0, x)",
+    "python": "x = torch.tensor([-2.0, 0.0, 3.0])\ntorch.relu(x)  # tensor([0., 0., 3.])",
+    "category": "Python/pandas",
+    "related": [
+      "sigmoid",
+      "tensor"
+    ]
   }
 ]
