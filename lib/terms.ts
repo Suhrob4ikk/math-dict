@@ -17,7 +17,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   "linear algebra": "Линейная алгебра",
   calculus: "Матанализ",
   "ML basics": "Основы ML",
-  "Python/pandas": "Python / pandas",
+  "Python/pandas": "Python и API библиотек",
   "Python syntax": "Синтаксис Python",
   libraries: "Библиотеки и инструменты",
 };
