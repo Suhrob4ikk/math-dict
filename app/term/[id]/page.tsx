@@ -45,16 +45,23 @@ export default async function TermPage({ params }: Props) {
         <p className="term-ru-big">{term.russian}</p>
       </header>
 
-      <section className="panel">
-        <h2>Формула</h2>
-        <Formula latex={term.latex} display />
-      </section>
+      {term.latex && (
+        <section className="panel">
+          <h2>Формула</h2>
+          <Formula latex={term.latex} display />
+        </section>
+      )}
 
       <section className="panel spoken">
         <h2>Как читается вслух</h2>
         <p className="spoken-text" lang="en">
           «{term.spoken}»
         </p>
+        {term.transcription && (
+          <p className="transcription">
+            По-русски примерно: <strong>{term.transcription}</strong>
+          </p>
+        )}
         <SpeakButton text={term.spoken} />
       </section>
 
@@ -72,10 +79,14 @@ export default async function TermPage({ params }: Props) {
           <dd lang="en">{term.english}</dd>
           <dt>Русский</dt>
           <dd>{term.russian}</dd>
-          <dt>LaTeX</dt>
-          <dd>
-            <code>{term.latex}</code>
-          </dd>
+          {term.latex && (
+            <>
+              <dt>LaTeX</dt>
+              <dd>
+                <code>{term.latex}</code>
+              </dd>
+            </>
+          )}
         </dl>
       </section>
 

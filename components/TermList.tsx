@@ -22,6 +22,7 @@ export default function TermList({ terms, formulas }: Props) {
           { name: "english", weight: 3 },
           { name: "russian", weight: 2 },
           { name: "spoken", weight: 1 },
+          { name: "transcription", weight: 1 },
           { name: "id", weight: 1 },
         ],
         threshold: 0.4,
@@ -41,7 +42,7 @@ export default function TermList({ terms, formulas }: Props) {
       <input
         type="search"
         className="search"
-        placeholder="Поиск: derivative, дисперсия, y hat… (опечатки прощаются)"
+        placeholder="Поиск: derivative, дисперсия, numpy, lambda… (опечатки прощаются)"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         aria-label="Поиск термина"
@@ -80,6 +81,9 @@ export default function TermList({ terms, formulas }: Props) {
                 <span className="badge">{CATEGORY_LABELS[t.category]}</span>
                 <span className="term-en">{t.english}</span>
                 <span className="term-ru">{t.russian}</span>
+                {t.transcription && (
+                  <span className="term-transcription">[{t.transcription}]</span>
+                )}
                 <span className="term-formula">{formulas[t.id]}</span>
               </Link>
             </li>

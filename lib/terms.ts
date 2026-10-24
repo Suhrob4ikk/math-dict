@@ -6,6 +6,8 @@ export const CATEGORIES = [
   "calculus",
   "ML basics",
   "Python/pandas",
+  "Python syntax",
+  "libraries",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
@@ -16,6 +18,8 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   calculus: "Матанализ",
   "ML basics": "Основы ML",
   "Python/pandas": "Python / pandas",
+  "Python syntax": "Синтаксис Python",
+  libraries: "Библиотеки и инструменты",
 };
 
 export interface Term {
@@ -23,7 +27,10 @@ export interface Term {
   english: string;
   russian: string;
   spoken: string;
-  latex: string;
+  // Русская транскрипция произношения, например «нам-пай».
+  transcription?: string;
+  // Формула; у библиотек и инструментов её нет.
+  latex?: string;
   python: string;
   category: Category;
   related: string[];
