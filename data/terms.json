@@ -463,7 +463,7 @@
     "id": "lambda",
     "english": "lambda (anonymous function)",
     "russian": "анонимная функция",
-    "spoken": "double equals lambda x, colon, x times two.",
+    "spoken": "double is lambda x, colon, x times two.",
     "transcription": "лэ́мбда",
     "python": "double = lambda x: x * 2\ndouble(5)  # 10",
     "category": "Python syntax",
