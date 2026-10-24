@@ -6,7 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Math Read Aloud — как читать математику и ML по-английски",
   description:
-    "Словарь для студентов data science: как произносить формулы математики, статистики и машинного обучения по-английски.",
+    "Словарь для студентов data science: как произносить по-английски формулы математики, статистики и ML, названия библиотек и код на Python.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" className="logo">
               <span className="logo-mark">∑</span> Math Read Aloud
             </Link>
-            <span className="tagline">Как читать математику и ML вслух по-английски</span>
+            <span className="tagline">Как читать математику, ML и код вслух по-английски</span>
           </div>
         </header>
         <main className="container">{children}</main>

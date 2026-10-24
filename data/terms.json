@@ -230,7 +230,8 @@
     "category": "Python/pandas",
     "related": [
       "variance",
-      "norm"
+      "norm",
+      "comparison-operators"
     ]
   },
   {
@@ -243,7 +244,8 @@
     "category": "Python/pandas",
     "related": [
       "dot-product",
-      "transpose"
+      "transpose",
+      "numpy"
     ]
   },
   {
@@ -256,7 +258,296 @@
     "category": "Python/pandas",
     "related": [
       "mean",
-      "sum"
+      "sum",
+      "pandas",
+      "sql"
+    ]
+  },
+  {
+    "id": "numpy",
+    "english": "NumPy",
+    "russian": "библиотека для массивов и численных вычислений",
+    "spoken": "num pie. Short for numerical Python.",
+    "transcription": "нам-пай",
+    "python": "import numpy as np\nnp.array([1, 2, 3]).mean()  # 2.0",
+    "category": "libraries",
+    "related": [
+      "pandas",
+      "scipy",
+      "import-as"
+    ]
+  },
+  {
+    "id": "pandas",
+    "english": "pandas",
+    "russian": "библиотека для таблиц (DataFrame)",
+    "spoken": "pandas, like the animal. The name comes from panel data.",
+    "transcription": "пэ́ндэз",
+    "python": "import pandas as pd\ndf = pd.read_csv(\"data.csv\")\ndf.head()",
+    "category": "libraries",
+    "related": [
+      "numpy",
+      "groupby",
+      "import-as"
+    ]
+  },
+  {
+    "id": "scipy",
+    "english": "SciPy",
+    "russian": "библиотека научных вычислений",
+    "spoken": "sigh pie. Short for scientific Python.",
+    "transcription": "сай-пай",
+    "python": "from scipy import stats\nstats.norm.pdf(0)  # 0.3989...",
+    "category": "libraries",
+    "related": [
+      "numpy",
+      "standard-deviation"
+    ]
+  },
+  {
+    "id": "scikit-learn",
+    "english": "scikit-learn (sklearn)",
+    "russian": "библиотека классического машинного обучения",
+    "spoken": "sy kit learn. People also say S K learn, after the import name.",
+    "transcription": "сай-кит лёрн",
+    "python": "from sklearn.linear_model import LinearRegression\nmodel = LinearRegression().fit(X, y)\ny_hat = model.predict(X)",
+    "category": "libraries",
+    "related": [
+      "y-hat",
+      "mse",
+      "pytorch"
+    ]
+  },
+  {
+    "id": "matplotlib",
+    "english": "Matplotlib",
+    "russian": "библиотека для графиков",
+    "spoken": "mat plot lib. Short for math plotting library.",
+    "transcription": "мэт-плот-либ",
+    "python": "import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [1, 4, 9])\nplt.show()",
+    "category": "libraries",
+    "related": [
+      "seaborn",
+      "import-as"
+    ]
+  },
+  {
+    "id": "seaborn",
+    "english": "seaborn",
+    "russian": "библиотека статистических графиков",
+    "spoken": "sea born",
+    "transcription": "си-борн",
+    "python": "import seaborn as sns\nsns.histplot(df[\"price\"])",
+    "category": "libraries",
+    "related": [
+      "matplotlib",
+      "pandas"
+    ]
+  },
+  {
+    "id": "pytorch",
+    "english": "PyTorch",
+    "russian": "фреймворк для нейросетей",
+    "spoken": "pie torch",
+    "transcription": "пай-торч",
+    "python": "import torch\nx = torch.tensor([1.0, 2.0], requires_grad=True)\n(x ** 2).sum().backward()\nx.grad  # tensor([2., 4.])",
+    "category": "libraries",
+    "related": [
+      "gradient",
+      "keras",
+      "scikit-learn"
+    ]
+  },
+  {
+    "id": "jupyter",
+    "english": "Jupyter Notebook",
+    "russian": "интерактивные блокноты для кода",
+    "spoken": "jupiter notebook, pronounced like the planet Jupiter.",
+    "transcription": "джу́питер ноутбук",
+    "python": "# магическая команда в ячейке Jupyter\n%timeit sum(range(1000))",
+    "category": "libraries",
+    "related": [
+      "pandas",
+      "matplotlib"
+    ]
+  },
+  {
+    "id": "keras",
+    "english": "Keras",
+    "russian": "высокоуровневый API для нейросетей",
+    "spoken": "keh russ. It rhymes with terrace.",
+    "transcription": "ке́рас",
+    "python": "from tensorflow import keras\nmodel = keras.Sequential([keras.layers.Dense(1)])",
+    "category": "libraries",
+    "related": [
+      "pytorch",
+      "sigmoid"
+    ]
+  },
+  {
+    "id": "sql",
+    "english": "SQL",
+    "russian": "язык запросов к базам данных",
+    "spoken": "sequel, or S Q L. Both are correct.",
+    "transcription": "си́квел / эс-кью-эл",
+    "python": "import pandas as pd\npd.read_sql(\"SELECT city, AVG(price) FROM flats GROUP BY city\", conn)",
+    "category": "libraries",
+    "related": [
+      "pandas",
+      "groupby"
+    ]
+  },
+  {
+    "id": "json",
+    "english": "JSON",
+    "russian": "текстовый формат данных",
+    "spoken": "jay son, like the name Jason.",
+    "transcription": "джейсон",
+    "python": "import json\njson.loads('{\"lr\": 0.01}')  # {'lr': 0.01}",
+    "category": "libraries",
+    "related": [
+      "pandas",
+      "brackets"
+    ]
+  },
+  {
+    "id": "regex",
+    "english": "regex (regular expression)",
+    "russian": "регулярное выражение",
+    "spoken": "rej ex. Short for regular expression.",
+    "transcription": "ре́джекс",
+    "python": "import re\nre.findall(r\"\\d+\", \"a1b22\")  # ['1', '22']",
+    "category": "libraries",
+    "related": [
+      "f-string"
+    ]
+  },
+  {
+    "id": "import-as",
+    "english": "import … as (alias)",
+    "russian": "импорт с коротким именем (псевдонимом)",
+    "spoken": "import num pie as N P. Import pandas as P D.",
+    "transcription": "импорт нам-пай эз эн-пи",
+    "python": "import numpy as np\nimport pandas as pd",
+    "category": "Python syntax",
+    "related": [
+      "numpy",
+      "pandas"
+    ]
+  },
+  {
+    "id": "dunder",
+    "english": "dunder (double underscore)",
+    "russian": "«магические» методы с двойным подчёркиванием",
+    "spoken": "dunder init. Dunder means double underscore, so the method with two underscores on each side of init is read as dunder init.",
+    "transcription": "да́ндер ини́т",
+    "python": "class Model:\n    def __init__(self, lr):  # «dunder init»\n        self.lr = lr",
+    "category": "Python syntax",
+    "related": [
+      "snake-case",
+      "args-kwargs"
+    ]
+  },
+  {
+    "id": "comparison-operators",
+    "english": "comparison operators (==, !=, >=)",
+    "russian": "операторы сравнения",
+    "spoken": "x double equals three, meaning x is equal to three. x not equals three. x greater than or equal to three.",
+    "python": "x == 3   # \"x double equals three\"\nx != 3   # \"x not equals three\"\nx >= 3   # \"x greater than or equal to three\"",
+    "category": "Python syntax",
+    "related": [
+      "power-operator"
+    ]
+  },
+  {
+    "id": "lambda",
+    "english": "lambda (anonymous function)",
+    "russian": "анонимная функция",
+    "spoken": "double equals lambda x, colon, x times two.",
+    "transcription": "лэ́мбда",
+    "python": "double = lambda x: x * 2\ndouble(5)  # 10",
+    "category": "Python syntax",
+    "related": [
+      "list-comprehension",
+      "sigmoid"
+    ]
+  },
+  {
+    "id": "list-comprehension",
+    "english": "list comprehension",
+    "russian": "генератор списка (list comprehension)",
+    "spoken": "a list of x squared, for x in x's.",
+    "transcription": "лист компрехéншн",
+    "python": "xs = [1, 2, 3]\n[x ** 2 for x in xs]  # [1, 4, 9]",
+    "category": "Python syntax",
+    "related": [
+      "lambda",
+      "brackets",
+      "power-operator"
+    ]
+  },
+  {
+    "id": "args-kwargs",
+    "english": "*args and **kwargs",
+    "russian": "произвольные позиционные и именованные аргументы",
+    "spoken": "star args, and double star kwargs. Kwargs means keyword arguments.",
+    "transcription": "стар аргз, дабл стар кваргз",
+    "python": "def f(*args, **kwargs):\n    print(args, kwargs)\n\nf(1, 2, lr=0.1)  # (1, 2) {'lr': 0.1}",
+    "category": "Python syntax",
+    "related": [
+      "power-operator",
+      "dunder"
+    ]
+  },
+  {
+    "id": "f-string",
+    "english": "f-string",
+    "russian": "форматированная строка",
+    "spoken": "f string. Short for formatted string literal.",
+    "transcription": "эф-стринг",
+    "python": "loss = 0.1234\nprint(f\"loss = {loss:.2f}\")  # loss = 0.12",
+    "category": "Python syntax",
+    "related": [
+      "brackets",
+      "regex"
+    ]
+  },
+  {
+    "id": "tuple",
+    "english": "tuple",
+    "russian": "кортеж",
+    "spoken": "tuple. You can say too pull, or tup pull. Both are correct.",
+    "transcription": "тьюпл / тапл",
+    "python": "point = (3, 4)\nx, y = point  # распаковка кортежа\ndf.shape  # (rows, cols) — тоже кортеж",
+    "category": "Python syntax",
+    "related": [
+      "brackets"
+    ]
+  },
+  {
+    "id": "snake-case",
+    "english": "snake_case and camelCase",
+    "russian": "стили именования переменных",
+    "spoken": "snake case, as in learning underscore rate. Camel case, as in learning rate with a capital R.",
+    "transcription": "снейк-кейс, кэ́мел-кейс",
+    "python": "learning_rate = 0.01   # snake_case — стиль Python (PEP 8)\nlearningRate = 0.01    # camelCase — стиль JavaScript\nclass LinearModel: ... # PascalCase — для классов",
+    "category": "Python syntax",
+    "related": [
+      "dunder"
+    ]
+  },
+  {
+    "id": "brackets",
+    "english": "brackets: ( ) [ ] { }",
+    "russian": "названия скобок",
+    "spoken": "parentheses, square brackets, and curly braces. In British English: round brackets, square brackets, and curly brackets.",
+    "transcription": "пэрэ́нтэсиз, сквэа брэ́китс, кёрли брэ́йсиз",
+    "python": "print(x)    # parentheses — круглые\nxs[0]       # square brackets — квадратные\n{\"a\": 1}    # curly braces — фигурные",
+    "category": "Python syntax",
+    "related": [
+      "list-comprehension",
+      "f-string",
+      "tuple"
     ]
   }
 ]
