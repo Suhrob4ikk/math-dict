@@ -1,18 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { speak as speakText, speechSupported } from "@/lib/speech";
 
 interface Props {
   text: string;
   label?: string;
-}
-
-function pickVoice(): SpeechSynthesisVoice | undefined {
-  const voices = window.speechSynthesis.getVoices();
-  return (
-    voices.find((v) => v.lang === "en-US") ??
-    voices.find((v) => v.lang.startsWith("en"))
-  );
 }
 
 export default function SpeakButton({ text, label = "Озвучить" }: Props) {
@@ -20,7 +13,7 @@ export default function SpeakButton({ text, label = "Озвучить" }: Props)
   const [speaking, setSpeaking] = useState(false);
 
   useEffect(() => {
-    if (!("speechSynthesis" in window)) {
+    if (!speechSupported()) {
       setSupported(false);
       return;
     }
@@ -36,16 +29,8 @@ export default function SpeakButton({ text, label = "Озвучить" }: Props)
       setSpeaking(false);
       return;
     }
-    synth.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = 0.9;
-    const voice = pickVoice();
-    if (voice) utterance.voice = voice;
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
     setSpeaking(true);
-    synth.speak(utterance);
+    speakText(text, () => setSpeaking(false));
   }
 
   if (!supported) {

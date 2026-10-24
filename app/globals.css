@@ -303,3 +303,52 @@ code {
     margin-bottom: 8px;
   }
 }
+
+/* Перевод слова по клику */
+[lang="en"],
+.code {
+  cursor: help;
+}
+.word-popup {
+  position: absolute;
+  z-index: 50;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  cursor: auto;
+}
+.word-popup-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.word-popup-word {
+  font-weight: 700;
+  font-size: 1.05rem;
+  flex: 1;
+  cursor: auto;
+}
+.word-popup-speak,
+.word-popup-close {
+  border: none;
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.word-popup-close {
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+.word-popup-translation {
+  margin: 6px 0 0;
+}
+.word-popup-note {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}

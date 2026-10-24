@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import WordLookup from "@/components/WordLookup";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 
@@ -22,8 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         <main className="container">{children}</main>
+        <WordLookup />
         <footer className="site-footer">
           <div className="container muted">
+            Нажмите на любое английское слово, чтобы увидеть перевод и услышать произношение.
             Озвучка работает через синтезатор речи вашего браузера (en-US).
           </div>
         </footer>
