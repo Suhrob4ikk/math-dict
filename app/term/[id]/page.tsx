@@ -41,7 +41,7 @@ export default async function TermPage({ params }: Props) {
 
       <header className="term-header">
         <span className="badge">{CATEGORY_LABELS[term.category]}</span>
-        <h1>{term.english}</h1>
+        <h1 lang="en">{term.english}</h1>
         <p className="term-ru-big">{term.russian}</p>
       </header>
 
