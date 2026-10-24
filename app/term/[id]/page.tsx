@@ -72,8 +72,6 @@ export default async function TermPage({ params }: Props) {
           <dd lang="en">{term.english}</dd>
           <dt>Русский</dt>
           <dd>{term.russian}</dd>
-          <dt>Тоҷикӣ</dt>
-          <dd lang="tg">{term.tajik || <span className="muted">перевод скоро появится</span>}</dd>
           <dt>LaTeX</dt>
           <dd>
             <code>{term.latex}</code>

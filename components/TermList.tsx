@@ -21,7 +21,6 @@ export default function TermList({ terms, formulas }: Props) {
         keys: [
           { name: "english", weight: 3 },
           { name: "russian", weight: 2 },
-          { name: "tajik", weight: 2 },
           { name: "spoken", weight: 1 },
           { name: "id", weight: 1 },
         ],

@@ -22,7 +22,6 @@ export interface Term {
   id: string;
   english: string;
   russian: string;
-  tajik: string;
   spoken: string;
   latex: string;
   python: string;
