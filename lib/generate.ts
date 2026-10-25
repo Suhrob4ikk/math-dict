@@ -32,6 +32,8 @@ interface Part {
 interface Atom {
   tex: string;
   say: string[];
+  // Кусок кончается знаком отношения (=, <, ≈…) — лучшее место, чтобы разрезать.
+  rel?: boolean;
 }
 
 const atomsOf = (p: Part): Atom[] => p.atoms ?? [{ tex: p.tex, say: p.say }];
@@ -198,7 +200,8 @@ export function balance(atoms: Atom[], count: number): LongPart[] {
     if (cuts.length === k - 1) {
       const bounds = [0, ...cuts, n];
       const sizes = bounds.slice(1).map((b, i) => w.slice(bounds[i], b).reduce((x, y) => x + y, 0));
-      const cost = Math.max(...sizes) - Math.min(...sizes);
+      // Резать лучше после знака отношения, чем после «плюс/минус»: штраф за такой разрез.
+      const cost = Math.max(...sizes) - Math.min(...sizes) + cuts.filter((c) => !atoms[c - 1].rel).length * 3;
       if (cost < bestCost) {
         bestCost = cost;
         best = cuts;
@@ -268,7 +271,7 @@ function foundations(rand: Rand): Generated {
     const last = leftAtoms[leftAtoms.length - 1];
     const atoms = [
       ...leftAtoms.slice(0, -1),
-      { tex: `${last.tex} ${tex}`, say: last.say.map((s) => `${s} ${word}`) },
+      { tex: `${last.tex} ${tex}`, say: last.say.map((s) => `${s} ${word}`), rel: true },
       ...atomsOf(right),
     ];
     return { text: result.tex, readings: result.say, parts: balance(atoms, partsFor(atoms)) };
@@ -575,7 +578,7 @@ function foundationsLongOnce(rand: Rand): LongPart[] {
   const midAtoms = atomsOf(mid);
   const tail = midAtoms[midAtoms.length - 1];
   const atoms: Atom[] = [
-    { tex: `${left.tex} ${rel}`, say: left.say.map((s) => `${s} ${relWord}`) },
+    { tex: `${left.tex} ${rel}`, say: left.say.map((s) => `${s} ${relWord}`), rel: true },
     ...midAtoms.slice(0, -1),
     { tex: `${tail.tex} ${op}`, say: tail.say.map((s) => `${s} ${opWord}`) },
     ...atomsOf(last),

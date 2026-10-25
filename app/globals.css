@@ -1276,6 +1276,8 @@ body:has(.practice) {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  /* Запас сверху и снизу, чтобы черта над буквой (x̄) и индексы не обрезались. */
+  padding: 6px 0;
 }
 .exam-review-formula .formula-display {
   font-size: 1rem;

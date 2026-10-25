@@ -50,6 +50,13 @@ export interface Listener {
   cancel(): void;
 }
 
+// Доля слов первого куска, которые есть во втором.
+function overlap(a: string, b: string): number {
+  const wa = a.toLowerCase().split(/\s+/).filter(Boolean);
+  const wb = new Set(b.toLowerCase().split(/\s+/));
+  return wa.length ? wa.filter((w) => wb.has(w)).length / wa.length : 0;
+}
+
 // Слушает, пока человек говорит: паузы между словами не обрывают запись, поэтому можно
 // читать медленно, по слогам. Запись заканчивается кнопкой или после silenceMs тишины.
 // Chrome на Android сам завершает распознавание на паузе — тогда тихо запускаем его снова
@@ -92,6 +99,19 @@ export function listen(handlers: {
   };
 
   const segments = () => [...done, ...current];
+
+  // Для живого текста убираем повторы: Android присылает уже сказанное заново
+  // («a tilde over delta y a tilde over delta y …»). Кусок, у которого больше половины
+  // слов совпадает с предыдущим, заменяет его. Для проверки оставляем все куски.
+  const shown = (texts: string[]) => {
+    const out: string[] = [];
+    for (const text of texts) {
+      const prev = out[out.length - 1];
+      if (prev && overlap(prev, text) > 0.5) out[out.length - 1] = text.length >= prev.length ? text : prev;
+      else out.push(text);
+    }
+    return out;
+  };
 
   const report = () => {
     const segs = segments();
@@ -141,7 +161,7 @@ export function listen(handlers: {
       }
       current = finals;
       heardAnything = true;
-      handlers.onInterim?.([...segments().map((a) => a[0]), interim.trim()].filter(Boolean).join(" "));
+      handlers.onInterim?.([...shown(segments().map((a) => a[0])), interim.trim()].filter(Boolean).join(" "));
       wait(handlers.silenceMs);
     };
     rec.onerror = (e) => {
@@ -218,7 +238,7 @@ const SYMBOLS: [RegExp, string][] = [
   [/>/g, " greater than "],
   [/=/g, " equals "],
   [/\+/g, " plus "],
-  [/(^|\s)[-−–](?=\s|\d)/g, " minus "],
+  [/(^|\s)[-−–](?=\s|\d|$)/g, " minus "],
   [/[×*·]/g, " times "],
   [/÷/g, " divided by "],
   [/\//g, " over "],
@@ -261,7 +281,7 @@ const LETTERS: Record<string, string[]> = {
   j: ["jay"],
   k: ["kay", "okay", "car", "cay"],
   m: ["em"],
-  n: ["en", "and"],
+  n: ["en", "and", "end"],
   p: ["pee", "pea"],
   q: ["queue", "cue"],
   r: ["ar", "are"],
@@ -286,6 +306,7 @@ const SOUNDALIKES: Record<string, string[]> = {
   alpha: ["alfa", "elfa"],
   sigma: ["stigma"],
   theta: ["thita", "teta"],
+  tilde: ["toyota", "tilda", "tilder", "tutor", "tilt", "tilday"],
   squared: ["square"],
 };
 
@@ -516,11 +537,32 @@ export interface CheckResult {
   marks: WordMark[];
 }
 
+// Одно и то же можно прочитать в разном порядке: «a sub j squared» = «a squared sub j»,
+// «c hat sub i» = «c sub i hat». Добавляем такие варианты к ожидаемым.
+function withOrders(targets: string[]): string[] {
+  const out = [...targets];
+  for (const t of targets) {
+    const swapped = t
+      .replace(/\b([a-z]) sub ([a-z0-9]+) (squared|cubed)\b/g, "$1 $3 sub $2")
+      .replace(/\b([a-z]) (hat|bar|tilde) sub ([a-z0-9]+)\b/g, "$1 sub $3 $2")
+      .replace(/\bdivided by\b/g, "over");
+    if (swapped !== t) out.push(swapped);
+  }
+  return out;
+}
+
+// «/» распознаватель пишет и для «over», и для «divided by» — пробуем оба прочтения.
+function withSlashes(transcripts: string[]): string[] {
+  return transcripts.flatMap((t) => (t.includes("/") ? [t, t.replace(/\//g, " divided by ")] : [t]));
+}
+
 export function checkPronunciation(
-  transcripts: string[],
-  targets: string[],
+  rawTranscripts: string[],
+  mainTargets: string[],
   mode: "word" | "phrase" = "word",
 ): CheckResult {
+  const transcripts = withSlashes(rawTranscripts);
+  const targets = withOrders(mainTargets);
   let best: CheckResult = { verdict: "wrong", heard: transcripts[0]?.trim() ?? "", score: 0, marks: [] };
   let fromMain = true;
   // Отметки по тому варианту, который засчитан (для проверки пропущенных слов-уточнений).
@@ -544,7 +586,7 @@ export function checkPronunciation(
       // В карточке лишние слова — почти всегда другое обозначение («a is not equal to b»
       // вместо «a equals b»), поэтому там штраф строже; одно лишнее слово («the variance») можно.
       const extra =
-        mode === "phrase" ? Math.max(0, heard.length - required * 2) * 0.25 : Math.max(0, heard.length - required - 1);
+        mode === "phrase" ? Math.max(0, heard.length - required * 3) * 0.25 : Math.max(0, heard.length - required - 1);
       const score = matched / (required + extra);
       if (score > best.score) {
         fromMain = target === targets[0];
@@ -560,8 +602,9 @@ export function checkPronunciation(
   }
   best.verdict = best.score >= 0.8 ? "correct" : best.score >= 0.5 ? "close" : "wrong";
   // Перепутанная переменная (x sub a вместо x sub i) — это ошибка, даже если остальное верно.
-  const wrongLetter = best.marks.some((m) => !m.ok && !m.optional && m.word.length === 1);
-  if (best.verdict === "correct" && fromMain && wrongLetter) best.verdict = "close";
+  // Проверяем по тому варианту, который засчитан (в том числе «a squared sub j»).
+  const wrongLetter = matchedMarks.some((m) => !m.ok && !m.optional && m.word.length === 1);
+  if (best.verdict === "correct" && wrongLetter) best.verdict = "close";
   // Слова, которые меняют смысл обозначения: «a not equal to b» — не «a equals b»,
   // «f prime of x» — не «f of x». Лишнее или пропущенное такое слово — это ошибка.
   if (best.verdict === "correct") {
