@@ -1534,3 +1534,339 @@ body:has(.practice) {
   background: var(--danger);
   color: #fff;
 }
+
+/* ---------- Формулы ---------- */
+
+.formula-best {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--warning);
+}
+.formula-best .icon {
+  fill: currentColor;
+}
+.formula-row-tex {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+}
+.formula-row-name {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.formula-count {
+  margin-top: 20px;
+  font-size: 0.85rem;
+}
+.formula-speak {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.formula-reader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* Формула целиком, части подсвечены внутри неё. Цвет задаём у каждой части явно,
+   чтобы вложенная часть (содержимое корня) не брала цвет внешней. */
+.long-layout {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-size: 1.15rem;
+}
+.long-layout .katex-display {
+  margin: 4px 0;
+}
+.long-layout .lp {
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.long-layout .lp-todo {
+  color: #9aa1ad;
+}
+.long-layout .lp-ok {
+  color: var(--success);
+}
+.long-layout .lp-miss {
+  color: var(--danger);
+}
+.long-layout .lp-current {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Игра */
+.game-score,
+.game-combo {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.game-score .icon {
+  fill: currentColor;
+}
+.game-score:last-child,
+.game-combo {
+  margin-right: 8px;
+}
+.game-combo {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.game-formula {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  font-size: 1.35rem;
+}
+.game-formula .katex-display {
+  margin: 8px 0;
+}
+.game-hint {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.game-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  align-self: stretch;
+}
+.game-answer.ok {
+  background: var(--success-soft);
+}
+.game-answer.miss {
+  background: var(--danger-soft);
+}
+.game-answer-en {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.game-answer.ok .game-answer-en {
+  color: var(--success);
+}
+.game-answer.miss .game-answer-en {
+  color: var(--danger);
+}
+.game-stars {
+  display: flex;
+  gap: 6px;
+}
+.game-stars .star-on {
+  color: #f59e0b;
+  fill: #f59e0b;
+}
+.game-stars .star-off {
+  color: var(--border);
+}
+.game-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  margin: 16px 0 8px;
+}
+.game-stats > span {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 4px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.game-stats strong {
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+.game-stats .muted {
+  font-size: 0.75rem;
+}
+.game-review {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  width: 100%;
+  display: grid;
+  gap: 6px;
+  text-align: left;
+}
+.game-review a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.game-review a > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 0.9rem;
+}
+.game-review a.ok .icon {
+  color: var(--success);
+}
+.game-review a.miss .icon {
+  color: var(--danger);
+}
+
+/* Список игр */
+.game-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+.game-card:active {
+  transform: scale(0.99);
+}
+.game-card > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+.game-card strong {
+  font-size: 1rem;
+}
+.game-card-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* Собери формулу */
+.build-name {
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+.build-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 1.2rem;
+}
+.build-slot {
+  display: grid;
+  place-items: center;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 4px 8px;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.build-slot.filled {
+  border: 2px solid transparent;
+  background: var(--success-soft);
+  color: var(--text);
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+.build-hint {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.build-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.build-tile {
+  min-height: 56px;
+  min-width: 64px;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.build-tile:active {
+  transform: scale(0.97);
+}
+.build-tile.wrong {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+  animation: shake 0.35s;
+}
+@keyframes shake {
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Спринт */
+.sprint-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.sprint-time-low {
+  color: var(--danger);
+}
+.sprint-fill {
+  transition: width 0.25s linear;
+}
+.round-button-spacer {
+  width: 56px;
+}
+
+/* Знакомство с новой формулой */
+.intro-name {
+  color: var(--accent);
+}
+.intro-reading {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+}
+.intro-speak {
+  justify-content: center;
+}

@@ -54,6 +54,15 @@ export default function HomePage() {
         })}
       </ol>
 
+      <Link href="/formulas" className="dictionary-link">
+        <Icon name="sigma" />
+        <span>
+          <strong>Знаменитые формулы</strong>
+          <span className="muted">Игра: узнайте формулу и прочитайте её вслух</span>
+        </span>
+        <Icon name="chevron-right" className="level-chevron" />
+      </Link>
+
       <Link href="/dictionary" className="dictionary-link">
         <Icon name="search" />
         <span>
