@@ -151,6 +151,7 @@ export default function Exam({ level, nextLevel, terms }: Props) {
       <div className="practice-stage">
         {isLong ? (
           <LongReader
+            key={item.id}
             formula={item.long!}
             maxAttempts={MAX_ATTEMPTS}
             hints={false}

@@ -60,7 +60,7 @@ export function useSpeechCheck() {
       try {
         listener.current = listen({
           // Длинную фразу читают с паузами — ждём дольше, прежде чем закончить запись.
-          silenceMs: mode === "phrase" ? 2500 : 1300,
+          silenceMs: mode === "phrase" ? 3500 : 1500,
           onInterim: setInterim,
           onResult: (transcripts) => {
             const r = checkPronunciation(transcripts, targets, mode);

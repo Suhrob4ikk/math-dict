@@ -53,7 +53,7 @@ export default function LevelSteps({ levelId, ids }: Props) {
         <div className="step-body">
           <strong>Экзамен</strong>
           <span className="muted">
-            {EXAM_SIZE} заданий без подсказок: прочитать формулу, назвать термин и одна длинная формула по частям.{" "}
+            {EXAM_SIZE} заданий без подсказок: длинные формулы читаются по частям, на каждую часть 2 попытки.{" "}
             {best !== undefined ? `Лучший результат: ${best}/${EXAM_SIZE}.` : `Нужно ${EXAM_PASS} из ${EXAM_SIZE}.`}
           </span>
           <Link

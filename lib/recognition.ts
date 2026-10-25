@@ -52,7 +52,11 @@ export interface Listener {
 
 // Слушает, пока человек говорит: паузы между словами не обрывают запись, поэтому можно
 // читать медленно, по слогам. Запись заканчивается кнопкой или после silenceMs тишины.
-// Результат — варианты всей фразы целиком (распознаватель даёт до 10 вариантов).
+// Chrome на Android сам завершает распознавание на паузе — тогда тихо запускаем его снова
+// и продолжаем копить сказанное.
+// Результат — несколько вариантов всей фразы: распознаватель даёт до 10 вариантов, а на
+// Android ещё и повторяет уже сказанное («x squared … x squared minus delta a»), поэтому
+// отдаём и склейку всех кусков, и отдельные хвосты — проверка выберет лучший.
 export function listen(handlers: {
   silenceMs: number;
   onInterim?: (text: string) => void;
@@ -61,70 +65,122 @@ export function listen(handlers: {
   onEnd: () => void;
 }): Listener {
   const Ctor = getCtor()!;
-  const rec = new Ctor();
-  rec.lang = "en-US";
-  rec.continuous = true;
-  rec.interimResults = true;
-  // Чем больше вариантов, тем выше шанс, что среди них есть правильный.
-  rec.maxAlternatives = 10;
+  let rec: Recognition;
 
-  // Законченные куски речи: для каждого — все варианты распознавания.
-  const finals: string[][] = [];
-  let failed = false;
+  // Законченные куски речи из прошлых запусков и из текущего: для каждого — все варианты.
+  const done: string[][] = [];
+  let current: string[][] = [];
+  let finished = false;
   let cancelled = false;
+  let failed = false;
+  let heardAnything = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
+
+  const finish = () => {
+    finished = true;
+    clearTimeout(timer);
+    try {
+      rec.stop();
+    } catch {
+      // Уже остановлен.
+    }
+  };
   // Если человек так и не начал говорить — через 7 секунд заканчиваем.
   const wait = (ms: number) => {
     clearTimeout(timer);
-    timer = setTimeout(() => rec.stop(), ms);
+    timer = setTimeout(finish, ms);
   };
-  wait(7000);
 
-  rec.onresult = (e) => {
-    let interim = "";
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const result = e.results[i];
-      if (!result.isFinal) {
-        interim += result[0].transcript;
-        continue;
-      }
-      const alts = Array.from({ length: result.length }, (_, j) => result[j].transcript.trim());
-      const last = finals[finals.length - 1];
-      // Chrome на Android присылает нарастающие куски («x», «x bar», «x bar equals») —
-      // такой кусок заменяет предыдущий, а не добавляется к нему.
-      if (last && alts[0].toLowerCase().startsWith(last[0].toLowerCase())) finals[finals.length - 1] = alts;
-      else finals.push(alts);
+  const segments = () => [...done, ...current];
+
+  const report = () => {
+    const segs = segments();
+    if (!segs.length) {
+      handlers.onError("no-speech");
+      return;
     }
-    handlers.onInterim?.([...finals.map((a) => a[0]), interim.trim()].filter(Boolean).join(" "));
-    wait(handlers.silenceMs);
-  };
-  rec.onerror = (e) => {
-    if (e.error === "aborted" || (e.error === "no-speech" && finals.length)) return;
-    failed = true;
-    if (e.error === "not-allowed" || e.error === "service-not-allowed") handlers.onError("not-allowed");
-    else if (e.error === "no-speech") handlers.onError("no-speech");
-    else if (e.error === "network") handlers.onError("network");
-    else handlers.onError("other");
-  };
-  rec.onend = () => {
-    clearTimeout(timer);
-    if (!cancelled && !failed) {
-      if (!finals.length) handlers.onError("no-speech");
-      else {
-        const prefix = finals
-          .slice(0, -1)
-          .map((a) => a[0])
-          .join(" ");
-        handlers.onResult(finals[finals.length - 1].map((alt) => `${prefix} ${alt}`.trim()));
-      }
+    const top = segs.map((alts) => alts[0]);
+    const last = segs[segs.length - 1];
+    const out: string[] = [];
+    // Склейка от k-го куска до конца (k = 0 — всё сказанное), последний кусок — во всех вариантах.
+    for (let k = 0; k < segs.length; k++) {
+      const prefix = top.slice(k, -1).join(" ");
+      for (const alt of last) out.push(`${prefix} ${alt}`.trim());
     }
-    handlers.onEnd();
+    // Каждый кусок отдельно: на Android последний не всегда самый полный.
+    for (const alts of segs.slice(0, -1)) out.push(...alts);
+    handlers.onResult([...new Set(out)]);
   };
-  rec.start();
+
+  const begin = () => {
+    rec = new Ctor();
+    rec.lang = "en-US";
+    rec.continuous = true;
+    rec.interimResults = true;
+    // Чем больше вариантов, тем выше шанс, что среди них есть правильный.
+    rec.maxAlternatives = 10;
+    current = [];
+
+    rec.onresult = (e) => {
+      // Собираем куски текущего запуска заново из всего списка: так повтор куска
+      // не добавляется второй раз.
+      const finals: string[][] = [];
+      let interim = "";
+      for (let i = 0; i < e.results.length; i++) {
+        const result = e.results[i];
+        if (!result.isFinal) {
+          interim += ` ${result[0].transcript}`;
+          continue;
+        }
+        const alts = Array.from({ length: result.length }, (_, j) => result[j].transcript.trim()).filter(Boolean);
+        if (!alts.length) continue;
+        const prev = finals[finals.length - 1];
+        // Нарастающий кусок («x», «x bar», «x bar equals») заменяет предыдущий.
+        if (prev && alts[0].toLowerCase().startsWith(prev[0].toLowerCase())) finals[finals.length - 1] = alts;
+        else finals.push(alts);
+      }
+      current = finals;
+      heardAnything = true;
+      handlers.onInterim?.([...segments().map((a) => a[0]), interim.trim()].filter(Boolean).join(" "));
+      wait(handlers.silenceMs);
+    };
+    rec.onerror = (e) => {
+      if (e.error === "aborted" || e.error === "no-speech") return;
+      failed = true;
+      finished = true;
+      if (e.error === "not-allowed" || e.error === "service-not-allowed") handlers.onError("not-allowed");
+      else if (e.error === "network") handlers.onError("network");
+      else handlers.onError("other");
+    };
+    rec.onend = () => {
+      done.push(...current);
+      current = [];
+      if (!finished && !cancelled) {
+        // Распознаватель остановился сам (пауза) — продолжаем слушать.
+        try {
+          begin();
+          return;
+        } catch {
+          finished = true;
+        }
+      }
+      clearTimeout(timer);
+      if (!cancelled && !failed) {
+        if (heardAnything || done.length) report();
+        else handlers.onError("no-speech");
+      }
+      handlers.onEnd();
+    };
+    rec.start();
+  };
+
+  wait(7000);
+  begin();
   return {
-    stop: () => rec.stop(),
+    stop: finish,
     cancel: () => {
       cancelled = true;
+      finished = true;
       clearTimeout(timer);
       rec.abort();
     },
@@ -194,7 +250,7 @@ const OPTIONAL = new Set(["the", "of", "is", "an"]);
 
 // Как распознаватель записывает названия букв: «eye» = i, «ex» = x, «why» = y.
 const LETTERS: Record<string, string[]> = {
-  a: ["ay", "eh", "hey"],
+  a: ["ay", "eh", "hey", "eight"],
   b: ["be", "bee"],
   c: ["see", "sea"],
   d: ["dee"],
@@ -203,9 +259,9 @@ const LETTERS: Record<string, string[]> = {
   g: ["gee", "jee"],
   i: ["eye", "aye", "ai"],
   j: ["jay"],
-  k: ["kay", "okay"],
+  k: ["kay", "okay", "car", "cay"],
   m: ["em"],
-  n: ["en"],
+  n: ["en", "and"],
   p: ["pee", "pea"],
   q: ["queue", "cue"],
   r: ["ar", "are"],
@@ -214,8 +270,23 @@ const LETTERS: Record<string, string[]> = {
   v: ["vee"],
   w: ["double you"],
   x: ["ex", "ax"],
-  y: ["why", "wy"],
-  z: ["zee", "zed"],
+  y: ["why", "wy", "white"],
+  z: ["zee", "zed", "zet", "zett", "that"],
+};
+
+// Частые ошибки распознавателя на словах из формул (проверено на телефоне):
+// «lambda» → «London», «tends» → «thanks».
+const SOUNDALIKES: Record<string, string[]> = {
+  lambda: ["london", "lamb", "lander", "lambada"],
+  tends: ["thanks", "tens", "tense", "tents", "ends", "tend"],
+  sub: ["sup", "subs", "sab"],
+  hat: ["head", "had", "hut", "hot", "heart"],
+  bar: ["bah", "ba", "bart"],
+  delta: ["dealt"],
+  alpha: ["alfa", "elfa"],
+  sigma: ["stigma"],
+  theta: ["seta", "tita"],
+  squared: ["square"],
 };
 
 function levenshtein(a: string, b: string): number {
@@ -282,6 +353,7 @@ function soundKey(text: string): string {
 function tokenMatch(heard: string, target: string): boolean {
   if (heard === target) return true;
   if (target.length === 1) return LETTERS[target]?.includes(heard) ?? false;
+  if (SOUNDALIKES[target]?.includes(heard)) return true;
   if (heard.length === 1) return false;
   const hk = soundKey(heard);
   const tk = soundKey(target);
@@ -297,8 +369,13 @@ function joinedMatch(heard: string, target: string): boolean {
 }
 
 // «fx» → «f x», «df» → «d f»: короткие сочетания согласных — это буквы подряд.
+// «subj» → «sub j»: распознаватель иногда склеивает «sub» с буквой.
 function splitLetters(words: string[]): string[] {
-  return words.flatMap((w) => (w.length <= 3 && !/[aeiouy]/.test(w) ? w.split("") : [w]));
+  return words.flatMap((w) => {
+    if (w.length <= 3 && !/[aeiouy]/.test(w)) return w.split("");
+    const sub = /^sub([a-z])$/.exec(w);
+    return sub ? ["sub", sub[1]] : [w];
+  });
 }
 
 function heardTokens(heard: string): string[] {
@@ -402,8 +479,9 @@ export function checkPronunciation(
       const required = words.filter((w) => !OPTIONAL.has(w)).length;
       if (!required) continue;
       const { matched, marks } = align(heard, words);
-      // Лишние слова в чтении формулы немного снижают оценку; в одиночном термине — нет.
-      const extra = mode === "phrase" ? Math.max(0, heard.length - required) * 0.5 : 0;
+      // Лишние слова почти не мешают: распознаватель вставляет свои («this equals to»),
+      // а человек может начать заново. Штрафуем, только если услышано намного больше нужного.
+      const extra = mode === "phrase" ? Math.max(0, heard.length - required * 2) * 0.25 : 0;
       const score = matched / (required + extra);
       if (score > best.score) {
         fromMain = target === targets[0];

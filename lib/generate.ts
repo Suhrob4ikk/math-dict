@@ -9,6 +9,8 @@ export interface Generated {
   code?: boolean;
   // Первый вариант — как показываем правильный ответ, остальные тоже засчитываются.
   readings: string[];
+  // Длинную формулу на экзамене читают по частям (левая часть со знаком, правая часть).
+  parts?: LongPart[];
 }
 
 type Rand = () => number;
@@ -160,6 +162,14 @@ function foundations(rand: Rand): Generated {
     const right = chance(rand, 0.5) ? binary(rand, used) : term(rand, used);
     const [tex, word] = pick(rand, RELATIONS);
     result = part(`${left.tex} ${tex} ${right.tex}`, combine([left.say, right.say], ([l, r]) => `${l} ${word} ${r}`));
+    return {
+      text: result.tex,
+      readings: result.say,
+      parts: [
+        { text: `${left.tex} ${tex}`, readings: left.say.map((l) => `${l} ${word}`) },
+        { text: right.tex, readings: right.say },
+      ],
+    };
   }
   return { text: result.tex, readings: result.say };
 }
@@ -385,6 +395,19 @@ const expert: Template[] = [
 
 const TEMPLATES: Record<Exclude<LevelId, "foundations">, Template[]> = { essentials, practitioner, expert };
 
+// Формула шаблона с одним знаком «=»: делим на «левая часть равно» и «правая часть».
+function splitEquals(g: Generated): LongPart[] | undefined {
+  if (g.code || g.parts) return g.parts;
+  const sides = g.text.split(" = ");
+  if (sides.length !== 2) return undefined;
+  const readings = g.readings.map((r) => r.split(" equals ")).filter((r) => r.length === 2);
+  if (!readings.length) return undefined;
+  return [
+    { text: `${sides[0]} =`, readings: [...new Set(readings.map(([l]) => `${l} equals`))] },
+    { text: sides[1], readings: [...new Set(readings.map(([, r]) => r))] },
+  ];
+}
+
 // count разных заданий для ступени; каждый шаблон — не больше одного раза.
 export function generateTasks(level: LevelId, count: number, rand: Rand = Math.random): Generated[] {
   const out: Generated[] = [];
@@ -408,7 +431,7 @@ export function generateTasks(level: LevelId, count: number, rand: Rand = Math.r
     }
     if (seen.has(g.text)) continue;
     seen.add(g.text);
-    out.push(g);
+    out.push({ ...g, parts: splitEquals(g) });
   }
   return out;
 }

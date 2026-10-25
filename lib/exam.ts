@@ -20,6 +20,9 @@ export interface ExamItem {
   long?: LongFormula;
 }
 
+// Сколько слов можно прочитать за один раз; длиннее — по частям.
+const CHUNK_WORDS = 6;
+
 function shuffle<T>(list: T[], rand: () => number): T[] {
   const a = [...list];
   for (let i = a.length - 1; i > 0; i--) {
@@ -41,14 +44,13 @@ export function buildExam(level: LevelId, terms: ExamItem[], rand: () => number 
       targets: [f.parts.map((p) => p.readings[0]).join(", ")],
     }),
   );
-  const generated = generateTasks(level, EXAM_SIZE - termCount - long.length, rand).map(
-    (g, i): ExamItem => ({
-      id: `gen:${i}`,
-      kind: g.code ? "code" : "formula",
-      text: g.text,
-      targets: g.readings,
-    }),
-  );
+  const generated = generateTasks(level, EXAM_SIZE - termCount - long.length, rand).map((g, i): ExamItem => {
+    // Формулу длиннее нескольких слов читаем по частям: ошибка в начале не губит всё задание.
+    if (g.parts && g.readings[0].split(" ").length > CHUNK_WORDS) {
+      return { id: `gen:${i}`, kind: "long", long: { id: `gen:${i}`, parts: g.parts }, targets: [g.readings[0]] };
+    }
+    return { id: `gen:${i}`, kind: g.code ? "code" : "formula", text: g.text, targets: g.readings };
+  });
   const items = shuffle(
     [...generated, ...shuffle(terms, rand).slice(0, EXAM_SIZE - long.length - generated.length)],
     rand,
