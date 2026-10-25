@@ -10,6 +10,7 @@ interface LevelInfo {
   id: string;
   name: string;
   ids: string[];
+  units?: { id: string; name: string; ids: string[] }[];
 }
 
 const STEPS: [IconName, string][] = [
@@ -31,7 +32,17 @@ export default function HomeGuide({ levels }: { levels: LevelInfo[] }) {
   if (current) {
     const learned = current.ids.filter((id) => progress.mastered.includes(id)).length;
     const resume = progress.resume?.level === current.id ? progress.resume.index : 0;
-    if (learned === current.ids.length) {
+    // Ступень с темами: продолжаем с первой темы, где ещё есть невыученные карточки.
+    const unit = current.units?.find((u) => u.ids.some((id) => !progress.mastered.includes(id)));
+    if (unit && learned < current.ids.length) {
+      const unitLearned = unit.ids.filter((id) => progress.mastered.includes(id)).length;
+      cta = {
+        href: `/level/${current.id}/practice/${unit.id}`,
+        title: `${learned ? "Продолжить" : "Начать"}: ${unit.name}`,
+        subtitle: `${current.name} · в теме выучено ${unitLearned} из ${unit.ids.length}`,
+        icon: "mic",
+      };
+    } else if (learned === current.ids.length) {
       cta = {
         href: `/level/${current.id}/exam`,
         title: `Сдать экзамен: ${current.name}`,

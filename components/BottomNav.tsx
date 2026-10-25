@@ -7,7 +7,7 @@ import Icon from "@/components/Icon";
 export default function BottomNav() {
   const pathname = usePathname();
   // У тренировки своя панель внизу.
-  if (pathname.endsWith("/practice") || pathname.endsWith("/exam") || pathname === "/review") return null;
+  if (pathname.includes("/practice") || pathname.endsWith("/exam") || pathname === "/review") return null;
   const inDictionary = pathname.startsWith("/dictionary") || pathname.startsWith("/term");
 
   return (

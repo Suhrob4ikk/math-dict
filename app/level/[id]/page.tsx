@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
+import LevelProgress from "@/components/LevelProgress";
 import LevelSteps from "@/components/LevelSteps";
 import MasteredMark from "@/components/MasteredMark";
 import { getLevel, LEVELS } from "@/lib/levels";
-import { termsByLevel } from "@/lib/terms";
+import { type Term, termsByLevel } from "@/lib/terms";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -47,25 +48,58 @@ export default async function LevelPage({ params }: Props) {
       </header>
       <p className="muted">{level.topics}</p>
 
-      <LevelSteps levelId={level.id} ids={terms.map((t) => t.id)} />
+      <LevelSteps
+        levelId={level.id}
+        ids={terms.map((t) => t.id)}
+        units={level.units?.map((u) => ({
+          ...u,
+          ids: terms.filter((t) => t.unit === u.id).map((t) => t.id),
+        }))}
+      />
 
-      <h2 className="section-title">Все термины ступени</h2>
-      <ul className="term-rows">
-        {terms.map((t) => (
-          <li key={t.id}>
-            <Link href={`/term/${t.id}`} className="term-row">
-              <MasteredMark id={t.id} />
-              <span className="term-row-body">
-                <span className="term-en" lang="en">
-                  {t.say}
-                </span>
-                <span className="term-ru">{t.russian}</span>
-              </span>
-              <Icon name="chevron-right" size={18} className="level-chevron" />
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {level.units ? (
+        level.units.map((unit) => {
+          const list = terms.filter((t) => t.unit === unit.id);
+          return (
+            <section key={unit.id} className="unit">
+              <div className="unit-head">
+                <h2 className="section-title">{unit.name}</h2>
+                <Link href={`/level/${level.id}/practice/${unit.id}`} className="unit-start">
+                  <Icon name="mic" size={16} /> Учить тему
+                </Link>
+              </div>
+              <LevelProgress ids={list.map((t) => t.id)} />
+              <TermRows terms={list} />
+            </section>
+          );
+        })
+      ) : (
+        <>
+          <h2 className="section-title">Все термины ступени</h2>
+          <TermRows terms={terms} />
+        </>
+      )}
     </>
+  );
+}
+
+function TermRows({ terms }: { terms: Term[] }) {
+  return (
+    <ul className="term-rows">
+      {terms.map((t) => (
+        <li key={t.id}>
+          <Link href={`/term/${t.id}`} className="term-row">
+            <MasteredMark id={t.id} />
+            <span className="term-row-body">
+              <span className="term-en" lang="en">
+                {t.say}
+              </span>
+              <span className="term-ru">{t.russian}</span>
+            </span>
+            <Icon name="chevron-right" size={18} className="level-chevron" />
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 }

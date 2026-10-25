@@ -285,7 +285,7 @@ const SOUNDALIKES: Record<string, string[]> = {
   delta: ["dealt"],
   alpha: ["alfa", "elfa"],
   sigma: ["stigma"],
-  theta: ["seta", "tita"],
+  theta: ["thita", "teta"],
   squared: ["square"],
 };
 
@@ -382,6 +382,48 @@ function heardTokens(heard: string): string[] {
   return splitLetters(heard.split(" ").filter((w) => w && !OPTIONAL.has(w)));
 }
 
+// Слова-уточнения: без них или с ними получается другое обозначение.
+const MEANINGFUL = new Set([
+  "not",
+  "doesnt",
+  "approximately",
+  "identically",
+  "much",
+  "or",
+  "equal",
+  "equals",
+  "greater",
+  "less",
+  "closed",
+  "open",
+  "double",
+  "prime",
+  "inverse",
+  "minus",
+  "plus",
+  "length",
+  "magnitude",
+  "proportional",
+  "hat",
+  "bar",
+  "tilde",
+  "star",
+  "sub",
+  "squared",
+  "cubed",
+  "root",
+  "cube",
+  "vector",
+  "transpose",
+  "union",
+  "intersect",
+  "subset",
+  "implies",
+  "only",
+  "exists",
+  "all",
+]);
+
 export interface WordMark {
   word: string;
   ok: boolean;
@@ -414,10 +456,22 @@ function align(heard: string[], target: string[]): { matched: number; marks: Wor
         tryStep(dp[i - 1][j - 1] + (opt[j - 1] ? 0 : 1), "one");
       }
       // Склейка только для частей составных слов, а не для букв: иначе «sub» + «a» = «sub».
-      if (i > 1 && j > 0 && heard[i - 2].length > 1 && heard[i - 1].length > 1 && joinedMatch(heard[i - 2] + heard[i - 1], target[j - 1])) {
+      if (
+        i > 1 &&
+        j > 0 &&
+        heard[i - 2].length > 1 &&
+        heard[i - 1].length > 1 &&
+        joinedMatch(heard[i - 2] + heard[i - 1], target[j - 1])
+      ) {
         tryStep(dp[i - 2][j - 1] + (opt[j - 1] ? 0 : 1), "twoH");
       }
-      if (i > 0 && j > 1 && target[j - 2].length > 1 && target[j - 1].length > 1 && joinedMatch(heard[i - 1], target[j - 2] + target[j - 1])) {
+      if (
+        i > 0 &&
+        j > 1 &&
+        target[j - 2].length > 1 &&
+        target[j - 1].length > 1 &&
+        joinedMatch(heard[i - 1], target[j - 2] + target[j - 1])
+      ) {
         tryStep(dp[i - 1][j - 2] + (opt[j - 2] ? 0 : 1) + (opt[j - 1] ? 0 : 1), "twoT");
       }
       dp[i][j] = best;
@@ -469,8 +523,14 @@ export function checkPronunciation(
 ): CheckResult {
   let best: CheckResult = { verdict: "wrong", heard: transcripts[0]?.trim() ?? "", score: 0, marks: [] };
   let fromMain = true;
+  // Отметки по тому варианту, который засчитан (для проверки пропущенных слов-уточнений).
+  let matchedMarks: WordMark[] = [];
   // Отметки показываем по основному варианту (первому), даже если засчитан запасной.
-  const main = splitLetters(normalize(targets[0] ?? "").split(" ").filter(Boolean));
+  const main = splitLetters(
+    normalize(targets[0] ?? "")
+      .split(" ")
+      .filter(Boolean),
+  );
   for (const raw of transcripts) {
     const heard = heardTokens(normalize(raw));
     if (!heard.length) continue;
@@ -481,10 +541,14 @@ export function checkPronunciation(
       const { matched, marks } = align(heard, words);
       // Лишние слова почти не мешают: распознаватель вставляет свои («this equals to»),
       // а человек может начать заново. Штрафуем, только если услышано намного больше нужного.
-      const extra = mode === "phrase" ? Math.max(0, heard.length - required * 2) * 0.25 : 0;
+      // В карточке лишние слова — почти всегда другое обозначение («a is not equal to b»
+      // вместо «a equals b»), поэтому там штраф строже; одно лишнее слово («the variance») можно.
+      const extra =
+        mode === "phrase" ? Math.max(0, heard.length - required * 2) * 0.25 : Math.max(0, heard.length - required - 1);
       const score = matched / (required + extra);
       if (score > best.score) {
         fromMain = target === targets[0];
+        matchedMarks = marks;
         best = {
           verdict: "wrong",
           heard: raw.trim(),
@@ -498,6 +562,17 @@ export function checkPronunciation(
   // Перепутанная переменная (x sub a вместо x sub i) — это ошибка, даже если остальное верно.
   const wrongLetter = best.marks.some((m) => !m.ok && !m.optional && m.word.length === 1);
   if (best.verdict === "correct" && fromMain && wrongLetter) best.verdict = "close";
+  // Слова, которые меняют смысл обозначения: «a not equal to b» — не «a equals b»,
+  // «f prime of x» — не «f of x». Лишнее или пропущенное такое слово — это ошибка.
+  if (best.verdict === "correct") {
+    const allowed = targets.flatMap((t) => normalize(t).split(" "));
+    const heardExtra = heardTokens(normalize(best.heard)).some(
+      (w) => MEANINGFUL.has(w) && !allowed.some((a) => tokenMatch(w, a)),
+    );
+    // В длинной фразе распознаватель может проглотить слово, поэтому там проверяем только «not».
+    const missed = matchedMarks.some((m) => !m.ok && MEANINGFUL.has(m.word) && (mode === "word" || m.word === "not"));
+    if (heardExtra || missed) best.verdict = "close";
+  }
   // Засчитано по запасному варианту («num pie» для NumPy) — основной текст весь зелёный.
   if (best.verdict === "correct" && !fromMain) best.marks = best.marks.map((m) => ({ ...m, ok: true }));
   if (!best.marks.length) best.marks = main.map((word) => ({ word, ok: false, optional: OPTIONAL.has(word) }));

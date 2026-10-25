@@ -42,6 +42,8 @@ export interface Term {
   // Как распознаватель может услышать правильное произношение: «num pie» для NumPy.
   accept?: string[];
   related: string[];
+  // Тема внутри ступени (см. units в lib/levels.ts).
+  unit?: string;
 }
 
 export const terms: Term[] = data as Term[];
@@ -52,4 +54,8 @@ export function getTerm(id: string): Term | undefined {
 
 export function termsByLevel(level: LevelId): Term[] {
   return terms.filter((t) => t.level === level);
+}
+
+export function termsByUnit(level: LevelId, unit: string): Term[] {
+  return terms.filter((t) => t.level === level && t.unit === unit);
 }

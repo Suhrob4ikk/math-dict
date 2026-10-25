@@ -1470,3 +1470,65 @@ body:has(.practice) {
   align-items: center;
   gap: 28px;
 }
+
+/* ---------- Темы внутри ступени ---------- */
+
+.unit-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.unit-head .section-title {
+  min-width: 0;
+}
+.unit-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+.unit .level-progress {
+  margin-bottom: 10px;
+}
+
+/* ---------- Начать заново ---------- */
+
+.reset {
+  margin: 28px 0 8px;
+  text-align: center;
+}
+.reset-link {
+  border: 0;
+  background: none;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-decoration: underline;
+}
+.reset-link:disabled {
+  opacity: 0.5;
+}
+.reset-confirm {
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--danger-soft);
+  text-align: left;
+}
+.reset-confirm p {
+  margin: 0 0 12px;
+}
+.reset-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}

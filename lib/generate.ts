@@ -24,7 +24,18 @@ interface Part {
   say: string[];
   // Простое выражение (одна переменная с украшениями) — его можно класть в дробь и т. п.
   simple: boolean;
+  // Куски, по границам которых формулу можно делить для чтения по частям.
+  atoms?: Atom[];
 }
+
+// Кусок формулы, который читается отдельно: «a plus» | «b squared».
+interface Atom {
+  tex: string;
+  say: string[];
+}
+
+const atomsOf = (p: Part): Atom[] => p.atoms ?? [{ tex: p.tex, say: p.say }];
+const words = (say: string) => say.split(" ").length;
 
 // Все сочетания вариантов чтения частей: «A plus B» для каждого A и B, не больше 6 штук.
 function combine(parts: string[][], join: (xs: string[]) => string): string[] {
@@ -58,6 +69,7 @@ function variable(rand: Rand, used: Set<string>): Part {
     const [cmd, word] = pick(rand, [
       ["bar", "bar"],
       ["hat", "hat"],
+      ["tilde", "tilde"],
     ] as const);
     if (tex.includes("_")) {
       const [base, sub] = tex.split("_");
@@ -70,9 +82,12 @@ function variable(rand: Rand, used: Set<string>): Part {
   }
   // Степень.
   const power = rand();
-  if (power < 0.25) {
+  if (power < 0.2) {
     tex = `${tex}^2`;
     say = say.map((s) => `${s} squared`);
+  } else if (power < 0.25 && !tex.includes("_")) {
+    tex = `${tex}^3`;
+    say = say.map((s) => `${s} cubed`);
   } else if (power < 0.35) {
     const n = pick(rand, ["n", "k"]);
     tex = `${tex}^${n}`;
@@ -83,7 +98,7 @@ function variable(rand: Rand, used: Set<string>): Part {
 
 function wrapped(rand: Rand, used: Set<string>): Part {
   const inner = variable(rand, used);
-  switch (Math.floor(rand() * 7)) {
+  switch (Math.floor(rand() * 12)) {
     case 0:
       return part(`\\sqrt{${inner.tex}}`, inner.say.map((s) => `the square root of ${s}`));
     case 1:
@@ -100,6 +115,26 @@ function wrapped(rand: Rand, used: Set<string>): Part {
       const v = inner.say[0][0];
       return part(`\\Delta ${v}`, [`delta ${v}`]);
     }
+    case 5: {
+      const [cmd, word] = pick(rand, [
+        ["sin", "sine of"],
+        ["cos", "cosine of"],
+        ["ln", "the natural log of"],
+      ] as const);
+      return part(`\\${cmd} ${inner.tex}`, inner.say.map((s) => `${word} ${s}`));
+    }
+    case 6:
+      return part(`\\sqrt[3]{${inner.tex}}`, inner.say.map((s) => `the cube root of ${s}`));
+    case 7: {
+      // Штрих или звёздочка — только у простой буквы, без индексов и степеней.
+      const v = inner.say[0][0];
+      const [tex, word] = pick(rand, [
+        [`${v}'`, "prime"],
+        [`${v}^*`, "star"],
+        [`${v}_0`, "sub zero"],
+      ] as const);
+      return part(tex, [`${v} ${word}`]);
+    }
     default:
       return inner;
   }
@@ -111,30 +146,96 @@ function term(rand: Rand, used: Set<string>): Part {
       ["\\alpha", "alpha"],
       ["\\beta", "beta"],
       ["\\lambda", "lambda"],
+      ["\\pi", "pi"],
+      ["\\mu", "mu"],
+      ["\\theta", "theta"],
+      ["\\sigma", "sigma"],
     ] as const);
     return part(tex, [word]);
   }
-  return chance(rand, 0.55) ? wrapped(rand, used) : variable(rand, used);
+  return chance(rand, 0.6) ? wrapped(rand, used) : variable(rand, used);
 }
 
 function binary(rand: Rand, used: Set<string>): Part {
   const a = term(rand, used);
   const b = term(rand, used);
-  const op = pick(rand, ["+", "-", "\\times", "frac"] as const);
+  let op = pick(rand, ["+", "-", "\\times", "frac"] as const);
+  // Дробь не разрезать на части, поэтому в неё кладём только короткое.
+  if (op === "frac" && words(a.say[0]) + words(b.say[0]) > 6) op = "+";
   if (op === "frac") {
     return part(`\\frac{${a.tex}}{${b.tex}}`, combine([a.say, b.say], ([x, y]) => `${x} over ${y}`), false);
   }
   const word = op === "+" ? "plus" : op === "-" ? "minus" : "times";
-  return part(`${a.tex} ${op} ${b.tex}`, combine([a.say, b.say], ([x, y]) => `${x} ${word} ${y}`), false);
+  return {
+    ...part(`${a.tex} ${op} ${b.tex}`, combine([a.say, b.say], ([x, y]) => `${x} ${word} ${y}`), false),
+    atoms: [
+      { tex: `${a.tex} ${op}`, say: a.say.map((x) => `${x} ${word}`) },
+      { tex: b.tex, say: b.say },
+    ],
+  };
 }
 
 const RELATIONS = [
   ["=", "equals"],
   ["\\neq", "is not equal to"],
   ["<", "is less than"],
+  [">", "is greater than"],
+  ["\\le", "is less than or equal to"],
   ["\\ge", "is greater than or equal to"],
   ["\\approx", "is approximately equal to"],
 ] as const;
+
+// Делим формулу на count частей по границам кусков так, чтобы части были примерно
+// одинаковой длины (по числу слов): не «почти всё | c hat».
+export function balance(atoms: Atom[], count: number): LongPart[] {
+  const n = atoms.length;
+  const k = Math.min(count, n);
+  const w = atoms.map((a) => words(a.say[0]));
+  let best: number[] = [];
+  let bestCost = Infinity;
+  // Перебираем места разрезов (кусков мало, поэтому перебор быстрый).
+  const walk = (start: number, cuts: number[]) => {
+    if (cuts.length === k - 1) {
+      const bounds = [0, ...cuts, n];
+      const sizes = bounds.slice(1).map((b, i) => w.slice(bounds[i], b).reduce((x, y) => x + y, 0));
+      const cost = Math.max(...sizes) - Math.min(...sizes);
+      if (cost < bestCost) {
+        bestCost = cost;
+        best = cuts;
+      }
+      return;
+    }
+    for (let c = start; c < n; c++) walk(c + 1, [...cuts, c]);
+  };
+  walk(1, []);
+  const bounds = [0, ...best, n];
+  return bounds.slice(1).map((b, i) => {
+    const group = atoms.slice(bounds[i], b);
+    return {
+      text: group.map((a) => a.tex).join(" "),
+      readings: combine(
+        group.map((a) => a.say),
+        (xs) => xs.join(" "),
+      ),
+    };
+  });
+}
+
+// Насколько части различаются по длине и сколько слов в самой длинной.
+function unevenness(parts: LongPart[]): { spread: number; longest: number } {
+  const w = parts.map((p) => words(p.readings[0]));
+  return { spread: Math.max(...w) - Math.min(...w), longest: Math.max(...w) };
+}
+const balanced = (parts: LongPart[]) => {
+  const { spread, longest } = unevenness(parts);
+  return spread <= 4 && longest <= 9;
+};
+
+// Сколько частей нужно, чтобы в каждой было не больше ~6 слов.
+const partsFor = (atoms: Atom[]) => {
+  const total = atoms.reduce((sum, a) => sum + words(a.say[0]), 0);
+  return total > 14 ? 3 : 2;
+};
 
 // Слишком длинную формулу вслух не прочитать за один раз — такие пропускаем.
 const MAX_WORDS = 14;
@@ -162,14 +263,15 @@ function foundations(rand: Rand): Generated {
     const right = chance(rand, 0.5) ? binary(rand, used) : term(rand, used);
     const [tex, word] = pick(rand, RELATIONS);
     result = part(`${left.tex} ${tex} ${right.tex}`, combine([left.say, right.say], ([l, r]) => `${l} ${word} ${r}`));
-    return {
-      text: result.tex,
-      readings: result.say,
-      parts: [
-        { text: `${left.tex} ${tex}`, readings: left.say.map((l) => `${l} ${word}`) },
-        { text: right.tex, readings: right.say },
-      ],
-    };
+    // Знак отношения читаем вместе с левой частью: «a squared is less than» | «b plus c».
+    const leftAtoms = atomsOf(left);
+    const last = leftAtoms[leftAtoms.length - 1];
+    const atoms = [
+      ...leftAtoms.slice(0, -1),
+      { tex: `${last.tex} ${tex}`, say: last.say.map((s) => `${s} ${word}`) },
+      ...atomsOf(right),
+    ];
+    return { text: result.tex, readings: result.say, parts: balance(atoms, partsFor(atoms)) };
   }
   return { text: result.tex, readings: result.say };
 }
@@ -418,6 +520,8 @@ export function generateTasks(level: LevelId, count: number, rand: Rand = Math.r
     if (level === "foundations") {
       g = foundations(rand);
       if (g.readings[0].split(" ").length > MAX_WORDS) continue;
+      // Формулу, которую не поделить на ровные части, не берём.
+      if (g.parts && g.readings[0].split(" ").length > 6 && !balanced(g.parts)) continue;
       // Сумма и предел — особые формы, хватит одной каждой.
       const special = g.text.startsWith("\\sum") ? -1 : g.text.includes("\\to") ? -2 : 0;
       if (special && (perTemplate.get(special) ?? 0) >= 1) continue;
@@ -453,6 +557,12 @@ export interface LongFormula {
 const p = (text: string, ...readings: string[]): LongPart => ({ text, readings });
 
 function foundationsLong(rand: Rand): LongPart[] {
+  let parts = foundationsLongOnce(rand);
+  for (let tries = 0; tries < 50 && !balanced(parts); tries++) parts = foundationsLongOnce(rand);
+  return parts;
+}
+
+function foundationsLongOnce(rand: Rand): LongPart[] {
   const used = new Set<string>();
   const left = term(rand, used);
   const [rel, relWord] = pick(rand, RELATIONS);
@@ -462,11 +572,15 @@ function foundationsLong(rand: Rand): LongPart[] {
     ["-", "minus"],
   ] as const);
   const last = wrapped(rand, used);
-  return [
-    { text: `${left.tex} ${rel}`, readings: left.say.map((s) => `${s} ${relWord}`) },
-    { text: `${mid.tex} ${op}`, readings: mid.say.map((s) => `${s} ${opWord}`) },
-    { text: last.tex, readings: last.say },
+  const midAtoms = atomsOf(mid);
+  const tail = midAtoms[midAtoms.length - 1];
+  const atoms: Atom[] = [
+    { tex: `${left.tex} ${rel}`, say: left.say.map((s) => `${s} ${relWord}`) },
+    ...midAtoms.slice(0, -1),
+    { tex: `${tail.tex} ${op}`, say: tail.say.map((s) => `${s} ${opWord}`) },
+    ...atomsOf(last),
   ];
+  return balance(atoms, 3);
 }
 
 const LONG: Record<Exclude<LevelId, "foundations">, (Omit<LongFormula, "id">)[]> = {

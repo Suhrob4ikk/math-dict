@@ -8,11 +8,19 @@ export const LEVEL_IDS = ["foundations", "essentials", "practitioner", "expert"]
 
 export type LevelId = (typeof LEVEL_IDS)[number];
 
+// Тема внутри ступени: короткий урок из нескольких карточек.
+export interface Unit {
+  id: string;
+  name: string;
+}
+
 export interface Level {
   id: LevelId;
   name: string;
   subtitle: string;
   topics: string;
+  // Если есть — карточки ступени разбиты на темы (порядок тем — порядок уроков).
+  units?: Unit[];
 }
 
 export const LEVELS: Level[] = [
@@ -20,7 +28,17 @@ export const LEVELS: Level[] = [
     id: "foundations",
     name: "Foundations",
     subtitle: "Основы: математические обозначения",
-    topics: "Как читать формулы: x bar, x sub i, дроби, степени, корни, f of x",
+    topics: "Как читать формулы: действия и сравнения, индексы, степени, функции, греческие буквы, множества, векторы, производные и интегралы",
+    units: [
+      { id: "arithmetic", name: "Действия и сравнения" },
+      { id: "marks", name: "Индексы и пометки" },
+      { id: "powers", name: "Степени и корни" },
+      { id: "functions", name: "Функции" },
+      { id: "greek", name: "Греческие буквы" },
+      { id: "sets", name: "Множества и логика" },
+      { id: "vectors", name: "Векторы и матрицы" },
+      { id: "calculus", name: "Пределы, производные, интегралы" },
+    ],
   },
   {
     id: "essentials",

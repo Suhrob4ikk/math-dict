@@ -180,7 +180,10 @@ export function useProgress() {
 
   const finishOnboarding = useCallback(() => update((p) => ({ ...p, onboarded: true })), [update]);
 
-  return { progress, markMastered, markMistake, countCorrect, recordExam, setResume, finishOnboarding };
+  // «Начать заново»: стираем всё, кроме того, что вводное объяснение уже показано.
+  const resetProgress = useCallback(() => update(() => ({ ...EMPTY, onboarded: true })), [update]);
+
+  return { progress, markMastered, markMistake, countCorrect, recordExam, setResume, finishOnboarding, resetProgress };
 }
 
 // Короткий вариант для компонентов, которым нужен только список выученных.

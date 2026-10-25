@@ -7,16 +7,20 @@ import { EXAM_PASS, EXAM_SIZE, useProgress } from "@/lib/progress";
 interface Props {
   levelId: string;
   ids: string[];
+  // Темы ступени с их карточками: тогда шаг 1 ведёт в первую невыученную тему.
+  units?: { id: string; name: string; ids: string[] }[];
 }
 
 // Шаги внутри ступени: выучить карточки, потренировать длинные формулы, сдать экзамен.
-export default function LevelSteps({ levelId, ids }: Props) {
+export default function LevelSteps({ levelId, ids, units }: Props) {
   const { progress } = useProgress();
   const learned = ids.filter((id) => progress.mastered.includes(id)).length;
   const started = learned > 0 || progress.resume?.level === levelId;
   const best = progress.exams[levelId];
   const passed = (best ?? 0) >= EXAM_PASS;
   const cardsDone = learned === ids.length;
+  const unit = units?.find((u) => u.ids.some((id) => !progress.mastered.includes(id)));
+  const learnHref = unit ? `/level/${levelId}/practice/${unit.id}` : `/level/${levelId}/practice`;
 
   return (
     <ol className="steps">
@@ -25,13 +29,16 @@ export default function LevelSteps({ levelId, ids }: Props) {
         <div className="step-body">
           <strong>Учить карточки</strong>
           <span className="muted">
-            Слушайте и произносите каждый термин. Выучено {learned} из {ids.length}.
+            {units
+              ? `${units.length} тем, в каждой несколько обозначений. Слушайте и произносите каждое. Выучено ${learned} из ${ids.length}.`
+              : `Слушайте и произносите каждый термин. Выучено ${learned} из ${ids.length}.`}
           </span>
           <div className="progress" aria-hidden="true">
             <div className="progress-fill" style={{ width: `${(learned / ids.length) * 100}%` }} />
           </div>
-          <Link href={`/level/${levelId}/practice`} className={cardsDone ? "btn btn-secondary" : "btn btn-primary"}>
+          <Link href={learnHref} className={cardsDone ? "btn btn-secondary" : "btn btn-primary"}>
             <Icon name="mic" size={20} /> {cardsDone ? "Повторить" : started ? "Продолжить" : "Начать"}
+            {unit && !cardsDone ? `: ${unit.name}` : ""}
           </Link>
         </div>
       </li>

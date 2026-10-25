@@ -2,6 +2,7 @@ import Link from "next/link";
 import HomeGuide from "@/components/HomeGuide";
 import Icon from "@/components/Icon";
 import LevelProgress from "@/components/LevelProgress";
+import ResetProgress from "@/components/ResetProgress";
 import { LEVELS } from "@/lib/levels";
 import { termsByLevel } from "@/lib/terms";
 
@@ -16,7 +17,17 @@ export default function HomePage() {
         </p>
       </section>
 
-      <HomeGuide levels={LEVELS.map((l) => ({ id: l.id, name: l.name, ids: termsByLevel(l.id).map((t) => t.id) }))} />
+      <HomeGuide
+        levels={LEVELS.map((l) => {
+          const terms = termsByLevel(l.id);
+          return {
+            id: l.id,
+            name: l.name,
+            ids: terms.map((t) => t.id),
+            units: l.units?.map((u) => ({ ...u, ids: terms.filter((t) => t.unit === u.id).map((t) => t.id) })),
+          };
+        })}
+      />
 
       <h2 className="section-title">Ступени</h2>
       <ol className="level-list">
@@ -51,6 +62,8 @@ export default function HomePage() {
         </span>
         <Icon name="chevron-right" className="level-chevron" />
       </Link>
+
+      <ResetProgress />
     </>
   );
 }
