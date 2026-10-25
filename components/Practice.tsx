@@ -30,6 +30,7 @@ export default function Practice({ level, nextLevel, terms, formulas }: Props) {
   const done = index >= terms.length;
   const term = terms[Math.min(index, terms.length - 1)];
   const target = mode === "word" ? term.say : term.spoken;
+  const readFormula = term.category === "notation" && formulas[term.id] !== undefined;
   const masteredHere = terms.filter((t) => mastered.includes(t.id)).length;
 
   useEffect(() => {
@@ -116,22 +117,43 @@ export default function Practice({ level, nextLevel, terms, formulas }: Props) {
               <Icon name="check" size={16} />
             </span>
           )}
-          <span className="flashcard-term" lang="en">
-            {term.say}
-          </span>
-          {term.transcription && <span className="flashcard-transcription">[{term.transcription}]</span>}
-          {flipped ? (
-            <span className="flashcard-back">
-              <span className="flashcard-ru">{term.russian}</span>
-              {formulas[term.id] && <span className="flashcard-formula">{formulas[term.id]}</span>}
-              <span className="flashcard-spoken" lang="en">
-                «{term.spoken}»
-              </span>
-            </span>
+          {readFormula ? (
+            // Обозначения учим наоборот: видим формулу, вспоминаем, как она читается.
+            <>
+              <span className="flashcard-formula flashcard-formula-big">{formulas[term.id]}</span>
+              {flipped ? (
+                <span className="flashcard-back">
+                  <span className="flashcard-term" lang="en">
+                    {term.say}
+                  </span>
+                  <span className="flashcard-ru">{term.russian}</span>
+                </span>
+              ) : (
+                <span className="flashcard-hint">
+                  <Icon name="flip" size={16} /> Как это читается? Нажмите, чтобы проверить
+                </span>
+              )}
+            </>
           ) : (
-            <span className="flashcard-hint">
-              <Icon name="flip" size={16} /> Нажмите, чтобы увидеть перевод
-            </span>
+            <>
+              <span className="flashcard-term" lang="en">
+                {term.say}
+              </span>
+              {term.transcription && <span className="flashcard-transcription">[{term.transcription}]</span>}
+              {flipped ? (
+                <span className="flashcard-back">
+                  <span className="flashcard-ru">{term.russian}</span>
+                  {formulas[term.id] && <span className="flashcard-formula">{formulas[term.id]}</span>}
+                  <span className="flashcard-spoken" lang="en">
+                    «{term.spoken}»
+                  </span>
+                </span>
+              ) : (
+                <span className="flashcard-hint">
+                  <Icon name="flip" size={16} /> Нажмите, чтобы увидеть перевод
+                </span>
+              )}
+            </>
           )}
         </button>
 

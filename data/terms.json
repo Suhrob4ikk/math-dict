@@ -1,21 +1,197 @@
 [
   {
-    "id": "mean",
-    "english": "mean (x bar)",
-    "russian": "среднее арифметическое",
-    "spoken": "x bar equals one over n times the sum of x sub i, for i from one to n",
-    "latex": "\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i",
-    "python": "import numpy as np\nx = np.array([2, 4, 6])\nx.mean()  # 4.0",
-    "category": "statistics",
+    "id": "plus-minus",
+    "english": "plus and minus",
+    "russian": "сложение и вычитание",
+    "spoken": "a plus b minus c",
+    "latex": "a + b - c",
+    "python": "a, b, c = 5, 3, 1\na + b - c  # 7",
+    "category": "notation",
     "related": [
-      "sum",
-      "variance",
-      "groupby"
+      "times-divided",
+      "equals"
     ],
     "level": "foundations",
-    "say": "mean",
+    "say": "a plus b minus c",
     "accept": [
-      "the mean"
+      "a plus be minus see",
+      "eight plus b minus c"
+    ]
+  },
+  {
+    "id": "times-divided",
+    "english": "times and divided by",
+    "russian": "умножение и деление",
+    "spoken": "a times b divided by c",
+    "latex": "a \\times b \\div c",
+    "python": "a, b, c = 6, 2, 3\na * b / c  # 4.0",
+    "category": "notation",
+    "related": [
+      "plus-minus",
+      "fraction"
+    ],
+    "level": "foundations",
+    "say": "a times b divided by c",
+    "accept": [
+      "a times be divided by see",
+      "eight times b divided by c"
+    ]
+  },
+  {
+    "id": "equals",
+    "english": "equals and is not equal to",
+    "russian": "равно и не равно",
+    "spoken": "a equals b. a is not equal to b",
+    "latex": "a = b,\\quad a \\neq b",
+    "python": "a == b   # равно\na != b   # не равно",
+    "category": "notation",
+    "related": [
+      "comparison-operators",
+      "inequality"
+    ],
+    "level": "foundations",
+    "say": "a equals b",
+    "accept": [
+      "a equal b",
+      "eight equals b"
+    ]
+  },
+  {
+    "id": "inequality",
+    "english": "less than, greater than or equal to",
+    "russian": "меньше, больше или равно",
+    "spoken": "a is less than b. a is greater than or equal to b",
+    "latex": "a < b,\\quad a \\ge b",
+    "python": "a < b    # меньше\na >= b   # больше или равно",
+    "category": "notation",
+    "related": [
+      "equals",
+      "comparison-operators"
+    ],
+    "level": "foundations",
+    "say": "a is less than b",
+    "accept": [
+      "a less than b",
+      "eight is less than b"
+    ]
+  },
+  {
+    "id": "fraction",
+    "english": "fraction (a over b)",
+    "russian": "дробь",
+    "spoken": "a over b",
+    "latex": "\\frac{a}{b}",
+    "python": "a / b",
+    "category": "notation",
+    "related": [
+      "times-divided",
+      "mean"
+    ],
+    "level": "foundations",
+    "say": "a over b",
+    "accept": [
+      "a over be",
+      "eight over b"
+    ]
+  },
+  {
+    "id": "squared",
+    "english": "x squared",
+    "russian": "x в квадрате",
+    "spoken": "x squared",
+    "latex": "x^2",
+    "python": "x ** 2",
+    "category": "notation",
+    "related": [
+      "power-n",
+      "square-root",
+      "power-operator"
+    ],
+    "level": "foundations",
+    "say": "x squared",
+    "accept": [
+      "ex squared",
+      "x square"
+    ]
+  },
+  {
+    "id": "power-n",
+    "english": "x to the power of n",
+    "russian": "x в степени n",
+    "spoken": "x to the power of n",
+    "latex": "x^n",
+    "python": "x ** n",
+    "category": "notation",
+    "related": [
+      "squared",
+      "exponent-e"
+    ],
+    "level": "foundations",
+    "say": "x to the power of n",
+    "accept": [
+      "x to the n",
+      "ex to the power of n",
+      "x to the power n"
+    ]
+  },
+  {
+    "id": "square-root",
+    "english": "square root",
+    "russian": "квадратный корень",
+    "spoken": "the square root of x",
+    "latex": "\\sqrt{x}",
+    "python": "import math\nmath.sqrt(16)  # 4.0",
+    "category": "notation",
+    "related": [
+      "squared",
+      "standard-deviation"
+    ],
+    "level": "foundations",
+    "say": "the square root of x",
+    "accept": [
+      "square root of x",
+      "square root of ex"
+    ]
+  },
+  {
+    "id": "x-sub-i",
+    "english": "x sub i (subscript)",
+    "russian": "x с индексом i (i-й элемент)",
+    "spoken": "x sub i",
+    "latex": "x_i",
+    "python": "x = [10, 20, 30]\nx[1]  # 20",
+    "category": "notation",
+    "related": [
+      "sum",
+      "x-bar"
+    ],
+    "level": "foundations",
+    "say": "x sub i",
+    "accept": [
+      "ex sub i",
+      "x sub eye",
+      "x sub I",
+      "ex sub eye"
+    ]
+  },
+  {
+    "id": "x-bar",
+    "english": "x bar",
+    "russian": "x с чертой (среднее значение)",
+    "spoken": "x bar",
+    "latex": "\\bar{x}",
+    "python": "import numpy as np\nnp.mean([2, 4, 6])  # 4.0",
+    "category": "notation",
+    "related": [
+      "mean",
+      "x-sub-i",
+      "y-hat"
+    ],
+    "level": "foundations",
+    "say": "x bar",
+    "accept": [
+      "ex bar",
+      "x-bar"
     ]
   },
   {
@@ -37,6 +213,179 @@
     ]
   },
   {
+    "id": "y-hat",
+    "english": "y-hat (prediction)",
+    "russian": "предсказание модели (игрек с крышкой)",
+    "spoken": "y hat equals f of x",
+    "latex": "\\hat{y} = f(x)",
+    "python": "y_hat = model.predict(X)",
+    "category": "ML basics",
+    "related": [
+      "mse",
+      "sigmoid"
+    ],
+    "level": "foundations",
+    "say": "y hat",
+    "accept": [
+      "why hat",
+      "yhat"
+    ]
+  },
+  {
+    "id": "function-of-x",
+    "english": "f of x",
+    "russian": "функция f от x",
+    "spoken": "f of x",
+    "latex": "f(x)",
+    "python": "def f(x):\n    return x ** 2\n\nf(3)  # 9",
+    "category": "notation",
+    "related": [
+      "y-hat",
+      "derivative"
+    ],
+    "level": "foundations",
+    "say": "f of x",
+    "accept": [
+      "f of ex",
+      "ef of x",
+      "if of x"
+    ]
+  },
+  {
+    "id": "absolute-value",
+    "english": "absolute value",
+    "russian": "модуль (абсолютная величина)",
+    "spoken": "the absolute value of x",
+    "latex": "|x|",
+    "python": "abs(-5)  # 5",
+    "category": "notation",
+    "related": [
+      "norm"
+    ],
+    "level": "foundations",
+    "say": "the absolute value of x",
+    "accept": [
+      "absolute value of x",
+      "absolute value of ex"
+    ]
+  },
+  {
+    "id": "approx",
+    "english": "is approximately equal to",
+    "russian": "приблизительно равно",
+    "spoken": "a is approximately equal to b",
+    "latex": "a \\approx b",
+    "python": "import math\nmath.isclose(0.1 + 0.2, 0.3)  # True",
+    "category": "notation",
+    "related": [
+      "equals"
+    ],
+    "level": "foundations",
+    "say": "a is approximately equal to b",
+    "accept": [
+      "a approximately equal to b",
+      "a is approximately equal b"
+    ]
+  },
+  {
+    "id": "exponent-e",
+    "english": "e to the x",
+    "russian": "экспонента (e в степени x)",
+    "spoken": "e to the x",
+    "latex": "e^x",
+    "python": "import numpy as np\nnp.exp(1)  # 2.718...",
+    "category": "notation",
+    "related": [
+      "power-n",
+      "sigmoid"
+    ],
+    "level": "foundations",
+    "say": "e to the x",
+    "accept": [
+      "e to the power of x",
+      "e to the ex",
+      "eat to the x"
+    ]
+  },
+  {
+    "id": "infinity",
+    "english": "n tends to infinity",
+    "russian": "n стремится к бесконечности",
+    "spoken": "n tends to infinity",
+    "latex": "n \\to \\infty",
+    "python": "import math\nmath.inf  # бесконечность",
+    "category": "notation",
+    "related": [
+      "sum",
+      "derivative"
+    ],
+    "level": "foundations",
+    "say": "n tends to infinity",
+    "accept": [
+      "n goes to infinity",
+      "and tends to infinity",
+      "n approaches infinity"
+    ]
+  },
+  {
+    "id": "delta",
+    "english": "delta x (change in x)",
+    "russian": "приращение x (дельта x)",
+    "spoken": "delta x",
+    "latex": "\\Delta x",
+    "python": "x1, x2 = 3, 7\ndelta_x = x2 - x1  # 4",
+    "category": "notation",
+    "related": [
+      "derivative",
+      "greek-letters"
+    ],
+    "level": "foundations",
+    "say": "delta x",
+    "accept": [
+      "delta ex",
+      "delta x"
+    ]
+  },
+  {
+    "id": "greek-letters",
+    "english": "Greek letters: alpha, beta, lambda",
+    "russian": "греческие буквы",
+    "spoken": "alpha beta lambda",
+    "latex": "\\alpha,\\ \\beta,\\ \\lambda",
+    "python": "alpha = 0.01   # скорость обучения\nlam = 0.1      # lambda — слово занято в Python",
+    "category": "notation",
+    "related": [
+      "delta",
+      "lambda",
+      "gradient-descent"
+    ],
+    "level": "foundations",
+    "say": "alpha beta lambda",
+    "accept": [
+      "alpha beta lamda",
+      "alfa beta lambda"
+    ]
+  },
+  {
+    "id": "mean",
+    "english": "mean (x bar)",
+    "russian": "среднее арифметическое",
+    "spoken": "x bar equals one over n times the sum of x sub i, for i from one to n",
+    "latex": "\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n} x_i",
+    "python": "import numpy as np\nx = np.array([2, 4, 6])\nx.mean()  # 4.0",
+    "category": "statistics",
+    "related": [
+      "sum",
+      "variance",
+      "groupby"
+    ],
+    "level": "essentials",
+    "say": "mean",
+    "accept": [
+      "the mean"
+    ]
+  },
+  {
     "id": "variance",
     "english": "variance",
     "russian": "дисперсия",
@@ -48,7 +397,7 @@
       "mean",
       "standard-deviation"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "variance"
   },
   {
@@ -63,7 +412,7 @@
       "variance",
       "mean"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "standard deviation"
   },
   {
@@ -76,7 +425,7 @@
     "related": [
       "power-operator"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "comparison operators"
   },
   {
@@ -92,7 +441,7 @@
       "norm",
       "comparison-operators"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "power operator"
   },
   {
@@ -108,7 +457,7 @@
       "f-string",
       "tuple"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "brackets",
     "accept": [
       "brackets",
@@ -127,7 +476,7 @@
       "brackets",
       "regex"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "f-string",
     "accept": [
       "f string",
@@ -146,7 +495,7 @@
     "related": [
       "brackets"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "tuple",
     "accept": [
       "topple",
@@ -165,7 +514,7 @@
     "related": [
       "dunder"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "snake case",
     "accept": [
       "snake case and camel case"
@@ -183,7 +532,7 @@
       "numpy",
       "pandas"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "import as"
   },
   {
@@ -199,7 +548,7 @@
       "scipy",
       "import-as"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "NumPy",
     "accept": [
       "num pie",
@@ -221,7 +570,7 @@
       "groupby",
       "import-as"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "pandas",
     "accept": [
       "panda's",
@@ -240,7 +589,7 @@
       "pandas",
       "brackets"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "JSON",
     "accept": [
       "jason",
@@ -259,62 +608,11 @@
       "pandas",
       "matplotlib"
     ],
-    "level": "foundations",
+    "level": "essentials",
     "say": "Jupyter Notebook",
     "accept": [
       "jupiter notebook"
     ]
-  },
-  {
-    "id": "dot-product",
-    "english": "dot product",
-    "russian": "скалярное произведение",
-    "spoken": "a dot b equals the sum over i of a sub i times b sub i",
-    "latex": "\\mathbf{a} \\cdot \\mathbf{b} = \\sum_{i} a_i b_i",
-    "python": "a = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\na @ b  # 32  (или np.dot(a, b))",
-    "category": "linear algebra",
-    "related": [
-      "sum",
-      "norm",
-      "matmul-operator"
-    ],
-    "level": "essentials",
-    "say": "dot product"
-  },
-  {
-    "id": "norm",
-    "english": "L2 norm (vector length)",
-    "russian": "евклидова норма (длина вектора)",
-    "spoken": "the L two norm of x equals the square root of the sum of x sub i squared",
-    "latex": "\\lVert \\mathbf{x} \\rVert_2 = \\sqrt{\\sum_{i} x_i^2}",
-    "python": "x = np.array([3, 4])\nnp.linalg.norm(x)  # 5.0",
-    "category": "linear algebra",
-    "related": [
-      "dot-product"
-    ],
-    "level": "essentials",
-    "say": "L2 norm",
-    "accept": [
-      "l two norm",
-      "l to norm",
-      "el two norm",
-      "norm"
-    ]
-  },
-  {
-    "id": "transpose",
-    "english": "transpose",
-    "russian": "транспонирование",
-    "spoken": "A transpose",
-    "latex": "A^{\\top}",
-    "python": "A = np.array([[1, 2, 3],\n              [4, 5, 6]])\nA.T.shape  # (3, 2)",
-    "category": "linear algebra",
-    "related": [
-      "matrix-inverse",
-      "matmul-operator"
-    ],
-    "level": "essentials",
-    "say": "transpose"
   },
   {
     "id": "lambda",
@@ -350,98 +648,6 @@
     ],
     "level": "essentials",
     "say": "list comprehension"
-  },
-  {
-    "id": "args-kwargs",
-    "english": "*args and **kwargs",
-    "russian": "произвольные позиционные и именованные аргументы",
-    "spoken": "star args, and double star kwargs. Kwargs means keyword arguments.",
-    "transcription": "стар аргз, дабл стар кваргз",
-    "python": "def f(*args, **kwargs):\n    print(args, kwargs)\n\nf(1, 2, lr=0.1)  # (1, 2) {'lr': 0.1}",
-    "category": "Python syntax",
-    "related": [
-      "power-operator",
-      "dunder"
-    ],
-    "level": "essentials",
-    "say": "args and kwargs",
-    "accept": [
-      "args and quarks",
-      "args and k w args",
-      "arcs and kwargs",
-      "args and quargs"
-    ]
-  },
-  {
-    "id": "dunder",
-    "english": "dunder (double underscore)",
-    "russian": "«магические» методы с двойным подчёркиванием",
-    "spoken": "dunder init. Dunder means double underscore, so the method with two underscores on each side of init is read as dunder init.",
-    "transcription": "да́ндер ини́т",
-    "python": "class Model:\n    def __init__(self, lr):  # «dunder init»\n        self.lr = lr",
-    "category": "Python syntax",
-    "related": [
-      "snake-case",
-      "args-kwargs"
-    ],
-    "level": "essentials",
-    "say": "dunder",
-    "accept": [
-      "dander",
-      "dunder"
-    ]
-  },
-  {
-    "id": "numpy-array",
-    "english": "NumPy array (ndarray)",
-    "russian": "массив NumPy: вектор или матрица чисел",
-    "spoken": "x is a vector in R n. In Python code: n p dot array",
-    "transcription": "нам-пай э́рэй",
-    "latex": "\\mathbf{x} \\in \\mathbb{R}^{n}",
-    "python": "import numpy as np\nx = np.array([1.0, 2.0, 3.0])\nx.dtype  # dtype('float64') — все элементы одного типа",
-    "category": "Python/pandas",
-    "related": [
-      "array-shape",
-      "broadcasting",
-      "dot-product",
-      "numpy"
-    ],
-    "level": "essentials",
-    "say": "NumPy array"
-  },
-  {
-    "id": "array-shape",
-    "english": "array shape",
-    "russian": "форма массива: размер по каждой оси",
-    "spoken": "X is an m by n matrix. In Python code: X dot shape",
-    "transcription": "э́рэй шейп",
-    "latex": "X \\in \\mathbb{R}^{m \\times n}",
-    "python": "X = np.array([[1, 2, 3], [4, 5, 6]])\nX.shape    # (2, 3): 2 строки, 3 столбца\nX.reshape(3, 2).shape  # (3, 2)",
-    "category": "Python/pandas",
-    "related": [
-      "numpy-array",
-      "transpose",
-      "axis"
-    ],
-    "level": "essentials",
-    "say": "array shape"
-  },
-  {
-    "id": "axis",
-    "english": "axis (axis=0, axis=1)",
-    "russian": "ось: по какому направлению считать агрегат",
-    "spoken": "x bar sub j equals one over m times the sum over i of X sub i j. In Python code: X dot mean, axis equals zero",
-    "transcription": "э́ксис",
-    "latex": "\\bar{x}_j = \\frac{1}{m}\\sum_{i=1}^{m} X_{ij}",
-    "python": "X = np.array([[1, 2], [3, 4]])\nX.mean(axis=0)  # array([2., 3.]) — среднее по столбцам\nX.mean(axis=1)  # array([1.5, 3.5]) — среднее по строкам",
-    "category": "Python/pandas",
-    "related": [
-      "mean",
-      "array-shape",
-      "sum"
-    ],
-    "level": "essentials",
-    "say": "axis"
   },
   {
     "id": "dataframe",
@@ -486,58 +692,6 @@
     ]
   },
   {
-    "id": "boolean-mask",
-    "english": "boolean mask (filtering)",
-    "russian": "булева маска: отбор строк по условию",
-    "spoken": "the set of x sub i such that x sub i is greater than c. In Python code: d f, where d f price is greater than one hundred",
-    "transcription": "бу́лиан маск",
-    "latex": "\\{\\, x_i : x_i > c \\,\\}",
-    "python": "df[df[\"price\"] > 100]   # только строки, где price > 100\n(df[\"price\"] > 100).sum()  # сколько таких строк",
-    "category": "Python/pandas",
-    "related": [
-      "dataframe",
-      "iloc"
-    ],
-    "level": "essentials",
-    "say": "boolean mask"
-  },
-  {
-    "id": "missing-values",
-    "english": "missing values (NaN)",
-    "russian": "пропущенные значения: NaN, «не число»",
-    "spoken": "x sub i is not a number. In Python code: d f dot is n a, dot sum. N a N is read nan, or not a number",
-    "transcription": "ми́ссинг вэ́льюз, нэн",
-    "latex": "x_i = \\text{NaN}",
-    "python": "df.isna().sum()          # число пропусков в каждом столбце\ndf[\"price\"].fillna(df[\"price\"].mean())  # заполнить средним",
-    "category": "Python/pandas",
-    "related": [
-      "dataframe",
-      "mean",
-      "pandas"
-    ],
-    "level": "essentials",
-    "say": "missing values"
-  },
-  {
-    "id": "matplotlib",
-    "english": "Matplotlib",
-    "russian": "библиотека для графиков",
-    "spoken": "mat plot lib. Short for math plotting library.",
-    "transcription": "мэт-плот-либ",
-    "python": "import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [1, 4, 9])\nplt.show()",
-    "category": "libraries",
-    "related": [
-      "seaborn",
-      "import-as"
-    ],
-    "level": "essentials",
-    "say": "Matplotlib",
-    "accept": [
-      "mat plot lib",
-      "matplot lib"
-    ]
-  },
-  {
     "id": "plot",
     "english": "line plot (plt.plot)",
     "russian": "линейный график функции или ряда",
@@ -572,6 +726,201 @@
     "say": "histogram"
   },
   {
+    "id": "dot-product",
+    "english": "dot product",
+    "russian": "скалярное произведение",
+    "spoken": "a dot b equals the sum over i of a sub i times b sub i",
+    "latex": "\\mathbf{a} \\cdot \\mathbf{b} = \\sum_{i} a_i b_i",
+    "python": "a = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\na @ b  # 32  (или np.dot(a, b))",
+    "category": "linear algebra",
+    "related": [
+      "sum",
+      "norm",
+      "matmul-operator"
+    ],
+    "level": "practitioner",
+    "say": "dot product"
+  },
+  {
+    "id": "norm",
+    "english": "L2 norm (vector length)",
+    "russian": "евклидова норма (длина вектора)",
+    "spoken": "the L two norm of x equals the square root of the sum of x sub i squared",
+    "latex": "\\lVert \\mathbf{x} \\rVert_2 = \\sqrt{\\sum_{i} x_i^2}",
+    "python": "x = np.array([3, 4])\nnp.linalg.norm(x)  # 5.0",
+    "category": "linear algebra",
+    "related": [
+      "dot-product"
+    ],
+    "level": "practitioner",
+    "say": "L2 norm",
+    "accept": [
+      "l two norm",
+      "l to norm",
+      "el two norm",
+      "norm"
+    ]
+  },
+  {
+    "id": "transpose",
+    "english": "transpose",
+    "russian": "транспонирование",
+    "spoken": "A transpose",
+    "latex": "A^{\\top}",
+    "python": "A = np.array([[1, 2, 3],\n              [4, 5, 6]])\nA.T.shape  # (3, 2)",
+    "category": "linear algebra",
+    "related": [
+      "matrix-inverse",
+      "matmul-operator"
+    ],
+    "level": "practitioner",
+    "say": "transpose"
+  },
+  {
+    "id": "args-kwargs",
+    "english": "*args and **kwargs",
+    "russian": "произвольные позиционные и именованные аргументы",
+    "spoken": "star args, and double star kwargs. Kwargs means keyword arguments.",
+    "transcription": "стар аргз, дабл стар кваргз",
+    "python": "def f(*args, **kwargs):\n    print(args, kwargs)\n\nf(1, 2, lr=0.1)  # (1, 2) {'lr': 0.1}",
+    "category": "Python syntax",
+    "related": [
+      "power-operator",
+      "dunder"
+    ],
+    "level": "practitioner",
+    "say": "args and kwargs",
+    "accept": [
+      "args and quarks",
+      "args and k w args",
+      "arcs and kwargs",
+      "args and quargs"
+    ]
+  },
+  {
+    "id": "dunder",
+    "english": "dunder (double underscore)",
+    "russian": "«магические» методы с двойным подчёркиванием",
+    "spoken": "dunder init. Dunder means double underscore, so the method with two underscores on each side of init is read as dunder init.",
+    "transcription": "да́ндер ини́т",
+    "python": "class Model:\n    def __init__(self, lr):  # «dunder init»\n        self.lr = lr",
+    "category": "Python syntax",
+    "related": [
+      "snake-case",
+      "args-kwargs"
+    ],
+    "level": "practitioner",
+    "say": "dunder",
+    "accept": [
+      "dander",
+      "dunder"
+    ]
+  },
+  {
+    "id": "numpy-array",
+    "english": "NumPy array (ndarray)",
+    "russian": "массив NumPy: вектор или матрица чисел",
+    "spoken": "x is a vector in R n. In Python code: n p dot array",
+    "transcription": "нам-пай э́рэй",
+    "latex": "\\mathbf{x} \\in \\mathbb{R}^{n}",
+    "python": "import numpy as np\nx = np.array([1.0, 2.0, 3.0])\nx.dtype  # dtype('float64') — все элементы одного типа",
+    "category": "Python/pandas",
+    "related": [
+      "array-shape",
+      "broadcasting",
+      "dot-product",
+      "numpy"
+    ],
+    "level": "practitioner",
+    "say": "NumPy array"
+  },
+  {
+    "id": "array-shape",
+    "english": "array shape",
+    "russian": "форма массива: размер по каждой оси",
+    "spoken": "X is an m by n matrix. In Python code: X dot shape",
+    "transcription": "э́рэй шейп",
+    "latex": "X \\in \\mathbb{R}^{m \\times n}",
+    "python": "X = np.array([[1, 2, 3], [4, 5, 6]])\nX.shape    # (2, 3): 2 строки, 3 столбца\nX.reshape(3, 2).shape  # (3, 2)",
+    "category": "Python/pandas",
+    "related": [
+      "numpy-array",
+      "transpose",
+      "axis"
+    ],
+    "level": "practitioner",
+    "say": "array shape"
+  },
+  {
+    "id": "axis",
+    "english": "axis (axis=0, axis=1)",
+    "russian": "ось: по какому направлению считать агрегат",
+    "spoken": "x bar sub j equals one over m times the sum over i of X sub i j. In Python code: X dot mean, axis equals zero",
+    "transcription": "э́ксис",
+    "latex": "\\bar{x}_j = \\frac{1}{m}\\sum_{i=1}^{m} X_{ij}",
+    "python": "X = np.array([[1, 2], [3, 4]])\nX.mean(axis=0)  # array([2., 3.]) — среднее по столбцам\nX.mean(axis=1)  # array([1.5, 3.5]) — среднее по строкам",
+    "category": "Python/pandas",
+    "related": [
+      "mean",
+      "array-shape",
+      "sum"
+    ],
+    "level": "practitioner",
+    "say": "axis"
+  },
+  {
+    "id": "boolean-mask",
+    "english": "boolean mask (filtering)",
+    "russian": "булева маска: отбор строк по условию",
+    "spoken": "the set of x sub i such that x sub i is greater than c. In Python code: d f, where d f price is greater than one hundred",
+    "transcription": "бу́лиан маск",
+    "latex": "\\{\\, x_i : x_i > c \\,\\}",
+    "python": "df[df[\"price\"] > 100]   # только строки, где price > 100\n(df[\"price\"] > 100).sum()  # сколько таких строк",
+    "category": "Python/pandas",
+    "related": [
+      "dataframe",
+      "iloc"
+    ],
+    "level": "practitioner",
+    "say": "boolean mask"
+  },
+  {
+    "id": "missing-values",
+    "english": "missing values (NaN)",
+    "russian": "пропущенные значения: NaN, «не число»",
+    "spoken": "x sub i is not a number. In Python code: d f dot is n a, dot sum. N a N is read nan, or not a number",
+    "transcription": "ми́ссинг вэ́льюз, нэн",
+    "latex": "x_i = \\text{NaN}",
+    "python": "df.isna().sum()          # число пропусков в каждом столбце\ndf[\"price\"].fillna(df[\"price\"].mean())  # заполнить средним",
+    "category": "Python/pandas",
+    "related": [
+      "dataframe",
+      "mean",
+      "pandas"
+    ],
+    "level": "practitioner",
+    "say": "missing values"
+  },
+  {
+    "id": "matplotlib",
+    "english": "Matplotlib",
+    "russian": "библиотека для графиков",
+    "spoken": "mat plot lib. Short for math plotting library.",
+    "transcription": "мэт-плот-либ",
+    "python": "import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [1, 4, 9])\nplt.show()",
+    "category": "libraries",
+    "related": [
+      "seaborn",
+      "import-as"
+    ],
+    "level": "practitioner",
+    "say": "Matplotlib",
+    "accept": [
+      "mat plot lib",
+      "matplot lib"
+    ]
+  },
+  {
     "id": "seaborn",
     "english": "seaborn",
     "russian": "библиотека статистических графиков",
@@ -583,7 +932,7 @@
       "matplotlib",
       "pandas"
     ],
-    "level": "essentials",
+    "level": "practitioner",
     "say": "seaborn",
     "accept": [
       "sea born",
@@ -748,7 +1097,7 @@
       "mse",
       "pytorch"
     ],
-    "level": "practitioner",
+    "level": "expert",
     "say": "scikit-learn",
     "accept": [
       "sci kit learn",
@@ -771,7 +1120,7 @@
       "accuracy-score",
       "scikit-learn"
     ],
-    "level": "practitioner",
+    "level": "expert",
     "say": "train test split"
   },
   {
@@ -788,7 +1137,7 @@
       "train-test-split",
       "linear-regression"
     ],
-    "level": "practitioner",
+    "level": "expert",
     "say": "fit and predict"
   },
   {
@@ -805,7 +1154,7 @@
       "mse",
       "matmul-operator"
     ],
-    "level": "practitioner",
+    "level": "expert",
     "say": "linear regression"
   },
   {
@@ -823,7 +1172,7 @@
       "broadcasting",
       "scikit-learn"
     ],
-    "level": "practitioner",
+    "level": "expert",
     "say": "standard scaler"
   },
   {
@@ -839,27 +1188,8 @@
       "fit-predict",
       "y-hat"
     ],
-    "level": "practitioner",
+    "level": "expert",
     "say": "accuracy"
-  },
-  {
-    "id": "y-hat",
-    "english": "y-hat (prediction)",
-    "russian": "предсказание модели (игрек с крышкой)",
-    "spoken": "y hat equals f of x",
-    "latex": "\\hat{y} = f(x)",
-    "python": "y_hat = model.predict(X)",
-    "category": "ML basics",
-    "related": [
-      "mse",
-      "sigmoid"
-    ],
-    "level": "practitioner",
-    "say": "y hat",
-    "accept": [
-      "why hat",
-      "yhat"
-    ]
   },
   {
     "id": "mse",
@@ -874,7 +1204,7 @@
       "variance",
       "argmin"
     ],
-    "level": "practitioner",
+    "level": "expert",
     "say": "mean squared error",
     "accept": [
       "m s e",

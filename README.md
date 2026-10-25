@@ -15,7 +15,7 @@
 - Формулы: [KaTeX](https://katex.org/), рендер на сервере
 - Поиск: [Fuse.js](https://www.fusejs.io/), нечёткий, поэтому прощает опечатки (`derivitive` → derivative)
 - Озвучка: браузерный `speechSynthesis` с языком `en-US`, без API-ключей
-- Проверка произношения: браузерный `SpeechRecognition` (Chrome на Android, Safari на iOS 14.5+), без ключей. Распознаватель отдаёт до 10 вариантов, засчитывается лучший; сравнение нечёткое (расстояние Левенштейна) плюс список допустимых вариантов `accept`
+- Проверка произношения: браузерный `SpeechRecognition` (Chrome на Android, Safari на iOS 14.5+), без ключей. Распознаватель отдаёт до 10 вариантов, засчитывается лучший; сравнение нечёткое: по буквам (расстояние Левенштейна) и по звучанию (упрощённый Metaphone, поэтому «snake keys» = «snake case»), плюс список допустимых вариантов `accept`
 
 Все страницы генерируются статически при сборке (`generateStaticParams`).
 
@@ -81,7 +81,7 @@ lib/progress.ts       прогресс в localStorage
    | `transcription` | *необязательно.* Русская транскрипция: `"нам-пай"` |
    | `latex`    | *необязательно* (у библиотек формулы нет). Формула в LaTeX. **В JSON каждый `\` удваивается**: `\frac` → `"\\frac"` |
    | `python`   | короткий пример; перенос строки — `\n` |
-   | `category` | одна из: `statistics`, `linear algebra`, `calculus`, `ML basics`, `Python/pandas`, `Python syntax`, `libraries` |
+   | `category` | одна из: `notation`, `statistics`, `linear algebra`, `calculus`, `ML basics`, `Python/pandas`, `Python syntax`, `libraries` |
    | `level`    | ступень обучения: `foundations`, `essentials`, `practitioner`, `expert`. Порядок в тренировке — как в файле |
    | `say`      | что пользователь произносит в тренировке: короткое название без скобок (`"L2 norm"`, а не `"L2 norm (vector length)"`) |
    | `accept`   | *необязательно.* Как распознаватель может записать правильное произношение: `["num pie", "numb pie"]` для NumPy |

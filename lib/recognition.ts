@@ -132,18 +132,69 @@ function similarity(a: string, b: string): number {
   return 1 - levenshtein(a, b) / Math.max(a.length, b.length);
 }
 
-// Сходство короткого термина: сравниваем без пробелов («group by» = «groupby»), а если
-// человек сказал лишнее («the variance»), ищем термин внутри фразы.
-function wordScore(heard: string, target: string): number {
+// Упрощённый фонетический ключ (в духе Metaphone): одинаково звучащие слова получают
+// одинаковый ключ. «case» и «keys» → «KS», «x» и «ex» → «KS», «sum» и «some» → «SM».
+// Гласные отбрасываем, звонкие согласные приравниваем к глухим (акцент их часто путает).
+const SOUND_RULES: [RegExp, string][] = [
+  [/^kn/, "n"],
+  [/^wr/, "r"],
+  [/^x(?=[aeiouy])/, "s"],
+  [/ph/g, "f"],
+  [/ck/g, "k"],
+  [/sch/g, "sk"],
+  [/tch/g, "ch"],
+  [/(sh|ch)/g, "X"],
+  [/th/g, "0"],
+  [/gh/g, ""],
+  [/wh/g, "w"],
+  [/c(?=[eiy])/g, "s"],
+  [/[cq]/g, "k"],
+  [/x/g, "ks"],
+  [/z/g, "s"],
+  [/b/g, "p"],
+  [/d/g, "t"],
+  [/g/g, "k"],
+  [/v/g, "f"],
+  [/j/g, "X"],
+  [/[aeiouyhw]/g, ""],
+];
+
+function soundKey(text: string): string {
+  return text
+    .split(" ")
+    .map((word) => SOUND_RULES.reduce((w, [re, to]) => w.replace(re, to), word))
+    .join("")
+    .replace(/(.)\1+/g, "$1")
+    .toUpperCase();
+}
+
+// Сходство по звучанию. Ключи короткие, поэтому дополнительно требуем хоть какого-то
+// сходства по буквам — иначе «banana» и «bonanza» стали бы одним словом.
+function soundScore(heard: string, target: string): number {
+  const h = soundKey(heard);
+  const t = soundKey(target);
+  if (!h || !t) return 0;
+  if (similarity(heard.replace(/ /g, ""), target.replace(/ /g, "")) < 0.4) return 0;
+  return similarity(h, t);
+}
+
+// Сходство одного фрагмента: лучшее из «по буквам» и «по звучанию».
+function fragmentScore(heard: string, target: string): number {
   const h = heard.replace(/ /g, "");
   const t = target.replace(/ /g, "");
   if (!h || !t) return 0;
   if (h === t) return 1;
-  let best = similarity(h, t);
+  return Math.max(similarity(h, t), soundScore(heard, target));
+}
+
+// Сходство короткого термина: сравниваем без пробелов («group by» = «groupby»), а если
+// человек сказал лишнее («the variance»), ищем термин внутри фразы.
+function wordScore(heard: string, target: string): number {
+  let best = fragmentScore(heard, target);
   const words = heard.split(" ");
   const n = target.split(" ").length;
   for (let i = 0; i + n <= words.length; i++) {
-    best = Math.max(best, similarity(words.slice(i, i + n).join(""), t));
+    best = Math.max(best, fragmentScore(words.slice(i, i + n).join(" "), target));
   }
   return best;
 }
@@ -157,7 +208,7 @@ function phraseScore(heard: string, target: string): number {
   for (let i = 1; i <= a.length; i++) {
     for (let j = 1; j <= b.length; j++) {
       dp[i][j] =
-        similarity(a[i - 1], b[j - 1]) >= 0.75
+        fragmentScore(a[i - 1], b[j - 1]) >= 0.75
           ? dp[i - 1][j - 1] + 1
           : Math.max(dp[i - 1][j], dp[i][j - 1]);
     }

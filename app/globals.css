@@ -585,6 +585,9 @@ input:focus-visible {
   overflow-x: auto;
   overflow-y: hidden;
 }
+.flashcard-formula-big .formula-display {
+  font-size: 2.4rem;
+}
 .flashcard-spoken {
   color: var(--muted);
   font-size: 0.95rem;

@@ -2,6 +2,7 @@ import data from "@/data/terms.json";
 import type { LevelId } from "@/lib/levels";
 
 export const CATEGORIES = [
+  "notation",
   "statistics",
   "linear algebra",
   "calculus",
@@ -14,6 +15,7 @@ export const CATEGORIES = [
 export type Category = (typeof CATEGORIES)[number];
 
 export const CATEGORY_LABELS: Record<Category, string> = {
+  notation: "Обозначения",
   statistics: "Статистика",
   "linear algebra": "Линейная алгебра",
   calculus: "Матанализ",

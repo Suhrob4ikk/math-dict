@@ -15,26 +15,26 @@ export const LEVELS: Level[] = [
   {
     id: "foundations",
     name: "Foundations",
-    subtitle: "Основы",
-    topics: "Среднее, сумма, дисперсия, базовый синтаксис Python, NumPy и pandas",
+    subtitle: "Основы: математические обозначения",
+    topics: "Как читать формулы: x bar, x sub i, дроби, степени, корни, f of x",
   },
   {
     id: "essentials",
     name: "Essentials",
     subtitle: "Главное для анализа данных",
-    topics: "Векторы, lambda, DataFrame, индексация, графики",
+    topics: "Среднее и дисперсия, синтаксис Python, NumPy, pandas, графики",
   },
   {
     id: "practitioner",
     name: "Practitioner",
     subtitle: "Практика",
-    topics: "Производная, матрицы, scikit-learn, регрессия, метрики",
+    topics: "Векторы и матрицы, производная, массивы, SQL, регулярные выражения",
   },
   {
     id: "expert",
     name: "Expert",
-    subtitle: "Продвинутый ML",
-    topics: "Градиентный спуск, функции активации, PyTorch, обратное распространение",
+    subtitle: "Машинное обучение",
+    topics: "scikit-learn, метрики, градиентный спуск, нейросети на PyTorch",
   },
 ];
 
