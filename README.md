@@ -15,6 +15,7 @@
 - Формулы: [KaTeX](https://katex.org/), рендер на сервере
 - Поиск: [Fuse.js](https://www.fusejs.io/), нечёткий, поэтому прощает опечатки (`derivitive` → derivative)
 - Озвучка: браузерный `speechSynthesis` с языком `en-US`, без API-ключей
+- Проверка произношения: браузерный `SpeechRecognition` (Chrome на Android, Safari на iOS 14.5+), без ключей. Распознаватель отдаёт до 10 вариантов, засчитывается лучший; сравнение нечёткое (расстояние Левенштейна) плюс список допустимых вариантов `accept`
 
 Все страницы генерируются статически при сборке (`generateStaticParams`).
 
@@ -41,8 +42,13 @@ components/
   Formula.tsx         рендер LaTeX через KaTeX
   SpeakButton.tsx     кнопка озвучки (speechSynthesis)
   TermList.tsx        поиск (Fuse.js) и фильтр по категориям
+  Practice.tsx        тренировка по ступени: карточки, озвучка, проверка произношения
+  SpeechCheck.tsx     запись с микрофона и вывод оценки
 data/terms.json       все термины
 lib/terms.ts          типы, категории, доступ к данным
+lib/levels.ts         ступени: Foundations → Essentials → Practitioner → Expert
+lib/recognition.ts    распознавание речи (Web Speech API) и нечёткая проверка произношения
+lib/progress.ts       прогресс в localStorage
 ```
 
 ## Как добавить новый термин
@@ -58,6 +64,8 @@ lib/terms.ts          типы, категории, доступ к данным
      "latex": "\\operatorname{median}(x)",
      "python": "import numpy as np\nnp.median([1, 3, 7])  # 3.0",
      "category": "statistics",
+     "level": "foundations",
+     "say": "median",
      "related": ["mean"]
    }
    ```
@@ -74,6 +82,9 @@ lib/terms.ts          типы, категории, доступ к данным
    | `latex`    | *необязательно* (у библиотек формулы нет). Формула в LaTeX. **В JSON каждый `\` удваивается**: `\frac` → `"\\frac"` |
    | `python`   | короткий пример; перенос строки — `\n` |
    | `category` | одна из: `statistics`, `linear algebra`, `calculus`, `ML basics`, `Python/pandas`, `Python syntax`, `libraries` |
+   | `level`    | ступень обучения: `foundations`, `essentials`, `practitioner`, `expert`. Порядок в тренировке — как в файле |
+   | `say`      | что пользователь произносит в тренировке: короткое название без скобок (`"L2 norm"`, а не `"L2 norm (vector length)"`) |
+   | `accept`   | *необязательно.* Как распознаватель может записать правильное произношение: `["num pie", "numb pie"]` для NumPy |
    | `related`  | массив `id` других терминов (они должны существовать) |
 
 3. Проверьте: `npm run build`. Новая страница появится по адресу `/term/<id>`.

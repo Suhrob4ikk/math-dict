@@ -1,0 +1,208 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import Icon from "@/components/Icon";
+import { SpeechFeedback, useSpeechCheck, type CheckMode } from "@/components/SpeechCheck";
+import type { Level } from "@/lib/levels";
+import { useMastered } from "@/lib/progress";
+import { speak, speechSupported } from "@/lib/speech";
+import type { Term } from "@/lib/terms";
+
+interface Props {
+  level: Level;
+  nextLevel?: Level;
+  terms: Term[];
+  // Формулы отрендерены на сервере и переданы готовыми узлами по id термина.
+  formulas: Record<string, ReactNode>;
+}
+
+const SWIPE = 60;
+
+export default function Practice({ level, nextLevel, terms, formulas }: Props) {
+  const [index, setIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [mode, setMode] = useState<CheckMode>("word");
+  const { mastered, markMastered } = useMastered();
+  const { state, start, reset } = useSpeechCheck();
+  const touchX = useRef<number | null>(null);
+
+  const done = index >= terms.length;
+  const term = terms[Math.min(index, terms.length - 1)];
+  const target = mode === "word" ? term.say : term.spoken;
+  const masteredHere = terms.filter((t) => mastered.includes(t.id)).length;
+
+  useEffect(() => {
+    reset();
+    setFlipped(false);
+    setMode("word");
+    if (speechSupported()) window.speechSynthesis.cancel();
+  }, [index, reset]);
+
+  function go(delta: number) {
+    setIndex((i) => Math.max(0, Math.min(terms.length, i + delta)));
+  }
+
+  function onMic() {
+    const targets = mode === "word" ? [term.say, term.english, ...(term.accept ?? [])] : [term.spoken];
+    start(targets, mode, () => markMastered(term.id));
+  }
+
+  if (done) {
+    return (
+      <div className="practice practice-done">
+        <div className="done-icon">
+          <Icon name="check" size={40} />
+        </div>
+        <h1>{level.name} пройдена</h1>
+        <p className="muted">
+          Произнесено верно: {masteredHere} из {terms.length}
+        </p>
+        <div className="done-actions">
+          <button type="button" className="btn btn-secondary" onClick={() => setIndex(0)}>
+            Ещё раз
+          </button>
+          {nextLevel ? (
+            <Link href={`/level/${nextLevel.id}/practice`} className="btn btn-primary">
+              {nextLevel.name}
+              <Icon name="chevron-right" size={20} />
+            </Link>
+          ) : (
+            <Link href="/" className="btn btn-primary">
+              Все ступени
+            </Link>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="practice">
+      <div className="practice-top">
+        <Link href={`/level/${level.id}`} className="icon-button" aria-label="Назад к ступени">
+          <Icon name="arrow-left" />
+        </Link>
+        <div className="practice-title">
+          <span>{level.name}</span>
+          <span className="muted">
+            {index + 1} / {terms.length}
+          </span>
+        </div>
+      </div>
+      <div className="progress" aria-hidden="true">
+        <div className="progress-fill" style={{ width: `${((index + 1) / terms.length) * 100}%` }} />
+      </div>
+
+      <div
+        className="practice-stage"
+        onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+        onTouchEnd={(e) => {
+          if (touchX.current === null) return;
+          const dx = e.changedTouches[0].clientX - touchX.current;
+          touchX.current = null;
+          if (dx < -SWIPE) go(1);
+          else if (dx > SWIPE) go(-1);
+        }}
+      >
+        <button
+          type="button"
+          className={flipped ? "flashcard flipped" : "flashcard"}
+          onClick={() => setFlipped((f) => !f)}
+          aria-label={flipped ? "Скрыть перевод" : "Показать перевод"}
+        >
+          {mastered.includes(term.id) && (
+            <span className="flashcard-mastered" title="Уже произнесено верно">
+              <Icon name="check" size={16} />
+            </span>
+          )}
+          <span className="flashcard-term" lang="en">
+            {term.say}
+          </span>
+          {term.transcription && <span className="flashcard-transcription">[{term.transcription}]</span>}
+          {flipped ? (
+            <span className="flashcard-back">
+              <span className="flashcard-ru">{term.russian}</span>
+              {formulas[term.id] && <span className="flashcard-formula">{formulas[term.id]}</span>}
+              <span className="flashcard-spoken" lang="en">
+                «{term.spoken}»
+              </span>
+            </span>
+          ) : (
+            <span className="flashcard-hint">
+              <Icon name="flip" size={16} /> Нажмите, чтобы увидеть перевод
+            </span>
+          )}
+        </button>
+
+        {term.spoken !== term.say && (
+          <div className="segmented" role="group" aria-label="Что произносить">
+            <button
+              type="button"
+              className={mode === "word" ? "active" : ""}
+              onClick={() => {
+                reset();
+                setMode("word");
+              }}
+            >
+              Термин
+            </button>
+            <button
+              type="button"
+              className={mode === "phrase" ? "active" : ""}
+              onClick={() => {
+                reset();
+                setMode("phrase");
+                setFlipped(true);
+              }}
+            >
+              {term.latex ? "Формулу целиком" : "Фразу целиком"}
+            </button>
+          </div>
+        )}
+
+        <SpeechFeedback state={state} />
+      </div>
+
+      <nav className="action-bar" aria-label="Управление тренировкой">
+        <button
+          type="button"
+          className="icon-button"
+          onClick={() => go(-1)}
+          disabled={index === 0}
+          aria-label="Предыдущий термин"
+        >
+          <Icon name="chevron-left" size={26} />
+        </button>
+        <button
+          type="button"
+          className="round-button"
+          onClick={() => speak(target)}
+          aria-label="Послушать произношение"
+        >
+          <Icon name="volume" size={26} />
+        </button>
+        <button
+          type="button"
+          className={state.listening ? "mic-button listening" : "mic-button"}
+          onClick={onMic}
+          disabled={!state.supported}
+          aria-label={state.listening ? "Остановить запись" : "Произнести самому"}
+        >
+          <Icon name={state.listening ? "stop" : "mic"} size={32} />
+        </button>
+        <button
+          type="button"
+          className="round-button"
+          onClick={() => go(1)}
+          aria-label={index === terms.length - 1 ? "Завершить" : "Следующий термин"}
+        >
+          <Icon name={index === terms.length - 1 ? "check" : "chevron-right"} size={26} />
+        </button>
+        <Link href={`/term/${term.id}`} className="icon-button" aria-label="Подробнее о термине">
+          <Icon name="book" size={24} />
+        </Link>
+      </nav>
+    </div>
+  );
+}

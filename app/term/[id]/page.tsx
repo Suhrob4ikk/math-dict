@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Formula from "@/components/Formula";
+import Icon from "@/components/Icon";
+import SayIt from "@/components/SayIt";
 import SpeakButton from "@/components/SpeakButton";
+import { getLevel } from "@/lib/levels";
 import { CATEGORY_LABELS, getTerm, terms } from "@/lib/terms";
 
 interface Props {
@@ -33,14 +36,21 @@ export default async function TermPage({ params }: Props) {
     .map((id) => getTerm(id))
     .filter((t) => t !== undefined);
 
+  const level = getLevel(term.level)!;
+
   return (
     <article className="term-page">
-      <Link href="/" className="back">
-        ← Ко всем терминам
+      <Link href={`/level/${level.id}`} className="back">
+        <Icon name="arrow-left" size={18} /> {level.name}
       </Link>
 
       <header className="term-header">
-        <span className="badge">{CATEGORY_LABELS[term.category]}</span>
+        <span className="badges">
+          <span className="badge" lang="en">
+            {level.name}
+          </span>
+          <span className="badge badge-muted">{CATEGORY_LABELS[term.category]}</span>
+        </span>
         <h1 lang="en">{term.english}</h1>
         <p className="term-ru-big">{term.russian}</p>
       </header>
@@ -63,6 +73,14 @@ export default async function TermPage({ params }: Props) {
           </p>
         )}
         <SpeakButton text={term.spoken} />
+      </section>
+
+      <section className="panel">
+        <h2>Произнесите сами</h2>
+        <p className="say-target" lang="en">
+          {term.say}
+        </p>
+        <SayIt term={term} />
       </section>
 
       <section className="panel">
@@ -93,11 +111,17 @@ export default async function TermPage({ params }: Props) {
       {related.length > 0 && (
         <section className="panel">
           <h2>Связанные термины</h2>
-          <ul className="related">
+          <ul className="term-rows">
             {related.map((r) => (
               <li key={r.id}>
-                <Link href={`/term/${r.id}`}>
-                  {r.english} <span className="muted">· {r.russian}</span>
+                <Link href={`/term/${r.id}`} className="term-row">
+                  <span className="term-row-body">
+                    <span className="term-en" lang="en">
+                      {r.english}
+                    </span>
+                    <span className="term-ru">{r.russian}</span>
+                  </span>
+                  <Icon name="chevron-right" size={18} className="level-chevron" />
                 </Link>
               </li>
             ))}
