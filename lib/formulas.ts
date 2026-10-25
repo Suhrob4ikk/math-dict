@@ -21,6 +21,8 @@ export interface NamedFormula {
   // Вся формула целиком (для картинки) и она же по частям (для чтения).
   tex: string;
   parts: LongPart[];
+  // Формула с частями внутри дроби или корня: части отмечены \htmlClass{lp-N}{…} (см. LongFormula).
+  layout?: string;
   // Коротко, что означают буквы.
   meaning: string;
 }
@@ -45,8 +47,10 @@ export const FORMULAS: NamedFormula[] = [
     parts: [
       p("x = -b \\pm", "x equals minus b plus or minus", "x equals negative b plus or minus"),
       p("\\sqrt{b^2 - 4ac}", "the square root of b squared minus four a c", "root of b squared minus four a c"),
-      p("\\frac{\\square}{2a}", "all over two a", "over two a", "divided by two a", "all divided by two a"),
+      p("/ 2a", "all over two a", "over two a", "divided by two a", "all divided by two a"),
     ],
+    layout:
+      "\\htmlClass{lp-0}{x =} \\frac{\\htmlClass{lp-0}{-b \\pm} \\htmlClass{lp-1}{\\sqrt{b^2 - 4ac}}}{\\htmlClass{lp-2}{2a}}",
     meaning: "Корни уравнения ax² + bx + c = 0.",
   },
   {
@@ -230,10 +234,11 @@ export const FORMULAS: NamedFormula[] = [
     russian: "Расстояние между точками",
     tex: "d = \\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}",
     parts: [
-      p("d = \\sqrt{\\;\\;}", "d equals the square root of", "d equals root of"),
+      p("d = \\sqrt{}", "d equals the square root of", "d equals root of"),
       p("(x_2 - x_1)^2", "x two minus x one, squared", "x two minus x one squared", "x sub two minus x sub one squared"),
       p("+ (y_2 - y_1)^2", "plus y two minus y one, squared", "plus y two minus y one squared", "plus y sub two minus y sub one squared"),
     ],
+    layout: "\\htmlClass{lp-0}{d = \\sqrt{\\htmlClass{lp-1}{(x_2 - x_1)^2} \\htmlClass{lp-2}{+ (y_2 - y_1)^2}}}",
     meaning: "Расстояние между точками (x₁, y₁) и (x₂, y₂) на плоскости.",
   },
 
@@ -322,7 +327,7 @@ export function formulasOf(topic: string): NamedFormula[] {
 
 // Для чтения по частям — тот же формат, что у длинных формул на ступенях.
 export function asLong(f: NamedFormula): LongFormula {
-  return { id: f.id, parts: f.parts };
+  return { id: f.id, parts: f.parts, layout: f.layout };
 }
 
 // Название без артикля: «Pythagorean theorem» — так его и читают в ответе.

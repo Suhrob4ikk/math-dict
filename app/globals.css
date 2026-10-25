@@ -1590,14 +1590,33 @@ body:has(.practice) {
   flex-direction: column;
   gap: 12px;
 }
-.long-full {
+/* Формула целиком, части подсвечены внутри неё. Цвет задаём у каждой части явно,
+   чтобы вложенная часть (содержимое корня) не брала цвет внешней. */
+.long-layout {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   font-size: 1.15rem;
 }
-.long-full .katex-display {
-  margin: 0;
+.long-layout .katex-display {
+  margin: 4px 0;
+}
+.long-layout .lp {
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.long-layout .lp-todo {
+  color: #9aa1ad;
+}
+.long-layout .lp-ok {
+  color: var(--success);
+}
+.long-layout .lp-miss {
+  color: var(--danger);
+}
+.long-layout .lp-current {
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 /* Игра */

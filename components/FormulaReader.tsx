@@ -17,7 +17,6 @@ export default function FormulaReader({ formula }: { formula: NamedFormula }) {
       <LongReader
         key={round}
         formula={long}
-        full={formula.tex}
         onDone={(allCorrect) => {
           setDone(allCorrect);
           if (allCorrect) {

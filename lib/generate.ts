@@ -557,6 +557,8 @@ export interface LongFormula {
   id: string;
   code?: boolean;
   parts: LongPart[];
+  // Вся формула с частями, отмеченными \htmlClass{lp-N}{…}, — если части нельзя нарисовать по отдельности.
+  layout?: string;
 }
 
 const p = (text: string, ...readings: string[]): LongPart => ({ text, readings });

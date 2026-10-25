@@ -311,7 +311,6 @@ export default function FormulaGame({ topic, formulas, rounds }: Props) {
           <>
             <LongReader
               formula={long}
-              full={formula.tex}
               maxAttempts={2}
               hints={false}
               onDone={(allCorrect, ok) => {
