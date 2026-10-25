@@ -5,8 +5,7 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 
-export const EXAM_PASS = 8;
-export const EXAM_SIZE = 10;
+export { EXAM_PASS, EXAM_SIZE } from "@/lib/levels";
 
 export interface Progress {
   mastered: string[];
@@ -16,12 +15,47 @@ export interface Progress {
   exams: Record<string, number>;
   onboarded: boolean;
   resume?: { level: string; index: number };
+  // Верных ответов по дням («2026-10-25» → 7) — для цели на день и серии дней.
+  days: Record<string, number>;
+  // Интервальное повторение: ступень интервала и дата, когда слово снова пора повторить.
+  srs: Record<string, { step: number; due: string }>;
+}
+
+export const DAILY_GOAL = 10;
+// Через сколько дней повторять слово после 1-го, 2-го, … верного ответа.
+const INTERVALS = [1, 3, 7, 14, 30];
+
+export function today(offsetDays = 0): string {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+// Сколько дней подряд был хотя бы один верный ответ (сегодня можно ещё не заниматься).
+export function streak(days: Record<string, number>): number {
+  let n = 0;
+  let offset = days[today()] ? 0 : -1;
+  while (days[today(offset)]) {
+    n++;
+    offset--;
+  }
+  return n;
+}
+
+// Слова на сегодня: ошибки и те, у которых подошёл срок повторения.
+export function dueToday(p: Progress): string[] {
+  const now = today();
+  const due = Object.entries(p.srs)
+    .filter(([, s]) => s.due <= now)
+    .map(([id]) => id);
+  return [...new Set([...p.review, ...due])];
 }
 
 const KEY = "math-dict:progress:v2";
 const OLD_KEY = "math-dict:mastered";
 const EVENT = "math-dict:progress";
-const EMPTY: Progress = { mastered: [], review: [], exams: {}, onboarded: false };
+const EMPTY: Progress = { mastered: [], review: [], exams: {}, onboarded: false, days: {}, srs: {} };
 
 let cache: Progress | null = null;
 
@@ -36,6 +70,8 @@ function parse(raw: string | null): Progress {
     exams: d.exams && typeof d.exams === "object" ? d.exams : {},
     onboarded: d.onboarded === true,
     resume: d.resume,
+    days: d.days && typeof d.days === "object" ? d.days : {},
+    srs: d.srs && typeof d.srs === "object" ? d.srs : {},
   };
 }
 
@@ -92,18 +128,42 @@ export function useProgress() {
 
   const update = useCallback((fn: (p: Progress) => Progress) => write(fn(read())), []);
 
-  const markMastered = useCallback(
-    (id: string) =>
-      update((p) => ({
-        ...p,
-        mastered: p.mastered.includes(id) ? p.mastered : [...p.mastered, id],
-        review: without(p.review, id),
-      })),
+  // Любой верный ответ (в том числе на экзамене) идёт в цель дня.
+  const countCorrect = useCallback(
+    () => update((p) => ({ ...p, days: { ...p.days, [today()]: (p.days[today()] ?? 0) + 1 } })),
     [update],
   );
 
+  const markMastered = useCallback(
+    (id: string) =>
+      update((p) => {
+        const s = p.srs[id];
+        const now = today();
+        let next = s;
+        if (!s) next = { step: 0, due: today(INTERVALS[0]) };
+        else if (s.due <= now) {
+          const step = Math.min(s.step + 1, INTERVALS.length - 1);
+          next = { step, due: today(INTERVALS[step]) };
+        }
+        return {
+          ...p,
+          mastered: p.mastered.includes(id) ? p.mastered : [...p.mastered, id],
+          review: without(p.review, id),
+          days: { ...p.days, [now]: (p.days[now] ?? 0) + 1 },
+          srs: { ...p.srs, [id]: next },
+        };
+      }),
+    [update],
+  );
+
+  // Ошибка: слово попадает в повторение, а интервал начинается заново.
   const markMistake = useCallback(
-    (id: string) => update((p) => (p.review.includes(id) ? p : { ...p, review: [...p.review, id] })),
+    (id: string) =>
+      update((p) => ({
+        ...p,
+        review: p.review.includes(id) ? p.review : [...p.review, id],
+        srs: p.srs[id] ? { ...p.srs, [id]: { step: 0, due: today() } } : p.srs,
+      })),
     [update],
   );
 
@@ -120,7 +180,7 @@ export function useProgress() {
 
   const finishOnboarding = useCallback(() => update((p) => ({ ...p, onboarded: true })), [update]);
 
-  return { progress, markMastered, markMistake, recordExam, setResume, finishOnboarding };
+  return { progress, markMastered, markMistake, countCorrect, recordExam, setResume, finishOnboarding };
 }
 
 // Короткий вариант для компонентов, которым нужен только список выученных.

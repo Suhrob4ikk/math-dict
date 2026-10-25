@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   title: "Math Read Aloud — как читать математику и ML по-английски",
   description:
     "Словарь для студентов data science: как произносить по-английски формулы математики, статистики и ML, названия библиотек и код на Python.",
+  icons: { icon: "/icon-192.png", apple: "/apple-touch-icon.png" },
+  appleWebApp: { capable: true, title: "Math Aloud", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {

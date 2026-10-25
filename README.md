@@ -48,8 +48,11 @@ data/terms.json       все термины
 lib/terms.ts          типы, категории, доступ к данным
 lib/levels.ts         ступени: Foundations → Essentials → Practitioner → Expert
 lib/recognition.ts    распознавание речи (Web Speech API) и нечёткая проверка произношения
-lib/exam.ts           задания экзамена по ступени
-lib/progress.ts       прогресс в localStorage: выученные, ошибки, экзамены, где остановились
+lib/exam.ts           состав экзамена по ступени
+lib/generate.ts       генератор новых формул и строк кода для экзамена
+lib/progress.ts       прогресс в localStorage: выученные, ошибки, экзамены, где остановились,
+                      цель на день, серия дней, интервальное повторение (1, 3, 7, 14, 30 дней)
+app/manifest.ts       PWA: установка на телефон как приложение
 ```
 
 ## Как добавить новый термин

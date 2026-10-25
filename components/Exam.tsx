@@ -1,54 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
+import ClientFormula from "@/components/ClientFormula";
 import Icon from "@/components/Icon";
 import { SpeechFeedback, useSpeechCheck } from "@/components/SpeechCheck";
-import type { ExamItem, ExamPools } from "@/lib/exam";
+import { buildExam, type ExamItem } from "@/lib/exam";
+import type { LevelId } from "@/lib/levels";
 import { EXAM_PASS, EXAM_SIZE, useProgress } from "@/lib/progress";
 import { speak } from "@/lib/speech";
 
 interface Props {
-  level: { id: string; name: string };
+  level: { id: LevelId; name: string };
   nextLevel?: { id: string; name: string };
-  pools: ExamPools;
-  // Формулы заданий, отрендеренные на сервере, по id задания.
-  formulas: Record<string, ReactNode>;
+  // Задания «скажи термин по переводу»; формулы генерируются в браузере.
+  terms: ExamItem[];
 }
 
 const MAX_ATTEMPTS = 2;
-
-function shuffle<T>(list: T[]): T[] {
-  const a = [...list];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-// Не больше половины экзамена — чтение формул, остальное — термины.
-function pick({ formulas, terms }: ExamPools): ExamItem[] {
-  const f = shuffle(formulas).slice(0, Math.ceil(EXAM_SIZE / 2));
-  const t = shuffle(terms).slice(0, EXAM_SIZE - f.length);
-  const extra = shuffle(formulas.filter((x) => !f.includes(x))).slice(0, EXAM_SIZE - f.length - t.length);
-  return shuffle([...f, ...t, ...extra]);
-}
 
 interface Answer {
   correct: boolean;
 }
 
-export default function Exam({ level, nextLevel, pools, formulas }: Props) {
+export default function Exam({ level, nextLevel, terms }: Props) {
   const [items, setItems] = useState<ExamItem[] | null>(null);
   const [index, setIndex] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
-  const { progress, recordExam, markMastered, markMistake } = useProgress();
+  const { progress, recordExam, markMastered, markMistake, countCorrect } = useProgress();
   const { state, start, reset } = useSpeechCheck();
 
   // Случайный набор выбираем только в браузере, иначе разойдётся с серверной разметкой.
-  useEffect(() => setItems(pick(pools)), [pools]);
+  useEffect(() => setItems(buildExam(level.id, terms)), [level.id, terms]);
 
   if (!items) return <div className="practice" />;
 
@@ -56,7 +40,7 @@ export default function Exam({ level, nextLevel, pools, formulas }: Props) {
   const score = answers.filter((a) => a.correct).length;
 
   function restart() {
-    setItems(pick(pools));
+    setItems(buildExam(level.id, terms));
     setIndex(0);
     setAttempts(0);
     setAnswers([]);
@@ -85,7 +69,7 @@ export default function Exam({ level, nextLevel, pools, formulas }: Props) {
             <li key={item.id} className={answers[i]?.correct ? "ok" : "miss"}>
               <Icon name={answers[i]?.correct ? "check" : "close"} size={18} />
               <span>
-                {item.latex ? <span className="exam-review-formula">{formulas[item.id]}</span> : item.prompt}
+                <ItemBody item={item} small />
                 <span className="exam-review-answer" lang="en">
                   {item.targets[0]}
                 </span>
@@ -123,7 +107,7 @@ export default function Exam({ level, nextLevel, pools, formulas }: Props) {
 
   function onMic() {
     if (answered) return;
-    start(item.targets, item.kind === "formula" ? "phrase" : "word", (r) => {
+    start(item.targets, item.kind === "term" ? "word" : "phrase", (r) => {
       setAttempts((a) => a + 1);
       if (r.verdict === "correct") setAnswers((prev) => withAnswer(prev, index, true));
     });
@@ -134,6 +118,7 @@ export default function Exam({ level, nextLevel, pools, formulas }: Props) {
     const nextAnswers = withAnswer(answers, index, correct);
     setAnswers(nextAnswers);
     if (item.termId) (correct ? markMastered : markMistake)(item.termId);
+    else if (correct) countCorrect();
     if (index + 1 >= items!.length) recordExam(level.id, nextAnswers.filter((a) => a.correct).length);
     setIndex(index + 1);
     setAttempts(0);
@@ -160,13 +145,9 @@ export default function Exam({ level, nextLevel, pools, formulas }: Props) {
       <div className="practice-stage">
         <div className="flashcard exam-card">
           <span className="exam-task">
-            {item.kind === "formula" ? "Прочитайте вслух" : "Скажите по-английски"}
+            {item.kind === "term" ? "Скажите по-английски" : item.kind === "code" ? "Прочитайте код вслух" : "Прочитайте вслух"}
           </span>
-          {item.latex ? (
-            <span className="flashcard-formula flashcard-formula-big">{formulas[item.id]}</span>
-          ) : (
-            <span className="flashcard-term">{item.prompt}</span>
-          )}
+          <ItemBody item={item} />
           {showAnswer && (
             <span className="flashcard-back">
               <span className="muted">Правильно:</span>
@@ -219,4 +200,19 @@ function withAnswer(list: Answer[], index: number, correct: boolean): Answer[] {
   const next = [...list];
   next[index] = { correct };
   return next;
+}
+
+// Что показываем в задании: формулу, строку кода или русский перевод.
+function ItemBody({ item, small = false }: { item: ExamItem; small?: boolean }) {
+  if (item.kind === "formula") {
+    return (
+      <span className={small ? "exam-review-formula" : "flashcard-formula flashcard-formula-big"}>
+        <ClientFormula latex={item.text!} />
+      </span>
+    );
+  }
+  if (item.kind === "code") {
+    return <code className={small ? "exam-code exam-code-small" : "exam-code"}>{item.text}</code>;
+  }
+  return small ? <span>{item.prompt}</span> : <span className="flashcard-term">{item.prompt}</span>;
 }

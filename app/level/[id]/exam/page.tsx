@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Exam from "@/components/Exam";
-import Formula from "@/components/Formula";
-import { examPools } from "@/lib/exam";
+import type { ExamItem } from "@/lib/exam";
 import { getLevel, LEVELS } from "@/lib/levels";
+import { termsByLevel } from "@/lib/terms";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -25,19 +25,23 @@ export default async function ExamPage({ params }: Props) {
   const level = getLevel((await params).id);
   if (!level) notFound();
   const next = LEVELS[LEVELS.indexOf(level) + 1];
-  const pools = examPools(level.id);
-  const formulas = Object.fromEntries(
-    [...pools.formulas, ...pools.terms]
-      .filter((item) => item.latex)
-      .map((item) => [item.id, <Formula key={item.id} latex={item.latex!} display />]),
-  );
+  // Задания «скажи термин по переводу». В Foundations их нет: там весь экзамен — новые формулы.
+  const terms: ExamItem[] =
+    level.id === "foundations"
+      ? []
+      : termsByLevel(level.id).map((t) => ({
+          id: `term:${t.id}`,
+          kind: "term",
+          prompt: t.russian,
+          targets: [t.say, t.english, ...(t.accept ?? [])],
+          termId: t.id,
+        }));
 
   return (
     <Exam
       level={{ id: level.id, name: level.name }}
       nextLevel={next && { id: next.id, name: next.name }}
-      pools={pools}
-      formulas={formulas}
+      terms={terms}
     />
   );
 }

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Icon, { type IconName } from "@/components/Icon";
-import { EXAM_PASS, useProgress } from "@/lib/progress";
+import InstallPrompt from "@/components/InstallPrompt";
+import { DAILY_GOAL, dueToday, EXAM_PASS, streak, today, useProgress } from "@/lib/progress";
 
 interface LevelInfo {
   id: string;
@@ -54,8 +55,33 @@ export default function HomeGuide({ levels }: { levels: LevelInfo[] }) {
     }
   }
 
+  const done = progress.days[today()] ?? 0;
+  const days = streak(progress.days);
+  const due = dueToday(progress);
+
   return (
     <div className="home-guide">
+      <section className="daily" aria-label="Цель на сегодня">
+        <div className="daily-goal">
+          <Ring value={Math.min(done / DAILY_GOAL, 1)} />
+          <div>
+            <strong>
+              {Math.min(done, DAILY_GOAL)} / {DAILY_GOAL}
+            </strong>
+            <span className="muted">{done >= DAILY_GOAL ? "Цель на сегодня выполнена" : "верных ответов сегодня"}</span>
+          </div>
+        </div>
+        <div className={days > 0 ? "daily-streak active" : "daily-streak"}>
+          <Icon name="flame" size={22} />
+          <div>
+            <strong>{days}</strong>
+            <span className="muted">{plural(days, "день", "дня", "дней")} подряд</span>
+          </div>
+        </div>
+      </section>
+
+      <InstallPrompt />
+
       {!progress.onboarded && (
         <section className="onboarding">
           <h2>Как заниматься</h2>
@@ -99,13 +125,13 @@ export default function HomeGuide({ levels }: { levels: LevelInfo[] }) {
         </div>
       )}
 
-      {progress.review.length > 0 && (
+      {due.length > 0 && (
         <Link href="/review" className="dictionary-link review-link">
           <Icon name="flip" />
           <span>
-            <strong>Повторить ошибки</strong>
+            <strong>Повторить сегодня</strong>
             <span className="muted">
-              {progress.review.length} {plural(progress.review.length, "слово", "слова", "слов")} на повторение
+              {due.length} {plural(due.length, "слово", "слова", "слов")}: ошибки и то, что пора освежить
             </span>
           </span>
           <Icon name="chevron-right" className="level-chevron" />
@@ -121,4 +147,27 @@ function plural(n: number, one: string, few: string, many: string): string {
   if (m10 === 1 && m100 !== 11) return one;
   if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
   return many;
+}
+
+// Кольцо прогресса цели на день.
+function Ring({ value }: { value: number }) {
+  const r = 18;
+  const c = 2 * Math.PI * r;
+  return (
+    <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true" className="ring">
+      <circle cx="24" cy="24" r={r} fill="none" strokeWidth="6" className="ring-track" />
+      <circle
+        cx="24"
+        cy="24"
+        r={r}
+        fill="none"
+        strokeWidth="6"
+        strokeLinecap="round"
+        className="ring-fill"
+        strokeDasharray={c}
+        strokeDashoffset={c * (1 - value)}
+        transform="rotate(-90 24 24)"
+      />
+    </svg>
+  );
 }

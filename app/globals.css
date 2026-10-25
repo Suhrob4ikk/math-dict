@@ -1289,3 +1289,98 @@ body:has(.practice) {
   justify-content: center;
   gap: 28px;
 }
+.exam-code {
+  display: block;
+  max-width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  font-size: 1.15rem;
+  overflow-x: auto;
+  white-space: pre;
+}
+.exam-code-small {
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  align-self: flex-start;
+}
+
+/* ---------- Цель на день и серия ---------- */
+
+.daily {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.daily-goal,
+.daily-streak {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.daily-goal > div,
+.daily-streak > div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.daily-goal strong,
+.daily-streak strong {
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+.daily .muted {
+  font-size: 0.8rem;
+}
+.ring-track {
+  stroke: var(--border);
+}
+.ring-fill {
+  stroke: var(--success);
+  transition: stroke-dashoffset 0.4s;
+}
+.daily-streak {
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+  color: var(--muted);
+}
+.daily-streak.active {
+  color: var(--expert);
+}
+
+.install-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 8px 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.install-card .continue-icon {
+  width: 40px;
+  height: 40px;
+  background: none;
+}
+.install-card .logo-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+}
+.install-card .continue-body strong {
+  font-size: 0.95rem;
+}
+.install-card .btn {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 0.9rem;
+}
+.install-card .icon-button {
+  width: 36px;
+  height: 36px;
+}

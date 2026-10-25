@@ -4,7 +4,7 @@ import Review from "@/components/Review";
 import { terms } from "@/lib/terms";
 
 export const metadata: Metadata = {
-  title: "Повторить ошибки | Math Read Aloud",
+  title: "Повторение | Math Read Aloud",
 };
 
 export default function ReviewPage() {

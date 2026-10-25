@@ -252,12 +252,13 @@ function joinedMatch(heard: string, target: string): boolean {
   return heard === target || similarity(heard, target) >= 0.8;
 }
 
-// «fx» → «f x»: короткие сочетания согласных распознаватель пишет слитно.
+// «fx» → «f x», «df» → «d f»: короткие сочетания согласных — это буквы подряд.
+function splitLetters(words: string[]): string[] {
+  return words.flatMap((w) => (w.length <= 3 && !/[aeiouy]/.test(w) ? w.split("") : [w]));
+}
+
 function heardTokens(heard: string): string[] {
-  return heard
-    .split(" ")
-    .filter((w) => w && !OPTIONAL.has(w))
-    .flatMap((w) => (w.length <= 3 && !/[aeiouy]/.test(w) ? w.split("") : [w]));
+  return splitLetters(heard.split(" ").filter((w) => w && !OPTIONAL.has(w)));
 }
 
 export interface WordMark {
@@ -348,12 +349,12 @@ export function checkPronunciation(
   let best: CheckResult = { verdict: "wrong", heard: transcripts[0]?.trim() ?? "", score: 0, marks: [] };
   let fromMain = true;
   // Отметки показываем по основному варианту (первому), даже если засчитан запасной.
-  const main = normalize(targets[0] ?? "").split(" ").filter(Boolean);
+  const main = splitLetters(normalize(targets[0] ?? "").split(" ").filter(Boolean));
   for (const raw of transcripts) {
     const heard = heardTokens(normalize(raw));
     if (!heard.length) continue;
     for (const target of targets) {
-      const words = normalize(target).split(" ").filter(Boolean);
+      const words = splitLetters(normalize(target).split(" ").filter(Boolean));
       const required = words.filter((w) => !OPTIONAL.has(w)).length;
       if (!required) continue;
       const { matched, marks } = align(heard, words);

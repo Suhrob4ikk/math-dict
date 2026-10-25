@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import Icon from "@/components/Icon";
 import Practice from "@/components/Practice";
-import { readProgress } from "@/lib/progress";
+import { dueToday, readProgress } from "@/lib/progress";
 import type { Term } from "@/lib/terms";
 
 interface Props {
@@ -12,12 +12,12 @@ interface Props {
   formulas: Record<string, ReactNode>;
 }
 
-// Карточки с терминами, где были ошибки. Список фиксируем при входе, чтобы верные
+// Повторение на сегодня: слова с ошибками и те, у которых подошёл срок. Список фиксируем при входе, чтобы верные
 // ответы не выдёргивали карточки из-под пальца.
 export default function Review({ terms, formulas }: Props) {
   const [ids, setIds] = useState<string[] | null>(null);
 
-  useEffect(() => setIds(readProgress().review), []);
+  useEffect(() => setIds(dueToday(readProgress())), []);
 
   if (ids === null) return <div className="practice" />;
 
@@ -28,8 +28,10 @@ export default function Review({ terms, formulas }: Props) {
         <div className="done-icon">
           <Icon name="check" size={40} />
         </div>
-        <h1>Ошибок нет</h1>
-        <p className="muted">Сюда попадают слова, которые не получилось произнести с первого раза.</p>
+        <h1>На сегодня всё повторено</h1>
+        <p className="muted">
+          Сюда попадают слова с ошибками и выученные слова, которые пора освежить: через 1, 3, 7, 14 и 30 дней.
+        </p>
         <div className="done-actions">
           <Link href="/" className="btn btn-primary">
             На главную
@@ -41,7 +43,7 @@ export default function Review({ terms, formulas }: Props) {
 
   return (
     <Practice
-      title="Повторить ошибки"
+      title="Повторение"
       backHref="/"
       finish={{ href: "/", label: "На главную" }}
       terms={list}

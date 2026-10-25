@@ -1,5 +1,9 @@
 // Ступени обучения: от базовых слов к ML. Порядок терминов внутри ступени — как в data/terms.json.
 
+// Экзамен ступени: заданий в нём и сколько нужно для сдачи.
+export const EXAM_SIZE = 10;
+export const EXAM_PASS = 8;
+
 export const LEVEL_IDS = ["foundations", "essentials", "practitioner", "expert"] as const;
 
 export type LevelId = (typeof LEVEL_IDS)[number];

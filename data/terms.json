@@ -39,15 +39,15 @@
   },
   {
     "id": "equals",
-    "english": "equals and is not equal to",
-    "russian": "равно и не равно",
-    "spoken": "a equals b. a is not equal to b",
-    "latex": "a = b,\\quad a \\neq b",
-    "python": "a == b   # равно\na != b   # не равно",
+    "english": "equals",
+    "russian": "равно",
+    "spoken": "a equals b",
+    "latex": "a = b",
+    "python": "a == b   # сравнение в Python — два знака =",
     "category": "notation",
     "related": [
-      "comparison-operators",
-      "inequality"
+      "not-equal",
+      "comparison-operators"
     ],
     "level": "foundations",
     "say": "a equals b",
@@ -57,22 +57,60 @@
     ]
   },
   {
-    "id": "inequality",
-    "english": "less than, greater than or equal to",
-    "russian": "меньше, больше или равно",
-    "spoken": "a is less than b. a is greater than or equal to b",
-    "latex": "a < b,\\quad a \\ge b",
-    "python": "a < b    # меньше\na >= b   # больше или равно",
+    "id": "not-equal",
+    "english": "is not equal to",
+    "russian": "не равно",
+    "spoken": "a is not equal to b",
+    "latex": "a \\neq b",
+    "python": "a != b",
     "category": "notation",
     "related": [
       "equals",
       "comparison-operators"
     ],
     "level": "foundations",
+    "say": "a is not equal to b",
+    "accept": [
+      "a not equal to b",
+      "a does not equal b",
+      "a not equals b"
+    ]
+  },
+  {
+    "id": "less-than",
+    "english": "is less than",
+    "russian": "меньше",
+    "spoken": "a is less than b",
+    "latex": "a < b",
+    "python": "a < b",
+    "category": "notation",
+    "related": [
+      "greater-equal",
+      "comparison-operators"
+    ],
+    "level": "foundations",
     "say": "a is less than b",
     "accept": [
-      "a less than b",
-      "eight is less than b"
+      "a less than b"
+    ]
+  },
+  {
+    "id": "greater-equal",
+    "english": "is greater than or equal to",
+    "russian": "больше или равно",
+    "spoken": "a is greater than or equal to b",
+    "latex": "a \\ge b",
+    "python": "a >= b",
+    "category": "notation",
+    "related": [
+      "less-than",
+      "comparison-operators"
+    ],
+    "level": "foundations",
+    "say": "a is greater than or equal to b",
+    "accept": [
+      "a greater than or equal to b",
+      "a greater or equal to b"
     ]
   },
   {
