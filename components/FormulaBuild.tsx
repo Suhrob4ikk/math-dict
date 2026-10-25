@@ -7,6 +7,7 @@ import FormulaIntro from "@/components/FormulaIntro";
 import GameResult from "@/components/GameResult";
 import Icon from "@/components/Icon";
 import LongReader from "@/components/LongReader";
+import { answerFeedback, tapFeedback } from "@/lib/feedback";
 import { asLong, spokenName, type NamedFormula } from "@/lib/formulas";
 import { pickDeck, shuffle, stars, time } from "@/lib/game";
 import { readProgress, useProgress } from "@/lib/progress";
@@ -121,8 +122,12 @@ export default function FormulaBuild({ formulas, rounds }: Props) {
     if (tile.part === placed) {
       setPlaced(placed + 1);
       setWrong(null);
-      if (placed + 1 >= current.parts.length) setTimeout(() => setPhase("read"), 600);
+      if (placed + 1 >= current.parts.length) {
+        answerFeedback("correct");
+        setTimeout(() => setPhase("read"), 600);
+      } else tapFeedback();
     } else {
+      answerFeedback("wrong");
       setMistakes((m) => m + 1);
       setWrong(tile.key);
       setTimeout(() => setWrong((w) => (w === tile.key ? null : w)), 500);

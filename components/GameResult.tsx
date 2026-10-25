@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Celebrate } from "@/components/FeedbackLayer";
 import Icon from "@/components/Icon";
 import { spokenName, type NamedFormula } from "@/lib/formulas";
 
@@ -18,9 +19,10 @@ interface Props {
 export default function GameResult({ stars, title, stats, record, review, onAgain }: Props) {
   return (
     <div className="practice practice-done">
+      <Celebrate passed={stars > 0} />
       <div className="game-stars" aria-label={`Звёзд: ${stars} из 3`}>
         {[0, 1, 2].map((i) => (
-          <Icon key={i} name="star" size={44} className={i < stars ? "star-on" : "star-off"} />
+          <Icon key={i} name="star" size={44} className={i < stars ? `star-on star-${i}` : "star-off"} />
         ))}
       </div>
       <h1>{title}</h1>
