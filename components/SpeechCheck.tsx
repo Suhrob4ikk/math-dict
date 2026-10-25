@@ -12,6 +12,8 @@ import {
   type Listener,
   type ListenError,
 } from "@/lib/recognition";
+import { stopSpeaking } from "@/lib/speech";
+import { inAndroidApp } from "@/lib/android";
 
 export type CheckMode = "word" | "phrase";
 
@@ -71,7 +73,7 @@ export function useSpeechCheck() {
         return;
       }
       // Иначе микрофон услышит синтезатор речи вместо человека.
-      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      stopSpeaking();
       setResult(null);
       setError(null);
       setInterim("");
@@ -135,7 +137,9 @@ export function SpeechFeedback({ state }: { state: SpeechCheckState }) {
   if (!supported) {
     return (
       <p className="feedback feedback-muted">
-        Этот браузер не умеет распознавать речь. Откройте сайт в Chrome или Safari.
+        {inAndroidApp()
+          ? "На телефоне нет службы распознавания речи. Установите или обновите приложение Google."
+          : "Этот браузер не умеет распознавать речь. Откройте сайт в Chrome или Safari."}
       </p>
     );
   }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Icon from "@/components/Icon";
-import { speak as speakText, speechSupported } from "@/lib/speech";
+import { speak as speakText, speechSupported, stopSpeaking, warmUpVoices } from "@/lib/speech";
 
 interface Props {
   text: string;
@@ -18,15 +18,13 @@ export default function SpeakButton({ text, label = "Послушать" }: Prop
       setSupported(false);
       return;
     }
-    // В Chrome список голосов загружается асинхронно — «прогреваем» его.
-    window.speechSynthesis.getVoices();
-    return () => window.speechSynthesis.cancel();
+    warmUpVoices();
+    return stopSpeaking;
   }, []);
 
   function speak() {
-    const synth = window.speechSynthesis;
     if (speaking) {
-      synth.cancel();
+      stopSpeaking();
       setSpeaking(false);
       return;
     }

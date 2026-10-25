@@ -13,6 +13,7 @@ export function GET() {
     "/dictionary",
     "/formulas",
     "/review",
+    "/install",
     ...LEVELS.flatMap((l) => [`/level/${l.id}`, `/level/${l.id}/practice`]),
   ];
   // Остальное докачивается в фоне.

@@ -1,7 +1,11 @@
-// Озвучка через встроенный синтезатор речи браузера (Web Speech API).
+// Озвучка через встроенный синтезатор речи браузера (Web Speech API), а в Android-приложении —
+// через системный TextToSpeech (lib/android.ts).
+
+import { androidSpeak, androidStopSpeaking, androidTtsAvailable, inAndroidApp } from "@/lib/android";
 
 export function speechSupported(): boolean {
-  return typeof window !== "undefined" && "speechSynthesis" in window;
+  if (typeof window === "undefined") return false;
+  return inAndroidApp() ? androidTtsAvailable() : "speechSynthesis" in window;
 }
 
 function pickVoice(): SpeechSynthesisVoice | undefined {
@@ -15,7 +19,22 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
   );
 }
 
+// В Chrome список голосов загружается асинхронно — «прогреваем» его заранее.
+export function warmUpVoices(): void {
+  if (!inAndroidApp() && "speechSynthesis" in window) window.speechSynthesis.getVoices();
+}
+
+export function stopSpeaking(): void {
+  if (typeof window === "undefined") return;
+  if (inAndroidApp()) androidStopSpeaking();
+  else if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+}
+
 export function speak(text: string, onDone?: () => void): void {
+  if (inAndroidApp()) {
+    androidSpeak(text, 0.9, onDone);
+    return;
+  }
   const synth = window.speechSynthesis;
   synth.cancel();
   const utterance = new SpeechSynthesisUtterance(text);

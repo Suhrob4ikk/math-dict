@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { hasBottomNav } from "@/components/BottomNav";
 import Icon from "@/components/Icon";
+import { inAndroidApp } from "@/lib/android";
 import { checkLocalRecognition, installLocalRecognition, type LocalRecognition } from "@/lib/recognition";
 import "./OfflineStatus.css";
 
@@ -116,7 +117,9 @@ export default function OfflineStatus() {
             <strong>Нет интернета.</strong>{" "}
             {local === "available"
               ? "Всё работает, речь распознаётся на устройстве."
-              : "Всё работает, кроме проверки произношения голосом."}
+              : inAndroidApp()
+                ? "Всё работает. Проверка голосом — если в телефоне скачан английский офлайн-пакет Google."
+                : "Всё работает, кроме проверки произношения голосом."}
           </span>
         </div>
       )}
