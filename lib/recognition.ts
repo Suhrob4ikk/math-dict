@@ -272,14 +272,14 @@ const OPTIONAL = new Set(["the", "of", "is", "an"]);
 const LETTERS: Record<string, string[]> = {
   a: ["ay", "eh", "hey", "eight"],
   b: ["be", "bee"],
-  c: ["see", "sea"],
+  c: ["see", "sea", "she", "si", "cee"],
   d: ["dee"],
   e: ["ee"],
   f: ["ef", "eff"],
   g: ["gee", "jee"],
   i: ["eye", "aye", "ai"],
   j: ["jay"],
-  k: ["kay", "okay", "car", "cay"],
+  k: ["kay", "okay", "car", "cay", "key"],
   m: ["em"],
   n: ["en", "and", "end"],
   p: ["pee", "pea"],
@@ -391,11 +391,19 @@ function joinedMatch(heard: string, target: string): boolean {
 
 // «fx» → «f x», «df» → «d f»: короткие сочетания согласных — это буквы подряд.
 // «subj» → «sub j»: распознаватель иногда склеивает «sub» с буквой.
+// Буква или её название («see» = c).
+function isLetter(w: string): boolean {
+  return w.length === 1 || Object.values(LETTERS).some((names) => names.includes(w));
+}
+
 function splitLetters(words: string[]): string[] {
   return words.flatMap((w) => {
     if (w.length <= 3 && !/[aeiouy]/.test(w)) return w.split("");
-    const sub = /^sub([a-z])$/.exec(w);
-    return sub ? ["sub", sub[1]] : [w];
+    // Распознаватель склеивает слово с буквой: «subj», «csub», «oversee» (over c).
+    const glued = /^(sub|over)([a-z]+)$/.exec(w) ?? /^([a-z])(sub)$/.exec(w);
+    if (glued && glued[1].length === 1) return [glued[1], glued[2]];
+    if (glued && isLetter(glued[2])) return [glued[1], glued[2]];
+    return [w];
   });
 }
 

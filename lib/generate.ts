@@ -170,9 +170,11 @@ function binary(rand: Rand, used: Set<string>): Part {
   const word = op === "+" ? "plus" : op === "-" ? "minus" : "times";
   return {
     ...part(`${a.tex} ${op} ${b.tex}`, combine([a.say, b.say], ([x, y]) => `${x} ${word} ${y}`), false),
+    // Знак действия идёт в начало следующего куска («minus a bar»), чтобы часть
+    // не обрывалась на «минус».
     atoms: [
-      { tex: `${a.tex} ${op}`, say: a.say.map((x) => `${x} ${word}`) },
-      { tex: b.tex, say: b.say },
+      { tex: a.tex, say: a.say },
+      { tex: `${op} ${b.tex}`, say: b.say.map((y) => `${word} ${y}`) },
     ],
   };
 }
@@ -575,13 +577,12 @@ function foundationsLongOnce(rand: Rand): LongPart[] {
     ["-", "minus"],
   ] as const);
   const last = wrapped(rand, used);
-  const midAtoms = atomsOf(mid);
-  const tail = midAtoms[midAtoms.length - 1];
+  const [head, ...rest] = atomsOf(last);
   const atoms: Atom[] = [
     { tex: `${left.tex} ${rel}`, say: left.say.map((s) => `${s} ${relWord}`), rel: true },
-    ...midAtoms.slice(0, -1),
-    { tex: `${tail.tex} ${op}`, say: tail.say.map((s) => `${s} ${opWord}`) },
-    ...atomsOf(last),
+    ...atomsOf(mid),
+    { tex: `${op} ${head.tex}`, say: head.say.map((s) => `${opWord} ${s}`) },
+    ...rest,
   ];
   return balance(atoms, 3);
 }
