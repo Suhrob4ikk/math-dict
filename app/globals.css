@@ -1876,3 +1876,15 @@ body:has(.practice) {
 .round-button-spacer {
   width: 56px;
 }
+
+/* Знакомство с новой формулой */
+.intro-name {
+  color: var(--accent);
+}
+.intro-reading {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+}
+.intro-speak {
+  justify-content: center;
+}

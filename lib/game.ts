@@ -21,3 +21,10 @@ export function time(ms: number): string {
   const s = Math.round(ms / 1000);
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
+
+// Формулы для игры: сначала те, где были ошибки, затем остальные — всё вперемешку.
+export function pickDeck<T extends { id: string }>(pool: readonly T[], rounds: number, review: readonly string[]): T[] {
+  const first = pool.filter((f) => review.includes(f.id));
+  const rest = pool.filter((f) => !review.includes(f.id));
+  return [...shuffle(first), ...shuffle(rest)].slice(0, rounds);
+}

@@ -22,6 +22,9 @@ export interface Progress {
   // Раздел «Формулы»: какие формулы прочитаны без ошибок и лучший результат игры по темам (в %).
   formulas: string[];
   games: Record<string, number>;
+  // Формулы, которые уже показаны (карточка-знакомство), и формулы с ошибкой в игре.
+  formulaSeen: string[];
+  formulaReview: string[];
 }
 
 export const DAILY_GOAL = 10;
@@ -58,7 +61,7 @@ export function dueToday(p: Progress): string[] {
 const KEY = "math-dict:progress:v2";
 const OLD_KEY = "math-dict:mastered";
 const EVENT = "math-dict:progress";
-const EMPTY: Progress = { mastered: [], review: [], exams: {}, onboarded: false, days: {}, srs: {}, formulas: [], games: {} };
+const EMPTY: Progress = { mastered: [], review: [], exams: {}, onboarded: false, days: {}, srs: {}, formulas: [], games: {}, formulaSeen: [], formulaReview: [] };
 
 let cache: Progress | null = null;
 
@@ -77,6 +80,8 @@ function parse(raw: string | null): Progress {
     srs: d.srs && typeof d.srs === "object" ? d.srs : {},
     formulas: strings(d.formulas),
     games: d.games && typeof d.games === "object" ? d.games : {},
+    formulaSeen: strings(d.formulaSeen),
+    formulaReview: strings(d.formulaReview),
   };
 }
 
@@ -183,8 +188,26 @@ export function useProgress() {
     [update],
   );
 
+  // Формула прочитана без ошибок: отмечаем и убираем из повторения.
   const markFormula = useCallback(
-    (id: string) => update((p) => (p.formulas.includes(id) ? p : { ...p, formulas: [...p.formulas, id] })),
+    (id: string) =>
+      update((p) => ({
+        ...p,
+        formulas: p.formulas.includes(id) ? p.formulas : [...p.formulas, id],
+        formulaReview: without(p.formulaReview, id),
+      })),
+    [update],
+  );
+
+  // Ошибка в игре: формула будет попадаться в играх раньше других.
+  const markFormulaMiss = useCallback(
+    (id: string) =>
+      update((p) => (p.formulaReview.includes(id) ? p : { ...p, formulaReview: [...p.formulaReview, id] })),
+    [update],
+  );
+
+  const markFormulaSeen = useCallback(
+    (id: string) => update((p) => (p.formulaSeen.includes(id) ? p : { ...p, formulaSeen: [...p.formulaSeen, id] })),
     [update],
   );
 
@@ -207,6 +230,8 @@ export function useProgress() {
     recordExam,
     setResume,
     markFormula,
+    markFormulaMiss,
+    markFormulaSeen,
     recordGame,
     finishOnboarding,
     resetProgress,

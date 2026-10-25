@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import katex from "katex";
+import FormulaIntro from "@/components/FormulaIntro";
 import GameResult from "@/components/GameResult";
 import Icon from "@/components/Icon";
 import LongReader from "@/components/LongReader";
 import { asLong, spokenName, type NamedFormula } from "@/lib/formulas";
-import { shuffle, stars, time } from "@/lib/game";
-import { useProgress } from "@/lib/progress";
+import { pickDeck, shuffle, stars, time } from "@/lib/game";
+import { readProgress, useProgress } from "@/lib/progress";
 
 interface Props {
   formulas: NamedFormula[];
@@ -58,7 +59,7 @@ export default function FormulaBuild({ formulas, rounds }: Props) {
   const [results, setResults] = useState<Round[]>([]);
   const [started, setStarted] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const { progress, countCorrect, markFormula, recordGame } = useProgress();
+  const { progress, countCorrect, markFormula, markFormulaMiss, markFormulaSeen, recordGame } = useProgress();
 
   const startRound = (f: NamedFormula) => {
     setTiles(tilesFor(f, formulas));
@@ -70,7 +71,7 @@ export default function FormulaBuild({ formulas, rounds }: Props) {
   };
 
   const newGame = () => {
-    const d = shuffle(pool).slice(0, rounds);
+    const d = pickDeck(pool, rounds, readProgress().formulaReview);
     setDeck(d);
     setIndex(0);
     setResults([]);
@@ -130,6 +131,7 @@ export default function FormulaBuild({ formulas, rounds }: Props) {
 
   function finishRound(parts: number) {
     const build = mistakes === 0 ? BUILD_POINTS : mistakes === 1 ? 1 : 0;
+    if (build === 0 || parts < current.parts.length) markFormulaMiss(current.id);
     const next = [...results, { build, parts }];
     setResults(next);
     if (index + 1 >= deck!.length) {
@@ -173,7 +175,9 @@ export default function FormulaBuild({ formulas, rounds }: Props) {
       </div>
 
       <div className="practice-stage">
-        {phase === "build" ? (
+        {phase === "build" && !progress.formulaSeen.includes(current.id) ? (
+          <FormulaIntro formula={current} onDone={() => markFormulaSeen(current.id)} />
+        ) : phase === "build" ? (
           <>
             <div className="flashcard long-card">
               <span className="exam-task">Шаг 1 из 2 · Соберите формулу</span>

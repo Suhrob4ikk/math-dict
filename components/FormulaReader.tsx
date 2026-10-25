@@ -1,13 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LongReader from "@/components/LongReader";
 import { asLong, type NamedFormula } from "@/lib/formulas";
 import { useProgress } from "@/lib/progress";
 
 // Чтение одной формулы по частям на её странице; без ошибок — формула отмечается прочитанной.
 export default function FormulaReader({ formula }: { formula: NamedFormula }) {
-  const { markFormula, countCorrect } = useProgress();
+  const { markFormula, markFormulaSeen, countCorrect } = useProgress();
+  // Страницу формулы открыли — в играх она уже не новая.
+  useEffect(() => markFormulaSeen(formula.id), [formula.id, markFormulaSeen]);
   const long = useMemo(() => asLong(formula), [formula]);
   const [round, setRound] = useState(0);
   const [done, setDone] = useState<boolean | null>(null);

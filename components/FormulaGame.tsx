@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
+import FormulaIntro from "@/components/FormulaIntro";
 import GameResult from "@/components/GameResult";
 import Icon from "@/components/Icon";
 import LongReader from "@/components/LongReader";
 import { SpeechFeedback, useSpeechCheck } from "@/components/SpeechCheck";
 import { asLong, nameTargets, spokenName, type NamedFormula } from "@/lib/formulas";
-import { shuffle, stars, time } from "@/lib/game";
-import { useProgress } from "@/lib/progress";
+import { pickDeck, stars, time } from "@/lib/game";
+import { readProgress, useProgress } from "@/lib/progress";
 import { speak } from "@/lib/speech";
 
 interface Props {
@@ -46,11 +47,11 @@ export default function FormulaGame({ topic, formulas, rounds }: Props) {
   const [bestCombo, setBestCombo] = useState(0);
   const started = useRef(0);
   const [elapsed, setElapsed] = useState(0);
-  const { progress, countCorrect, markFormula, recordGame } = useProgress();
+  const { progress, countCorrect, markFormula, markFormulaMiss, markFormulaSeen, recordGame } = useProgress();
   const { state, start, reset } = useSpeechCheck();
 
   const newGame = () => {
-    setDeck(shuffle(formulas).slice(0, rounds));
+    setDeck(pickDeck(formulas, rounds, readProgress().formulaReview));
     setIndex(0);
     setPhase("name");
     setResults([]);
@@ -132,6 +133,7 @@ export default function FormulaGame({ topic, formulas, rounds }: Props) {
     const next = [...results, round];
     setResults(next);
     const clean = round.name === NAME_POINTS && parts === current.parts.length;
+    if (round.name === 0 || parts < current.parts.length) markFormulaMiss(current.id);
     const c = clean ? combo + 1 : 0;
     setCombo(c);
     setBestCombo((b) => Math.max(b, c));
@@ -173,7 +175,9 @@ export default function FormulaGame({ topic, formulas, rounds }: Props) {
       </div>
 
       <div className="practice-stage">
-        {phase === "name" ? (
+        {phase === "name" && !progress.formulaSeen.includes(current.id) ? (
+          <FormulaIntro formula={current} onDone={() => markFormulaSeen(current.id)} />
+        ) : phase === "name" ? (
           <>
             <div className="flashcard long-card">
               <span className="exam-task">Шаг 1 из 2 · Как называется формула?</span>
