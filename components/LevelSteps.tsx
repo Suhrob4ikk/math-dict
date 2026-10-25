@@ -9,7 +9,7 @@ interface Props {
   ids: string[];
 }
 
-// Два шага внутри ступени: выучить карточки, затем сдать экзамен.
+// Шаги внутри ступени: выучить карточки, потренировать длинные формулы, сдать экзамен.
 export default function LevelSteps({ levelId, ids }: Props) {
   const { progress } = useProgress();
   const learned = ids.filter((id) => progress.mastered.includes(id)).length;
@@ -35,12 +35,25 @@ export default function LevelSteps({ levelId, ids }: Props) {
           </Link>
         </div>
       </li>
+      <li className="step">
+        <span className="step-num">2</span>
+        <div className="step-body">
+          <strong>Длинные формулы</strong>
+          <span className="muted">
+            Формула делится на части: читайте по одной, спокойно и с паузами. Подсвеченная часть — та, что
+            читаете сейчас.
+          </span>
+          <Link href={`/level/${levelId}/long`} className="btn btn-secondary">
+            <Icon name="route" size={20} /> Тренировать
+          </Link>
+        </div>
+      </li>
       <li className={passed ? "step step-done" : cardsDone ? "step step-current" : "step"}>
-        <span className="step-num">{passed ? <Icon name="check" size={18} /> : 2}</span>
+        <span className="step-num">{passed ? <Icon name="check" size={18} /> : 3}</span>
         <div className="step-body">
           <strong>Экзамен</strong>
           <span className="muted">
-            {EXAM_SIZE} заданий без подсказок: прочитать формулу, назвать термин.{" "}
+            {EXAM_SIZE} заданий без подсказок: прочитать формулу, назвать термин и одна длинная формула по частям.{" "}
             {best !== undefined ? `Лучший результат: ${best}/${EXAM_SIZE}.` : `Нужно ${EXAM_PASS} из ${EXAM_SIZE}.`}
           </span>
           <Link

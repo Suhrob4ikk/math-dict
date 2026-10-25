@@ -16,6 +16,8 @@ export type CheckMode = "word" | "phrase";
 export interface SpeechCheckState {
   supported: boolean;
   listening: boolean;
+  // Что распознаватель уже услышал, пока идёт запись.
+  interim: string;
   result: CheckResult | null;
   error: ListenError | null;
 }
@@ -24,19 +26,21 @@ export interface SpeechCheckState {
 export function useSpeechCheck() {
   const [supported, setSupported] = useState(true);
   const [listening, setListening] = useState(false);
+  const [interim, setInterim] = useState("");
   const [result, setResult] = useState<CheckResult | null>(null);
   const [error, setError] = useState<ListenError | null>(null);
   const listener = useRef<Listener | null>(null);
 
   useEffect(() => {
     setSupported(recognitionSupported());
-    return () => listener.current?.stop();
+    return () => listener.current?.cancel();
   }, []);
 
   const reset = useCallback(() => {
-    listener.current?.stop();
+    listener.current?.cancel();
     listener.current = null;
     setListening(false);
+    setInterim("");
     setResult(null);
     setError(null);
   }, []);
@@ -51,9 +55,13 @@ export function useSpeechCheck() {
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       setResult(null);
       setError(null);
+      setInterim("");
       setListening(true);
       try {
         listener.current = listen({
+          // Длинную фразу читают с паузами — ждём дольше, прежде чем закончить запись.
+          silenceMs: mode === "phrase" ? 2500 : 1300,
+          onInterim: setInterim,
           onResult: (transcripts) => {
             const r = checkPronunciation(transcripts, targets, mode);
             setResult(r);
@@ -74,7 +82,7 @@ export function useSpeechCheck() {
     [],
   );
 
-  return { state: { supported, listening, result, error } as SpeechCheckState, start, reset };
+  return { state: { supported, listening, interim, result, error } as SpeechCheckState, start, reset };
 }
 
 const ERRORS: Record<ListenError, string> = {
@@ -99,7 +107,7 @@ function Marks({ result }: { result: CheckResult }) {
 }
 
 export function SpeechFeedback({ state }: { state: SpeechCheckState }) {
-  const { supported, listening, result, error } = state;
+  const { supported, listening, interim, result, error } = state;
 
   if (!supported) {
     return (
@@ -110,9 +118,19 @@ export function SpeechFeedback({ state }: { state: SpeechCheckState }) {
   }
   if (listening) {
     return (
-      <p className="feedback feedback-listening" aria-live="polite">
-        <span className="pulse" aria-hidden="true" /> Говорите…
-      </p>
+      <div className="feedback feedback-listening" aria-live="polite">
+        <span className="pulse" aria-hidden="true" />
+        <div>
+          <strong>{interim ? "Слышу:" : "Говорите — можно медленно, с паузами"}</strong>
+          {interim ? (
+            <span className="feedback-heard" lang="en">
+              {interim}
+            </span>
+          ) : (
+            <span className="feedback-hint">Закончили — нажмите стоп или просто помолчите пару секунд.</span>
+          )}
+        </div>
+      </div>
     );
   }
   if (error) {
@@ -123,7 +141,9 @@ export function SpeechFeedback({ state }: { state: SpeechCheckState }) {
     );
   }
   if (!result) {
-    return <p className="feedback feedback-muted">Нажмите на микрофон и произнесите вслух.</p>;
+    return (
+      <p className="feedback feedback-muted">Нажмите на микрофон и читайте спокойно — лучше медленно и чётко, чем быстро.</p>
+    );
   }
 
   const heard = result.heard ? (

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import ClientFormula from "@/components/ClientFormula";
 import Icon from "@/components/Icon";
+import LongReader from "@/components/LongReader";
 import { SpeechFeedback, useSpeechCheck } from "@/components/SpeechCheck";
 import { buildExam, type ExamItem } from "@/lib/exam";
 import type { LevelId } from "@/lib/levels";
@@ -28,6 +29,8 @@ export default function Exam({ level, nextLevel, terms }: Props) {
   const [index, setIndex] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  // Длинная формула прочитана до конца (у неё своя кнопка микрофона по частям).
+  const [longDone, setLongDone] = useState(false);
   const { progress, recordExam, markMastered, markMistake, countCorrect } = useProgress();
   const { state, start, reset } = useSpeechCheck();
 
@@ -44,6 +47,7 @@ export default function Exam({ level, nextLevel, terms }: Props) {
     setIndex(0);
     setAttempts(0);
     setAnswers([]);
+    setLongDone(false);
     reset();
   }
 
@@ -102,8 +106,9 @@ export default function Exam({ level, nextLevel, terms }: Props) {
   }
 
   const item = items[index];
-  const answered = state.result?.verdict === "correct" || attempts >= MAX_ATTEMPTS;
-  const showAnswer = attempts >= MAX_ATTEMPTS && state.result?.verdict !== "correct";
+  const isLong = item.kind === "long";
+  const answered = isLong ? longDone : state.result?.verdict === "correct" || attempts >= MAX_ATTEMPTS;
+  const showAnswer = !isLong && attempts >= MAX_ATTEMPTS && state.result?.verdict !== "correct";
 
   function onMic() {
     if (answered) return;
@@ -122,6 +127,7 @@ export default function Exam({ level, nextLevel, terms }: Props) {
     if (index + 1 >= items!.length) recordExam(level.id, nextAnswers.filter((a) => a.correct).length);
     setIndex(index + 1);
     setAttempts(0);
+    setLongDone(false);
     reset();
   }
 
@@ -143,46 +149,67 @@ export default function Exam({ level, nextLevel, terms }: Props) {
       </div>
 
       <div className="practice-stage">
-        <div className="flashcard exam-card">
-          <span className="exam-task">
-            {item.kind === "term" ? "Скажите по-английски" : item.kind === "code" ? "Прочитайте код вслух" : "Прочитайте вслух"}
-          </span>
-          <ItemBody item={item} />
-          {showAnswer && (
-            <span className="flashcard-back">
-              <span className="muted">Правильно:</span>
-              <span className="flashcard-ru" lang="en">
-                {item.targets[0]}
-              </span>
+        {isLong ? (
+          <LongReader
+            formula={item.long!}
+            maxAttempts={MAX_ATTEMPTS}
+            hints={false}
+            skip={false}
+            onDone={(allCorrect) => {
+              setAnswers((prev) => withAnswer(prev, index, allCorrect));
+              setLongDone(true);
+            }}
+          />
+        ) : (
+          <div className="flashcard exam-card">
+            <span className="exam-task">
+              {item.kind === "term"
+                ? "Скажите по-английски"
+                : item.kind === "code"
+                  ? "Прочитайте код вслух"
+                  : "Прочитайте вслух"}
             </span>
-          )}
-        </div>
+            <ItemBody item={item} />
+            {showAnswer && (
+              <span className="flashcard-back">
+                <span className="muted">Правильно:</span>
+                <span className="flashcard-ru" lang="en">
+                  {item.targets[0]}
+                </span>
+              </span>
+            )}
+          </div>
+        )}
 
         {attempts > 0 && !answered && !state.listening && (
           <p className="feedback feedback-muted">Осталась ещё одна попытка.</p>
         )}
-        <SpeechFeedback state={state} />
+        {!isLong && <SpeechFeedback state={state} />}
       </div>
 
       <nav className="action-bar action-bar-center" aria-label="Управление экзаменом">
-        <button
-          type="button"
-          className="round-button"
-          onClick={() => speak(item.targets[0])}
-          disabled={!answered}
-          aria-label="Послушать правильный ответ"
-        >
-          <Icon name="volume" size={26} />
-        </button>
-        <button
-          type="button"
-          className={state.listening ? "mic-button listening" : "mic-button"}
-          onClick={onMic}
-          disabled={!state.supported || answered}
-          aria-label={state.listening ? "Остановить запись" : "Ответить голосом"}
-        >
-          <Icon name={state.listening ? "stop" : "mic"} size={32} />
-        </button>
+        {!isLong && (
+          <button
+            type="button"
+            className="round-button"
+            onClick={() => speak(item.targets[0])}
+            disabled={!answered}
+            aria-label="Послушать правильный ответ"
+          >
+            <Icon name="volume" size={26} />
+          </button>
+        )}
+        {!isLong && (
+          <button
+            type="button"
+            className={state.listening ? "mic-button listening" : "mic-button"}
+            onClick={onMic}
+            disabled={!state.supported || answered}
+            aria-label={state.listening ? "Остановить запись" : "Ответить голосом"}
+          >
+            <Icon name={state.listening ? "stop" : "mic"} size={32} />
+          </button>
+        )}
         <button
           type="button"
           className={answered ? "round-button round-button-primary" : "round-button"}
@@ -204,6 +231,17 @@ function withAnswer(list: Answer[], index: number, correct: boolean): Answer[] {
 
 // Что показываем в задании: формулу, строку кода или русский перевод.
 function ItemBody({ item, small = false }: { item: ExamItem; small?: boolean }) {
+  if (item.kind === "long") {
+    const f = item.long!;
+    const text = f.parts.map((p) => p.text).join(f.code ? "" : " ");
+    return f.code ? (
+      <code className="exam-code exam-code-small">{text}</code>
+    ) : (
+      <span className="exam-review-formula">
+        <ClientFormula latex={text} />
+      </span>
+    );
+  }
   if (item.kind === "formula") {
     return (
       <span className={small ? "exam-review-formula" : "flashcard-formula flashcard-formula-big"}>

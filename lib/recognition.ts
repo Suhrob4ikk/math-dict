@@ -8,6 +8,7 @@ interface RecognitionAlternative {
 }
 
 interface RecognitionEvent {
+  resultIndex: number;
   results: ArrayLike<ArrayLike<RecognitionAlternative> & { isFinal: boolean }>;
 }
 
@@ -43,11 +44,18 @@ export function recognitionSupported(): boolean {
 export type ListenError = "not-allowed" | "no-speech" | "network" | "other";
 
 export interface Listener {
+  // Закончить и проверить сказанное.
   stop(): void;
+  // Прервать без проверки (например, пользователь перешёл к другой карточке).
+  cancel(): void;
 }
 
-// Слушает одну фразу и возвращает все варианты, которые предложил распознаватель.
+// Слушает, пока человек говорит: паузы между словами не обрывают запись, поэтому можно
+// читать медленно, по слогам. Запись заканчивается кнопкой или после silenceMs тишины.
+// Результат — варианты всей фразы целиком (распознаватель даёт до 10 вариантов).
 export function listen(handlers: {
+  silenceMs: number;
+  onInterim?: (text: string) => void;
   onResult: (transcripts: string[]) => void;
   onError: (error: ListenError) => void;
   onEnd: () => void;
@@ -55,36 +63,72 @@ export function listen(handlers: {
   const Ctor = getCtor()!;
   const rec = new Ctor();
   rec.lang = "en-US";
-  rec.continuous = false;
-  rec.interimResults = false;
+  rec.continuous = true;
+  rec.interimResults = true;
   // Чем больше вариантов, тем выше шанс, что среди них есть правильный.
   rec.maxAlternatives = 10;
 
-  let gotResult = false;
+  // Законченные куски речи: для каждого — все варианты распознавания.
+  const finals: string[][] = [];
+  let failed = false;
+  let cancelled = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  // Если человек так и не начал говорить — через 7 секунд заканчиваем.
+  const wait = (ms: number) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => rec.stop(), ms);
+  };
+  wait(7000);
+
   rec.onresult = (e) => {
-    const transcripts: string[] = [];
-    for (let i = 0; i < e.results.length; i++) {
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
       const result = e.results[i];
-      for (let j = 0; j < result.length; j++) transcripts.push(result[j].transcript);
+      if (!result.isFinal) {
+        interim += result[0].transcript;
+        continue;
+      }
+      const alts = Array.from({ length: result.length }, (_, j) => result[j].transcript.trim());
+      const last = finals[finals.length - 1];
+      // Chrome на Android присылает нарастающие куски («x», «x bar», «x bar equals») —
+      // такой кусок заменяет предыдущий, а не добавляется к нему.
+      if (last && alts[0].toLowerCase().startsWith(last[0].toLowerCase())) finals[finals.length - 1] = alts;
+      else finals.push(alts);
     }
-    gotResult = true;
-    handlers.onResult(transcripts);
+    handlers.onInterim?.([...finals.map((a) => a[0]), interim.trim()].filter(Boolean).join(" "));
+    wait(handlers.silenceMs);
   };
   rec.onerror = (e) => {
-    if (e.error === "aborted") return;
-    gotResult = true;
+    if (e.error === "aborted" || (e.error === "no-speech" && finals.length)) return;
+    failed = true;
     if (e.error === "not-allowed" || e.error === "service-not-allowed") handlers.onError("not-allowed");
     else if (e.error === "no-speech") handlers.onError("no-speech");
     else if (e.error === "network") handlers.onError("network");
     else handlers.onError("other");
   };
   rec.onend = () => {
-    // Safari иногда завершает сессию молча, без результата и без ошибки.
-    if (!gotResult) handlers.onError("no-speech");
+    clearTimeout(timer);
+    if (!cancelled && !failed) {
+      if (!finals.length) handlers.onError("no-speech");
+      else {
+        const prefix = finals
+          .slice(0, -1)
+          .map((a) => a[0])
+          .join(" ");
+        handlers.onResult(finals[finals.length - 1].map((alt) => `${prefix} ${alt}`.trim()));
+      }
+    }
     handlers.onEnd();
   };
   rec.start();
-  return { stop: () => rec.stop() };
+  return {
+    stop: () => rec.stop(),
+    cancel: () => {
+      cancelled = true;
+      clearTimeout(timer);
+      rec.abort();
+    },
+  };
 }
 
 // ---------- Проверка произношения ----------

@@ -1384,3 +1384,89 @@ body:has(.practice) {
   width: 36px;
   height: 36px;
 }
+.feedback-listening {
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: var(--danger-soft);
+  font-weight: 400;
+}
+.feedback-listening .pulse {
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+.feedback-hint {
+  color: var(--text);
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+/* ---------- Длинные формулы по частям ---------- */
+
+.long-reader {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.long-card {
+  cursor: default;
+  min-height: 0;
+  gap: 14px;
+}
+.long-parts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 4px;
+  font-size: 1.35rem;
+  max-width: 100%;
+}
+.long-parts-code {
+  font-size: 1rem;
+  gap: 6px;
+}
+.long-part {
+  padding: 6px 6px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+  opacity: 0.45;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.long-part code {
+  white-space: pre;
+}
+.long-part-current {
+  opacity: 1;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.long-part-ok {
+  opacity: 1;
+  background: var(--success-soft);
+}
+.long-part-miss {
+  opacity: 1;
+  background: var(--danger-soft);
+}
+.long-readings {
+  margin: 0;
+  padding-left: 20px;
+  text-align: left;
+  align-self: stretch;
+  font-size: 0.9rem;
+}
+.long-readings li.ok {
+  color: var(--success);
+}
+.long-readings li.miss {
+  color: var(--danger);
+}
+.long-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+}

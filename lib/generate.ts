@@ -412,3 +412,159 @@ export function generateTasks(level: LevelId, count: number, rand: Rand = Math.r
   }
   return out;
 }
+
+// ---------- Длинные формулы: читаются по частям ----------
+
+export interface LongPart {
+  // LaTeX части (или кусок кода) — вместе части дают всю формулу.
+  text: string;
+  readings: string[];
+}
+
+export interface LongFormula {
+  id: string;
+  code?: boolean;
+  parts: LongPart[];
+}
+
+const p = (text: string, ...readings: string[]): LongPart => ({ text, readings });
+
+function foundationsLong(rand: Rand): LongPart[] {
+  const used = new Set<string>();
+  const left = term(rand, used);
+  const [rel, relWord] = pick(rand, RELATIONS);
+  const mid = binary(rand, used);
+  const [op, opWord] = pick(rand, [
+    ["+", "plus"],
+    ["-", "minus"],
+  ] as const);
+  const last = wrapped(rand, used);
+  return [
+    { text: `${left.tex} ${rel}`, readings: left.say.map((s) => `${s} ${relWord}`) },
+    { text: `${mid.tex} ${op}`, readings: mid.say.map((s) => `${s} ${opWord}`) },
+    { text: last.tex, readings: last.say },
+  ];
+}
+
+const LONG: Record<Exclude<LevelId, "foundations">, (Omit<LongFormula, "id">)[]> = {
+  essentials: [
+    {
+      parts: [
+        p("\\sigma^2 =", "sigma squared equals"),
+        p("\\frac{1}{n}", "one over n", "one over n times"),
+        p("\\sum_{i=1}^{n}", "the sum for i from one to n of", "the sum from i equals one to n of", "sum over i"),
+        p("(x_i - \\bar{x})^2", "x sub i minus x bar, all squared", "x sub i minus x bar squared"),
+      ],
+    },
+    {
+      parts: [
+        p("z_i =", "z sub i equals"),
+        p("\\frac{x_i - \\bar{x}}{\\sigma}", "x sub i minus x bar over sigma", "x sub i minus x bar, over sigma"),
+      ],
+    },
+    {
+      code: true,
+      parts: [
+        p('df[df["price"] > 100]', "d f where d f price is greater than one hundred", "d f d f price greater than one hundred"),
+        p('["city"]', "city"),
+        p(".value_counts()", "dot value counts"),
+      ],
+    },
+    {
+      code: true,
+      parts: [
+        p("[x ** 2", "x star star two", "x squared"),
+        p("for x in range(10)", "for x in range ten", "for x in range of ten"),
+        p("if x % 2 == 0]", "if x mod two double equals zero", "if x percent two double equals zero"),
+      ],
+    },
+  ],
+  practitioner: [
+    {
+      parts: [
+        p("\\lVert \\mathbf{x} \\rVert_2 =", "the L two norm of x equals", "the norm of x equals"),
+        p("\\sqrt{\\sum_{i} x_i^2}", "the square root of the sum of x sub i squared"),
+      ],
+    },
+    {
+      parts: [
+        p("\\mathbf{w} =", "w equals"),
+        p("(X^{\\top} X)^{-1}", "X transpose X, inverse", "X transpose X inverse"),
+        p("X^{\\top} \\mathbf{y}", "X transpose y", "times X transpose y"),
+      ],
+    },
+    {
+      parts: [
+        p("\\frac{d}{dx} x^n =", "the derivative of x to the power of n equals", "d d x of x to the n equals"),
+        p("n x^{n-1}", "n x to the power of n minus one", "n x to the n minus one"),
+      ],
+    },
+    {
+      code: true,
+      parts: [
+        p("X_train, X_test =", "X train comma X test equals", "X train X test equals"),
+        p("train_test_split(X,", "train test split of X", "train test split X"),
+        p("test_size=0.2)", "test size equals zero point two", "test size equals zero two"),
+      ],
+    },
+  ],
+  expert: [
+    {
+      parts: [
+        p("\\mathrm{MSE} =", "M S E equals", "mean squared error equals"),
+        p("\\frac{1}{n}\\sum_{i=1}^{n}", "one over n times the sum for i from one to n of", "one over n sum over i of"),
+        p("(y_i - \\hat{y}_i)^2", "y sub i minus y hat sub i, squared", "y sub i minus y hat sub i squared"),
+      ],
+    },
+    {
+      parts: [
+        p("\\hat{y} = \\sigma(z),", "y hat equals sigma of z"),
+        p("z = \\mathbf{w}^{\\top}\\mathbf{x} + b", "z equals w transpose x plus b"),
+      ],
+    },
+    {
+      parts: [
+        p("\\theta_{t+1} =", "theta sub t plus one equals"),
+        p("\\theta_t - \\alpha", "theta sub t minus alpha"),
+        p(
+          "\\nabla_{\\theta} L(\\theta_t)",
+          "the gradient of L with respect to theta at theta sub t",
+          "times the gradient of L of theta sub t",
+          "nabla theta L of theta sub t",
+        ),
+      ],
+    },
+    {
+      parts: [
+        p("L = -\\frac{1}{n}\\sum_{i=1}^{n}", "L equals minus one over n times the sum over i of", "L equals minus one over n sum over i"),
+        p("y_i \\log \\hat{y}_i", "y sub i log y hat sub i", "y sub i times log of y hat sub i"),
+        p(
+          "+ (1 - y_i)\\log(1 - \\hat{y}_i)",
+          "plus one minus y sub i, times log of one minus y hat sub i",
+          "plus one minus y sub i log one minus y hat sub i",
+        ),
+      ],
+    },
+    {
+      code: true,
+      parts: [
+        p("optimizer.zero_grad()", "optimizer dot zero grad"),
+        p("loss.backward()", "loss dot backward"),
+        p("optimizer.step()", "optimizer dot step"),
+      ],
+    },
+  ],
+};
+
+// count длинных формул для ступени: в Foundations — новые, на других ступенях — из набора.
+export function longFormulas(level: LevelId, count: number, rand: Rand = Math.random): LongFormula[] {
+  if (level === "foundations") {
+    return Array.from({ length: count }, (_, i) => ({ id: `long:${i}`, parts: foundationsLong(rand) }));
+  }
+  const pool = [...LONG[level]];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, count).map((f, i) => ({ ...f, id: `long:${i}` }));
+}
