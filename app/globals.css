@@ -1548,24 +1548,6 @@ body:has(.practice) {
 .formula-best .icon {
   fill: currentColor;
 }
-.soon-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 12px;
-  padding: 14px 16px;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  color: var(--muted);
-}
-.soon-card > span {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
-}
-.soon-card strong {
-  color: var(--text);
-}
 .formula-row-tex {
   max-width: 100%;
   overflow-x: auto;

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Formula from "@/components/Formula";
 import FormulaProgress, { FormulaMark, GameBest } from "@/components/FormulaProgress";
 import Icon from "@/components/Icon";
-import { FORMULA_TOPICS, FORMULAS, formulasOf, spokenName } from "@/lib/formulas";
+import { FORMULA_TOPICS, FORMULAS, formulasOf, spokenName, type FormulaTopic } from "@/lib/formulas";
 
 export const metadata: Metadata = { title: "Формулы | Math Read Aloud" };
 
@@ -12,7 +12,38 @@ const COLORS: Record<string, string> = {
   algebra: "level-essentials",
   geometry: "level-foundations",
   trigonometry: "level-practitioner",
+  calculus: "level-expert",
+  integrals: "level-practitioner",
+  series: "level-essentials",
 };
+
+function TopicCards({ stage }: { stage: FormulaTopic["stage"] }) {
+  return (
+    <ol className="level-list">
+      {FORMULA_TOPICS.filter((t) => t.stage === stage).map((topic) => {
+        const list = formulasOf(topic.id);
+        return (
+          <li key={topic.id}>
+            <Link href={`/formulas/play/${topic.id}`} className={`level-card ${COLORS[topic.id] ?? ""}`}>
+              <span className="level-icon">
+                <Icon name={stage === "school" ? "sigma" : "expert"} size={26} />
+              </span>
+              <span className="level-body">
+                <span className="level-step" lang="en">
+                  {topic.english}
+                </span>
+                <span className="level-name">{topic.name}</span>
+                <span className="level-subtitle">{list.length} формул</span>
+                <FormulaProgress topic={topic.id} ids={list.map((f) => f.id)} />
+              </span>
+              <Icon name="chevron-right" className="level-chevron" />
+            </Link>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
 
 export default function FormulasPage() {
   return (
@@ -20,8 +51,8 @@ export default function FormulasPage() {
       <section className="intro">
         <h1>Знаменитые формулы</h1>
         <p>
-          Учитесь узнавать и читать вслух главные формулы по-английски. Три игры на выбор; начинаем со школы,
-          дальше — университет.
+          Учитесь узнавать и читать вслух главные формулы по-английски. Три игры на выбор: школьные формулы и
+          университетские — пределы, интегралы, ряды.
         </p>
       </section>
 
@@ -66,37 +97,10 @@ export default function FormulasPage() {
       </ul>
 
       <h2 className="section-title">Школа · узнай и прочитай по темам</h2>
-      <ol className="level-list">
-        {FORMULA_TOPICS.filter((t) => t.stage === "school").map((topic) => {
-          const list = formulasOf(topic.id);
-          return (
-            <li key={topic.id}>
-              <Link href={`/formulas/play/${topic.id}`} className={`level-card ${COLORS[topic.id] ?? ""}`}>
-                <span className="level-icon">
-                  <Icon name="sigma" size={26} />
-                </span>
-                <span className="level-body">
-                  <span className="level-step" lang="en">
-                    {topic.english}
-                  </span>
-                  <span className="level-name">{topic.name}</span>
-                  <span className="level-subtitle">{list.length} формул</span>
-                  <FormulaProgress topic={topic.id} ids={list.map((f) => f.id)} />
-                </span>
-                <Icon name="chevron-right" className="level-chevron" />
-              </Link>
-            </li>
-          );
-        })}
-      </ol>
+      <TopicCards stage="school" />
 
-      <div className="soon-card">
-        <Icon name="expert" size={22} />
-        <span>
-          <strong>Университет — скоро</strong>
-          <span className="muted">Пределы, производные, интегралы, ряды и формулы из конспекта лекций.</span>
-        </span>
-      </div>
+      <h2 className="section-title">Университет · по конспекту лекций</h2>
+      <TopicCards stage="university" />
 
       {FORMULA_TOPICS.map((topic) => (
         <section key={topic.id} className="unit">
