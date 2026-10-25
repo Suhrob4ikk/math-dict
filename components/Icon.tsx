@@ -8,6 +8,13 @@ const PATHS = {
       <path d="M18.5 5.5a9 9 0 0 1 0 13" />
     </>
   ),
+  "volume-off": (
+    <>
+      <path d="M11 5 6 9H3v6h3l5 4V5z" />
+      <path d="m16 9.5 5 5" />
+      <path d="m21 9.5-5 5" />
+    </>
+  ),
   mic: (
     <>
       <rect x="9" y="3" width="6" height="11" rx="3" />

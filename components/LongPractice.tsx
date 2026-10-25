@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Celebrate } from "@/components/FeedbackLayer";
 import Icon from "@/components/Icon";
 import LongReader from "@/components/LongReader";
 import { longFormulas, type LongFormula } from "@/lib/generate";
@@ -29,6 +30,7 @@ export default function LongPractice({ level }: { level: { id: LevelId; name: st
     const ok = results.filter(Boolean).length;
     return (
       <div className="practice practice-done">
+        <Celebrate passed={ok > 0} />
         <div className="done-icon">
           <Icon name="check" size={40} />
         </div>

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
+import { answerFeedback } from "@/lib/feedback";
 import {
   checkPronunciation,
   listen,
@@ -65,6 +66,7 @@ export function useSpeechCheck() {
           onResult: (transcripts) => {
             const r = checkPronunciation(transcripts, targets, mode);
             setResult(r);
+            answerFeedback(r.verdict);
             onResult?.(r);
           },
           onError: setError,

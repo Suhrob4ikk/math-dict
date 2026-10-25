@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import ClientFormula from "@/components/ClientFormula";
+import { Celebrate } from "@/components/FeedbackLayer";
 import Icon from "@/components/Icon";
 import LongReader from "@/components/LongReader";
 import { SpeechFeedback, useSpeechCheck } from "@/components/SpeechCheck";
 import { buildExam, type ExamItem } from "@/lib/exam";
+import { verdictClass } from "@/lib/feedback";
 import type { LevelId } from "@/lib/levels";
 import { EXAM_PASS, EXAM_SIZE, useProgress } from "@/lib/progress";
 import { speak } from "@/lib/speech";
@@ -56,6 +58,7 @@ export default function Exam({ level, nextLevel, terms }: Props) {
     const best = Math.max(score, progress.exams[level.id] ?? 0);
     return (
       <div className="practice exam-result">
+        <Celebrate passed={passed} />
         <div className={passed ? "done-icon" : "done-icon done-icon-fail"}>
           <span className="exam-score">
             {score}/{items.length}
@@ -162,7 +165,7 @@ export default function Exam({ level, nextLevel, terms }: Props) {
             }}
           />
         ) : (
-          <div className="flashcard exam-card">
+          <div className={`flashcard exam-card${verdictClass(state.result?.verdict)}`}>
             <span className="exam-task">
               {item.kind === "term"
                 ? "Скажите по-английски"

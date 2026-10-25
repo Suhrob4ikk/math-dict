@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Celebrate } from "@/components/FeedbackLayer";
 import Icon from "@/components/Icon";
 import { SpeechFeedback, useSpeechCheck, type CheckMode } from "@/components/SpeechCheck";
+import { verdictClass } from "@/lib/feedback";
 import { useProgress } from "@/lib/progress";
 import { speak, speechSupported } from "@/lib/speech";
 import type { Term } from "@/lib/terms";
@@ -75,6 +77,7 @@ export default function Practice({ title, backHref, resumeKey, finish, terms, fo
   if (done) {
     return (
       <div className="practice practice-done">
+        <Celebrate passed />
         <div className="done-icon">
           <Icon name="check" size={40} />
         </div>
@@ -125,7 +128,7 @@ export default function Practice({ title, backHref, resumeKey, finish, terms, fo
       >
         <button
           type="button"
-          className={flipped ? "flashcard flipped" : "flashcard"}
+          className={`flashcard${flipped ? " flipped" : ""}${verdictClass(state.result?.verdict)}`}
           onClick={() => setFlipped((f) => !f)}
           aria-label={flipped ? "Скрыть перевод" : "Показать перевод"}
         >
