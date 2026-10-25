@@ -331,30 +331,6 @@ const SOUNDALIKES: Record<string, string[]> = {
   pi: ["pie", "pai"],
 };
 
-// Греческие буквы и короткие слова, которые распознаватель пишет «как слышит»
-// (проверено на телефоне: μ/λ → «new over Lumber», «you over Atlanta», «new oven Lambda»).
-// Буква засчитывается только там, где она в формуле есть, поэтому «new» = mu не мешает
-// другим заданиям. ν (nu) на сайте не встречается, поэтому «new»/«nu» отдаём mu;
-// «you» — это ещё и буква u, но u и μ в одной позиции формулы у нас не стоят.
-const GREEK_SOUNDALIKES: Record<string, string[]> = {
-  mu: ["new", "knew", "nu", "you", "mew", "moo", "mute", "meow", "mule", "mi", "me", "mo"],
-  lambda: ["lumber", "atlanta", "lambo", "lamba", "landa", "lambert", "llama", "lamda", "lumbar"],
-  over: ["oven", "offer", "ova", "overt"],
-  beta: ["better", "bait", "beater", "bita", "vita", "bayta", "baita"],
-  theta: ["data", "feta", "fita", "tata", "theater", "seta"],
-  delta: ["delt", "deltas", "dolta", "dealta"],
-  sigma: ["sigmar", "segma", "sickma", "zigma"],
-  epsilon: ["epsylon", "apsilon", "ipsilon", "absolon", "epsilom"],
-  alpha: ["alfa", "elfa", "alpa", "alfie"],
-  gamma: ["gama", "grammar", "gummer", "gamer"],
-  omega: ["omaga", "omiga", "omegas"],
-  phi: ["fi", "fee", "fie", "fy", "fai", "fly", "phy"],
-  psi: ["sigh", "sai", "psy", "sy", "cy", "sci"],
-  eta: ["ita", "eater", "ether", "etta", "aita", "ayta", "ada"],
-  tau: ["tao", "tow", "towel", "taw", "toe"],
-  nabla: ["nobla", "navla", "nebula", "napla", "nable", "nobel"],
-};
-
 function levenshtein(a: string, b: string): number {
   if (a === b) return 0;
   const prev = Array.from({ length: b.length + 1 }, (_, i) => i);
@@ -433,6 +409,30 @@ function firstSound(word: string): string {
   if (word.startsWith("h")) return "H";
   return soundKey(word).charAt(0);
 }
+
+// Греческие буквы и короткие слова, которые распознаватель пишет «как слышит»
+// (проверено на телефоне: μ/λ → «new over Lumber», «you over Atlanta», «new oven Lambda»).
+// Буква засчитывается только там, где она в формуле есть, поэтому «new» = mu не мешает
+// другим заданиям. ν (nu) на сайте не встречается, поэтому «new»/«nu» отдаём mu;
+// «you» — это ещё и буква u, но u и μ в одной позиции формулы у нас не стоят.
+const GREEK_SOUNDALIKES: Record<string, string[]> = {
+  mu: ["new", "knew", "nu", "you", "mew", "moo", "mute", "meow", "mule", "mi", "me", "mo"],
+  lambda: ["lumber", "atlanta", "lambo", "lamba", "landa", "lambert", "llama", "lamda", "lumbar"],
+  over: ["oven", "offer", "ova", "overt"],
+  beta: ["better", "bait", "beater", "bita", "vita", "bayta", "baita"],
+  theta: ["data", "feta", "fita", "tata", "theater", "seta"],
+  delta: ["delt", "deltas", "dolta", "dealta"],
+  sigma: ["sigmar", "segma", "sickma", "zigma"],
+  epsilon: ["epsylon", "apsilon", "ipsilon", "absolon", "epsilom"],
+  alpha: ["alfa", "elfa", "alpa", "alfie"],
+  gamma: ["gama", "grammar", "gummer", "gamer"],
+  omega: ["omaga", "omiga", "omegas"],
+  phi: ["fi", "fee", "fie", "fy", "fai", "fly", "phy"],
+  psi: ["sigh", "sai", "psy", "sy", "cy", "sci"],
+  eta: ["ita", "eater", "ether", "etta", "aita", "ayta", "ada"],
+  tau: ["tao", "tow", "towel", "taw", "toe"],
+  nabla: ["nobla", "navla", "nebula", "napla", "nable", "nobel"],
+};
 
 // Похожие по звучанию, но разные термины: нечёткое сравнение их не путает.
 const DISTINCT: [string, string][] = [
