@@ -313,12 +313,6 @@ const LETTERS: Record<string, string[]> = {
 // Частые ошибки распознавателя на словах из формул (проверено на телефоне):
 // «lambda» → «London», «tends» → «thanks».
 const SOUNDALIKES: Record<string, string[]> = {
-  // Греческие буквы из высшей математики.
-  phi: ["fi", "fee", "fie"],
-  psi: ["sigh", "sai", "psy", "sy"],
-  eta: ["ita", "eater", "ether"],
-  tau: ["tao", "tow", "towel"],
-  nabla: ["nobla", "navla", "nebula"],
   lambda: ["london", "lamb", "lander", "lambada"],
   tends: ["thanks", "tens", "tense", "tents", "ends", "tend"],
   sub: ["sup", "subs", "sab"],
@@ -335,6 +329,30 @@ const SOUNDALIKES: Record<string, string[]> = {
   tangent: ["tan", "tangents"],
   sine: ["sin", "sign", "sines"],
   pi: ["pie", "pai"],
+};
+
+// Греческие буквы и короткие слова, которые распознаватель пишет «как слышит»
+// (проверено на телефоне: μ/λ → «new over Lumber», «you over Atlanta», «new oven Lambda»).
+// Буква засчитывается только там, где она в формуле есть, поэтому «new» = mu не мешает
+// другим заданиям. ν (nu) на сайте не встречается, поэтому «new»/«nu» отдаём mu;
+// «you» — это ещё и буква u, но u и μ в одной позиции формулы у нас не стоят.
+const GREEK_SOUNDALIKES: Record<string, string[]> = {
+  mu: ["new", "knew", "nu", "you", "mew", "moo", "mute", "meow", "mule", "mi", "me", "mo"],
+  lambda: ["lumber", "atlanta", "lambo", "lamba", "landa", "lambert", "llama", "lamda", "lumbar"],
+  over: ["oven", "offer", "ova", "overt"],
+  beta: ["better", "bait", "beater", "bita", "vita", "bayta", "baita"],
+  theta: ["data", "feta", "fita", "tata", "theater", "seta"],
+  delta: ["delt", "deltas", "dolta", "dealta"],
+  sigma: ["sigmar", "segma", "sickma", "zigma"],
+  epsilon: ["epsylon", "apsilon", "ipsilon", "absolon", "epsilom"],
+  alpha: ["alfa", "elfa", "alpa", "alfie"],
+  gamma: ["gama", "grammar", "gummer", "gamer"],
+  omega: ["omaga", "omiga", "omegas"],
+  phi: ["fi", "fee", "fie", "fy", "fai", "fly", "phy"],
+  psi: ["sigh", "sai", "psy", "sy", "cy", "sci"],
+  eta: ["ita", "eater", "ether", "etta", "aita", "ayta", "ada"],
+  tau: ["tao", "tow", "towel", "taw", "toe"],
+  nabla: ["nobla", "navla", "nebula", "napla", "nable", "nobel"],
 };
 
 function levenshtein(a: string, b: string): number {
@@ -444,7 +462,7 @@ function tokenMatch(heard: string, target: string): boolean {
   if (heard === target) return true;
   if (distinct(heard, target)) return false;
   if (target.length === 1) return LETTERS[target]?.includes(heard) ?? false;
-  if (SOUNDALIKES[target]?.includes(heard)) return true;
+  if (SOUNDALIKES[target]?.includes(heard) || GREEK_SOUNDALIKES[target]?.includes(heard)) return true;
   if (heard.length === 1) return false;
   if (negated(heard, target)) return false;
   const hk = soundKey(heard);
