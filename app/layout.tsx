@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import BottomNav from "@/components/BottomNav";
+import FeedbackLayer, { SoundToggle } from "@/components/FeedbackLayer";
 import WordLookup from "@/components/WordLookup";
 import "katex/dist/katex.min.css";
 import "./globals.css";
@@ -29,10 +30,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" className="logo">
               <span className="logo-mark">∑</span> Math Read Aloud
             </Link>
+            <SoundToggle />
           </div>
         </header>
         <main className="container">{children}</main>
         <WordLookup />
+        <FeedbackLayer />
         <BottomNav />
       </body>
     </html>

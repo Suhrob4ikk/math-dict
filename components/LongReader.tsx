@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import katex from "katex";
 import Icon from "@/components/Icon";
 import { SpeechFeedback, useSpeechCheck } from "@/components/SpeechCheck";
+import { verdictClass } from "@/lib/feedback";
 import type { LongFormula } from "@/lib/generate";
 import { speak } from "@/lib/speech";
 
@@ -90,7 +91,7 @@ export default function LongReader({ formula, maxAttempts, hints = true, skip = 
 
   return (
     <div className="long-reader">
-      <div className="flashcard long-card">
+      <div className={`flashcard long-card${verdictClass(state.result?.verdict)}`}>
         <span className="exam-task">
           {finished ? "Формула прочитана" : `Часть ${current + 1} из ${formula.parts.length}`}
         </span>
