@@ -1,6 +1,8 @@
 import data from "@/data/terms.json";
+import type { LevelId } from "@/lib/levels";
 
 export const CATEGORIES = [
+  "notation",
   "statistics",
   "linear algebra",
   "calculus",
@@ -13,6 +15,7 @@ export const CATEGORIES = [
 export type Category = (typeof CATEGORIES)[number];
 
 export const CATEGORY_LABELS: Record<Category, string> = {
+  notation: "Обозначения",
   statistics: "Статистика",
   "linear algebra": "Линейная алгебра",
   calculus: "Матанализ",
@@ -33,11 +36,26 @@ export interface Term {
   latex?: string;
   python: string;
   category: Category;
+  level: LevelId;
+  // Что пользователь произносит в тренировке.
+  say: string;
+  // Как распознаватель может услышать правильное произношение: «num pie» для NumPy.
+  accept?: string[];
   related: string[];
+  // Тема внутри ступени (см. units в lib/levels.ts).
+  unit?: string;
 }
 
 export const terms: Term[] = data as Term[];
 
 export function getTerm(id: string): Term | undefined {
   return terms.find((t) => t.id === id);
+}
+
+export function termsByLevel(level: LevelId): Term[] {
+  return terms.filter((t) => t.level === level);
+}
+
+export function termsByUnit(level: LevelId, unit: string): Term[] {
+  return terms.filter((t) => t.level === level && t.unit === unit);
 }

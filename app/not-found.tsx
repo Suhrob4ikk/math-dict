@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="intro">
       <h1>Термин не найден</h1>
       <p>
-        <Link href="/">← Вернуться к словарю</Link>
+        <Link href="/">Вернуться на главную</Link>
       </p>
     </div>
   );

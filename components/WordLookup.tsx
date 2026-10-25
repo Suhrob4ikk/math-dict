@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import words from "@/data/words.json";
+import Icon from "@/components/Icon";
 import { speak, speechSupported } from "@/lib/speech";
 
 const glossary = words as Record<string, string>;
 
 // Клики по ссылкам, кнопкам, полям ввода и формулам KaTeX не перехватываем.
-const IGNORE = "a, button, input, textarea, select, label, .katex, .word-popup";
+const IGNORE = "a, button, input, textarea, select, label, .katex, .word-popup, .practice";
 
 interface Lookup {
   word: string;
@@ -174,11 +175,11 @@ export default function WordLookup() {
             onClick={() => speak(lookup.word)}
             aria-label="Произнести ещё раз"
           >
-            🔊
+            <Icon name="volume" size={18} />
           </button>
         )}
         <button type="button" className="word-popup-close" onClick={close} aria-label="Закрыть">
-          ×
+          <Icon name="close" size={18} />
         </button>
       </div>
       <p className="word-popup-translation">

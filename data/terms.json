@@ -1,5 +1,1778 @@
 [
   {
+    "id": "plus-minus",
+    "english": "plus and minus",
+    "russian": "сложение и вычитание",
+    "spoken": "a plus b minus c",
+    "latex": "a + b - c",
+    "python": "a, b, c = 5, 3, 1\na + b - c  # 7",
+    "category": "notation",
+    "related": [
+      "times-divided",
+      "equals"
+    ],
+    "level": "foundations",
+    "say": "a plus b minus c",
+    "accept": [
+      "a plus be minus see",
+      "eight plus b minus c"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "times-divided",
+    "english": "times and divided by",
+    "russian": "умножение и деление",
+    "spoken": "a times b divided by c",
+    "latex": "a \\times b \\div c",
+    "python": "a, b, c = 6, 2, 3\na * b / c  # 4.0",
+    "category": "notation",
+    "related": [
+      "plus-minus",
+      "fraction"
+    ],
+    "level": "foundations",
+    "say": "a times b divided by c",
+    "accept": [
+      "a times be divided by see",
+      "eight times b divided by c"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "equals",
+    "english": "equals",
+    "russian": "равно",
+    "spoken": "a equals b",
+    "latex": "a = b",
+    "python": "a == b   # сравнение в Python — два знака =",
+    "category": "notation",
+    "related": [
+      "not-equal",
+      "comparison-operators"
+    ],
+    "level": "foundations",
+    "say": "a equals b",
+    "accept": [
+      "a equal b",
+      "eight equals b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "not-equal",
+    "english": "is not equal to",
+    "russian": "не равно",
+    "spoken": "a is not equal to b",
+    "latex": "a \\neq b",
+    "python": "a != b",
+    "category": "notation",
+    "related": [
+      "equals",
+      "comparison-operators"
+    ],
+    "level": "foundations",
+    "say": "a is not equal to b",
+    "accept": [
+      "a not equal to b",
+      "a does not equal b",
+      "a not equals b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "less-than",
+    "english": "is less than",
+    "russian": "меньше",
+    "spoken": "a is less than b",
+    "latex": "a < b",
+    "python": "a < b",
+    "category": "notation",
+    "related": [
+      "greater-equal",
+      "comparison-operators"
+    ],
+    "level": "foundations",
+    "say": "a is less than b",
+    "accept": [
+      "a less than b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "greater-equal",
+    "english": "is greater than or equal to",
+    "russian": "больше или равно",
+    "spoken": "a is greater than or equal to b",
+    "latex": "a \\ge b",
+    "python": "a >= b",
+    "category": "notation",
+    "related": [
+      "less-than",
+      "comparison-operators"
+    ],
+    "level": "foundations",
+    "say": "a is greater than or equal to b",
+    "accept": [
+      "a greater than or equal to b",
+      "a greater or equal to b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "fraction",
+    "english": "fraction (a over b)",
+    "russian": "дробь",
+    "spoken": "a over b",
+    "latex": "\\frac{a}{b}",
+    "python": "a / b",
+    "category": "notation",
+    "related": [
+      "times-divided",
+      "mean"
+    ],
+    "level": "foundations",
+    "say": "a over b",
+    "accept": [
+      "a over be",
+      "eight over b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "approx",
+    "english": "is approximately equal to",
+    "russian": "приблизительно равно",
+    "spoken": "a is approximately equal to b",
+    "latex": "a \\approx b",
+    "python": "import math\nmath.isclose(0.1 + 0.2, 0.3)  # True",
+    "category": "notation",
+    "related": [
+      "equals"
+    ],
+    "level": "foundations",
+    "say": "a is approximately equal to b",
+    "accept": [
+      "a approximately equal to b",
+      "a is approximately equal b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "plus-or-minus",
+    "english": "a plus or minus b",
+    "russian": "a плюс-минус b",
+    "spoken": "a plus or minus b",
+    "latex": "a \\pm b",
+    "python": "x = 5\n(x + 2, x - 2)  # оба значения: 7 и 3",
+    "category": "notation",
+    "related": [
+      "plus-minus"
+    ],
+    "level": "foundations",
+    "say": "a plus or minus b",
+    "accept": [
+      "eight plus or minus b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "greater-than",
+    "english": "a is greater than b",
+    "russian": "a больше b",
+    "spoken": "a is greater than b",
+    "latex": "a > b",
+    "python": "5 > 3  # True",
+    "category": "notation",
+    "related": [
+      "less-than"
+    ],
+    "level": "foundations",
+    "say": "a is greater than b",
+    "accept": [
+      "a greater than b",
+      "eight is greater than b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "less-equal",
+    "english": "a is less than or equal to b",
+    "russian": "a меньше или равно b",
+    "spoken": "a is less than or equal to b",
+    "latex": "a \\le b",
+    "python": "3 <= 3  # True",
+    "category": "notation",
+    "related": [
+      "greater-equal"
+    ],
+    "level": "foundations",
+    "say": "a is less than or equal to b",
+    "accept": [
+      "a less than or equal to b",
+      "eight is less than or equal to b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "much-greater",
+    "english": "a is much greater than b",
+    "russian": "a намного больше b",
+    "spoken": "a is much greater than b",
+    "latex": "a \\gg b",
+    "python": "10**6 > 1  # «много больше» в Python не записать — это оценка на глаз",
+    "category": "notation",
+    "related": [
+      "greater-than"
+    ],
+    "level": "foundations",
+    "say": "a is much greater than b",
+    "accept": [
+      "a much greater than b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "identical",
+    "english": "a is identically equal to b",
+    "russian": "a тождественно равно b",
+    "spoken": "a is identically equal to b",
+    "latex": "a \\equiv b",
+    "python": "# ≡ — «равно всегда, при любых значениях»\n(a + b)**2 == a**2 + 2*a*b + b**2",
+    "category": "notation",
+    "related": [
+      "equals"
+    ],
+    "level": "foundations",
+    "say": "a is identically equal to b",
+    "accept": [
+      "a identically equal to b"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "proportional",
+    "english": "y is proportional to x",
+    "russian": "y пропорционален x",
+    "spoken": "y is proportional to x",
+    "latex": "y \\propto x",
+    "python": "k = 3\ny = k * x  # y растёт во столько же раз, что и x",
+    "category": "notation",
+    "related": [
+      "equals"
+    ],
+    "level": "foundations",
+    "say": "y is proportional to x",
+    "accept": [
+      "why is proportional to x"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "reciprocal",
+    "english": "one over x",
+    "russian": "единица, делённая на x (обратное число)",
+    "spoken": "one over x",
+    "latex": "\\frac{1}{x}",
+    "python": "x = 4\n1 / x  # 0.25",
+    "category": "notation",
+    "related": [
+      "fraction"
+    ],
+    "level": "foundations",
+    "say": "one over x",
+    "accept": [
+      "1 over x",
+      "one over ex"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "factorial",
+    "english": "n factorial",
+    "russian": "n факториал: 1 · 2 · … · n",
+    "spoken": "n factorial",
+    "transcription": "эн фэктóриал",
+    "latex": "n!",
+    "python": "import math\nmath.factorial(5)  # 120",
+    "category": "notation",
+    "related": [
+      "sum"
+    ],
+    "level": "foundations",
+    "say": "n factorial",
+    "accept": [
+      "and factorial",
+      "in factorial",
+      "en factorial"
+    ],
+    "unit": "arithmetic"
+  },
+  {
+    "id": "x-sub-i",
+    "english": "x sub i (subscript)",
+    "russian": "x с индексом i (i-й элемент)",
+    "spoken": "x sub i",
+    "latex": "x_i",
+    "python": "x = [10, 20, 30]\nx[1]  # 20",
+    "category": "notation",
+    "related": [
+      "sum",
+      "x-bar"
+    ],
+    "level": "foundations",
+    "say": "x sub i",
+    "accept": [
+      "ex sub i",
+      "x sub eye",
+      "x sub I",
+      "ex sub eye"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "x-bar",
+    "english": "x bar",
+    "russian": "x с чертой (среднее значение)",
+    "spoken": "x bar",
+    "latex": "\\bar{x}",
+    "python": "import numpy as np\nnp.mean([2, 4, 6])  # 4.0",
+    "category": "notation",
+    "related": [
+      "mean",
+      "x-sub-i",
+      "y-hat"
+    ],
+    "level": "foundations",
+    "say": "x bar",
+    "accept": [
+      "ex bar",
+      "x-bar"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "y-hat",
+    "english": "y-hat (prediction)",
+    "russian": "предсказание модели (игрек с крышкой)",
+    "spoken": "y hat",
+    "latex": "\\hat{y}",
+    "python": "y_hat = model.predict(X)",
+    "category": "ML basics",
+    "related": [
+      "mse",
+      "sigmoid"
+    ],
+    "level": "foundations",
+    "say": "y hat",
+    "accept": [
+      "why hat",
+      "yhat"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "delta",
+    "english": "delta x (change in x)",
+    "russian": "приращение x (дельта x)",
+    "spoken": "delta x",
+    "latex": "\\Delta x",
+    "python": "x1, x2 = 3, 7\ndelta_x = x2 - x1  # 4",
+    "category": "notation",
+    "related": [
+      "derivative",
+      "greek-letters"
+    ],
+    "level": "foundations",
+    "say": "delta x",
+    "accept": [
+      "delta ex",
+      "delta x"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "x-sub-zero",
+    "english": "x sub zero",
+    "russian": "x с индексом 0 (начальное значение)",
+    "spoken": "x sub zero",
+    "latex": "x_0",
+    "python": "x = [10, 20, 30]\nx[0]  # 10",
+    "category": "notation",
+    "related": [
+      "x-sub-i"
+    ],
+    "level": "foundations",
+    "say": "x sub zero",
+    "accept": [
+      "x sub 0",
+      "ex sub zero",
+      "x nought",
+      "x naught"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "x-sub-n-plus-one",
+    "english": "x sub n plus one",
+    "russian": "x с индексом n + 1 (следующий элемент)",
+    "spoken": "x sub n plus one",
+    "latex": "x_{n+1}",
+    "python": "x = [1, 2, 4, 8]\nn = 2\nx[n + 1]  # 8",
+    "category": "notation",
+    "related": [
+      "x-sub-i"
+    ],
+    "level": "foundations",
+    "say": "x sub n plus one",
+    "accept": [
+      "x sub n plus 1",
+      "ex sub n plus one"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "a-sub-ij",
+    "english": "a sub i j",
+    "russian": "элемент матрицы в строке i и столбце j",
+    "spoken": "a sub i j",
+    "latex": "a_{ij}",
+    "python": "A = [[1, 2], [3, 4]]\nA[0][1]  # 2",
+    "category": "notation",
+    "related": [
+      "x-sub-i",
+      "transpose-t"
+    ],
+    "level": "foundations",
+    "say": "a sub i j",
+    "accept": [
+      "a sub ij",
+      "eight sub i j",
+      "a sub i jay"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "x-prime",
+    "english": "x prime",
+    "russian": "x штрих (новое значение или производная)",
+    "spoken": "x prime",
+    "transcription": "экс прайм",
+    "latex": "x'",
+    "python": "x = 3\nx_prime = x + 1  # штрих в коде пишут как _prime",
+    "category": "notation",
+    "related": [
+      "f-prime"
+    ],
+    "level": "foundations",
+    "say": "x prime",
+    "accept": [
+      "ex prime",
+      "x prime"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "x-tilde",
+    "english": "x tilde",
+    "russian": "x с тильдой (волной): приближённое или изменённое значение",
+    "spoken": "x tilde",
+    "transcription": "экс тильда",
+    "latex": "\\tilde{x}",
+    "python": "x_tilde = round(3.14159, 2)  # 3.14",
+    "category": "notation",
+    "related": [
+      "x-bar",
+      "y-hat"
+    ],
+    "level": "foundations",
+    "say": "x tilde",
+    "accept": [
+      "ex tilde",
+      "x tilda",
+      "x Tilde"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "x-star",
+    "english": "x star",
+    "russian": "x со звёздочкой: лучшее (оптимальное) значение",
+    "spoken": "x star",
+    "transcription": "экс стар",
+    "latex": "x^*",
+    "python": "x_star = min(range(-5, 6), key=lambda x: (x - 2)**2)  # 2",
+    "category": "notation",
+    "related": [
+      "x-prime"
+    ],
+    "level": "foundations",
+    "say": "x star",
+    "accept": [
+      "ex star",
+      "x stars"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "vector-a",
+    "english": "vector a",
+    "russian": "вектор a",
+    "spoken": "vector a",
+    "latex": "\\vec{a}",
+    "python": "a = (3, 4)  # вектор — упорядоченный набор чисел",
+    "category": "notation",
+    "related": [
+      "vector-length",
+      "dot-vectors"
+    ],
+    "level": "foundations",
+    "say": "vector a",
+    "accept": [
+      "vector eight",
+      "vectors a"
+    ],
+    "unit": "marks"
+  },
+  {
+    "id": "squared",
+    "english": "x squared",
+    "russian": "x в квадрате",
+    "spoken": "x squared",
+    "latex": "x^2",
+    "python": "x ** 2",
+    "category": "notation",
+    "related": [
+      "power-n",
+      "square-root",
+      "power-operator"
+    ],
+    "level": "foundations",
+    "say": "x squared",
+    "accept": [
+      "ex squared",
+      "x square"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "power-n",
+    "english": "x to the power of n",
+    "russian": "x в степени n",
+    "spoken": "x to the power of n",
+    "latex": "x^n",
+    "python": "x ** n",
+    "category": "notation",
+    "related": [
+      "squared",
+      "exponent-e"
+    ],
+    "level": "foundations",
+    "say": "x to the power of n",
+    "accept": [
+      "x to the n",
+      "ex to the power of n",
+      "x to the power n"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "square-root",
+    "english": "square root",
+    "russian": "квадратный корень",
+    "spoken": "the square root of x",
+    "latex": "\\sqrt{x}",
+    "python": "import math\nmath.sqrt(16)  # 4.0",
+    "category": "notation",
+    "related": [
+      "squared",
+      "standard-deviation"
+    ],
+    "level": "foundations",
+    "say": "the square root of x",
+    "accept": [
+      "square root of x",
+      "square root of ex"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "absolute-value",
+    "english": "absolute value",
+    "russian": "модуль (абсолютная величина)",
+    "spoken": "the absolute value of x",
+    "latex": "|x|",
+    "python": "abs(-5)  # 5",
+    "category": "notation",
+    "related": [
+      "norm"
+    ],
+    "level": "foundations",
+    "say": "the absolute value of x",
+    "accept": [
+      "absolute value of x",
+      "absolute value of ex"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "exponent-e",
+    "english": "e to the x",
+    "russian": "экспонента (e в степени x)",
+    "spoken": "e to the x",
+    "latex": "e^x",
+    "python": "import numpy as np\nnp.exp(1)  # 2.718...",
+    "category": "notation",
+    "related": [
+      "power-n",
+      "sigmoid"
+    ],
+    "level": "foundations",
+    "say": "e to the x",
+    "accept": [
+      "e to the power of x",
+      "e to the ex",
+      "eat to the x"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "cubed",
+    "english": "x cubed",
+    "russian": "x в кубе",
+    "spoken": "x cubed",
+    "transcription": "экс кьюбд",
+    "latex": "x^3",
+    "python": "x = 2\nx ** 3  # 8",
+    "category": "notation",
+    "related": [
+      "squared",
+      "cube-root"
+    ],
+    "level": "foundations",
+    "say": "x cubed",
+    "accept": [
+      "x cube",
+      "ex cubed",
+      "x cubes"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "negative-power",
+    "english": "x to the minus one",
+    "russian": "x в степени минус один (то же, что 1/x)",
+    "spoken": "x to the minus one",
+    "latex": "x^{-1}",
+    "python": "x = 4\nx ** -1  # 0.25",
+    "category": "notation",
+    "related": [
+      "reciprocal",
+      "power-n"
+    ],
+    "level": "foundations",
+    "say": "x to the minus one",
+    "accept": [
+      "x to the minus 1",
+      "x to the power of minus one",
+      "x to the power of minus 1"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "cube-root",
+    "english": "the cube root of x",
+    "russian": "кубический корень из x",
+    "spoken": "the cube root of x",
+    "latex": "\\sqrt[3]{x}",
+    "python": "x = 27\nx ** (1 / 3)  # 3.0",
+    "category": "notation",
+    "related": [
+      "square-root",
+      "cubed"
+    ],
+    "level": "foundations",
+    "say": "the cube root of x",
+    "accept": [
+      "cube root of x",
+      "the cube root of ex"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "nth-root",
+    "english": "the n-th root of x",
+    "russian": "корень n-й степени из x",
+    "spoken": "the n th root of x",
+    "transcription": "зэ энс рут оф экс",
+    "latex": "\\sqrt[n]{x}",
+    "python": "x, n = 32, 5\nx ** (1 / n)  # 2.0",
+    "category": "notation",
+    "related": [
+      "square-root",
+      "cube-root"
+    ],
+    "level": "foundations",
+    "say": "the n th root of x",
+    "accept": [
+      "the nth root of x",
+      "nth root of x",
+      "the end root of x",
+      "the and through to of x",
+      "n th root of x"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "e-to-minus-x",
+    "english": "e to the minus x",
+    "russian": "e в степени минус x",
+    "spoken": "e to the minus x",
+    "latex": "e^{-x}",
+    "python": "import math\nmath.exp(-1)  # 0.3678…",
+    "category": "notation",
+    "related": [
+      "exponent-e"
+    ],
+    "level": "foundations",
+    "say": "e to the minus x",
+    "accept": [
+      "e to the power of minus x",
+      "e to the minus ex"
+    ],
+    "unit": "powers"
+  },
+  {
+    "id": "function-of-x",
+    "english": "f of x",
+    "russian": "функция f от x",
+    "spoken": "f of x",
+    "latex": "f(x)",
+    "python": "def f(x):\n    return x ** 2\n\nf(3)  # 9",
+    "category": "notation",
+    "related": [
+      "y-hat",
+      "derivative"
+    ],
+    "level": "foundations",
+    "say": "f of x",
+    "accept": [
+      "f of ex",
+      "ef of x",
+      "if of x"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "f-of-xy",
+    "english": "f of x and y",
+    "russian": "функция двух переменных x и y",
+    "spoken": "f of x and y",
+    "latex": "f(x, y)",
+    "python": "def f(x, y):\n    return x + y\nf(2, 3)  # 5",
+    "category": "notation",
+    "related": [
+      "function-of-x"
+    ],
+    "level": "foundations",
+    "say": "f of x and y",
+    "accept": [
+      "f of x comma y",
+      "f of x y",
+      "ef of x and y"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "f-of-g",
+    "english": "f of g of x",
+    "russian": "сложная функция: f от g от x",
+    "spoken": "f of g of x",
+    "latex": "f(g(x))",
+    "python": "g = lambda x: x + 1\nf = lambda x: x * 2\nf(g(3))  # 8",
+    "category": "notation",
+    "related": [
+      "function-of-x",
+      "f-inverse"
+    ],
+    "level": "foundations",
+    "say": "f of g of x",
+    "accept": [
+      "ef of g of x",
+      "f of gee of x"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "f-inverse",
+    "english": "f inverse of x",
+    "russian": "обратная функция к f",
+    "spoken": "f inverse of x",
+    "transcription": "эф инвёрс оф экс",
+    "latex": "f^{-1}(x)",
+    "python": "f = lambda x: 2 * x\nf_inv = lambda y: y / 2\nf_inv(f(5))  # 5.0",
+    "category": "notation",
+    "related": [
+      "f-of-g"
+    ],
+    "level": "foundations",
+    "say": "f inverse of x",
+    "accept": [
+      "f inverse x",
+      "ef inverse of x",
+      "the inverse of f of x"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "sine",
+    "english": "sine of x",
+    "russian": "синус x",
+    "spoken": "sine of x",
+    "transcription": "сайн оф экс",
+    "latex": "\\sin x",
+    "python": "import math\nmath.sin(math.pi / 2)  # 1.0",
+    "category": "notation",
+    "related": [
+      "cosine",
+      "tangent"
+    ],
+    "level": "foundations",
+    "say": "sine of x",
+    "accept": [
+      "sine x",
+      "sign of x",
+      "sign x",
+      "sin of x",
+      "sin x"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "cosine",
+    "english": "cosine of x",
+    "russian": "косинус x",
+    "spoken": "cosine of x",
+    "transcription": "кóусайн оф экс",
+    "latex": "\\cos x",
+    "python": "import math\nmath.cos(0)  # 1.0",
+    "category": "notation",
+    "related": [
+      "sine",
+      "tangent"
+    ],
+    "level": "foundations",
+    "say": "cosine of x",
+    "accept": [
+      "cosine x",
+      "cos of x",
+      "co sign of x",
+      "cos x"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "tangent",
+    "english": "tangent of x",
+    "russian": "тангенс x",
+    "spoken": "tangent of x",
+    "transcription": "тэнджент оф экс",
+    "latex": "\\tan x",
+    "python": "import math\nmath.tan(math.pi / 4)  # 1.0 (с погрешностью)",
+    "category": "notation",
+    "related": [
+      "sine",
+      "cosine"
+    ],
+    "level": "foundations",
+    "say": "tangent of x",
+    "accept": [
+      "tangent x",
+      "tan of x",
+      "tan x"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "natural-log",
+    "english": "the natural log of x",
+    "russian": "натуральный логарифм x (по основанию e)",
+    "spoken": "the natural log of x",
+    "transcription": "зэ нэчрал лог оф экс",
+    "latex": "\\ln x",
+    "python": "import math\nmath.log(math.e)  # 1.0",
+    "category": "notation",
+    "related": [
+      "log-base",
+      "exponent-e"
+    ],
+    "level": "foundations",
+    "say": "the natural log of x",
+    "accept": [
+      "natural log of x",
+      "the natural logarithm of x",
+      "l n of x",
+      "ln x",
+      "natural log x"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "log-base",
+    "english": "log base two of x",
+    "russian": "логарифм x по основанию 2",
+    "spoken": "log base two of x",
+    "latex": "\\log_2 x",
+    "python": "import math\nmath.log2(8)  # 3.0",
+    "category": "notation",
+    "related": [
+      "natural-log"
+    ],
+    "level": "foundations",
+    "say": "log base two of x",
+    "accept": [
+      "log base 2 of x",
+      "the log base two of x",
+      "log base to of x",
+      "log base two x"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "max-ab",
+    "english": "the maximum of a and b",
+    "russian": "максимум из a и b (большее из чисел)",
+    "spoken": "the maximum of a and b",
+    "latex": "\\max(a, b)",
+    "python": "max(3, 7)  # 7",
+    "category": "notation",
+    "related": [
+      "min-ab"
+    ],
+    "level": "foundations",
+    "say": "the maximum of a and b",
+    "accept": [
+      "max of a and b",
+      "maximum of a and b",
+      "the max of a and b"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "min-ab",
+    "english": "the minimum of a and b",
+    "russian": "минимум из a и b (меньшее из чисел)",
+    "spoken": "the minimum of a and b",
+    "latex": "\\min(a, b)",
+    "python": "min(3, 7)  # 3",
+    "category": "notation",
+    "related": [
+      "max-ab"
+    ],
+    "level": "foundations",
+    "say": "the minimum of a and b",
+    "accept": [
+      "min of a and b",
+      "minimum of a and b",
+      "the min of a and b"
+    ],
+    "unit": "functions"
+  },
+  {
+    "id": "greek-letters",
+    "english": "Greek letters: alpha, beta, lambda",
+    "russian": "греческие буквы",
+    "spoken": "alpha beta lambda",
+    "latex": "\\alpha,\\ \\beta,\\ \\lambda",
+    "python": "alpha = 0.01   # скорость обучения\nlam = 0.1      # lambda — слово занято в Python",
+    "category": "notation",
+    "related": [
+      "delta",
+      "lambda",
+      "gradient-descent"
+    ],
+    "level": "foundations",
+    "say": "alpha beta lambda",
+    "accept": [
+      "alpha beta lamda",
+      "alfa beta lambda"
+    ],
+    "unit": "greek"
+  },
+  {
+    "id": "pi",
+    "english": "pi",
+    "russian": "пи ≈ 3.14159 (отношение длины окружности к диаметру)",
+    "spoken": "pi",
+    "transcription": "пай",
+    "latex": "\\pi",
+    "python": "import math\nmath.pi  # 3.141592653589793",
+    "category": "notation",
+    "related": [
+      "greek-letters"
+    ],
+    "level": "foundations",
+    "say": "pi",
+    "accept": [
+      "pie",
+      "pye",
+      "pi"
+    ],
+    "unit": "greek"
+  },
+  {
+    "id": "sigma",
+    "english": "sigma",
+    "russian": "сигма (стандартное отклонение)",
+    "spoken": "sigma",
+    "transcription": "сúгма",
+    "latex": "\\sigma",
+    "python": "import statistics\nstatistics.pstdev([2, 4, 4, 4, 5, 5, 7, 9])  # 2.0",
+    "category": "notation",
+    "related": [
+      "mu",
+      "greek-letters"
+    ],
+    "level": "foundations",
+    "say": "sigma",
+    "accept": [
+      "sigma",
+      "stigma",
+      "sigmar"
+    ],
+    "unit": "greek"
+  },
+  {
+    "id": "mu",
+    "english": "mu",
+    "russian": "мю (среднее генеральной совокупности)",
+    "spoken": "mu",
+    "transcription": "мью",
+    "latex": "\\mu",
+    "python": "import statistics\nstatistics.mean([1, 2, 3])  # 2",
+    "category": "notation",
+    "related": [
+      "sigma"
+    ],
+    "level": "foundations",
+    "say": "mu",
+    "accept": [
+      "mew",
+      "moo",
+      "mute",
+      "meow",
+      "mule"
+    ],
+    "unit": "greek"
+  },
+  {
+    "id": "theta",
+    "english": "theta",
+    "russian": "тета (угол или параметры модели)",
+    "spoken": "theta",
+    "transcription": "сúта (с языком между зубами)",
+    "latex": "\\theta",
+    "python": "theta = [0.5, -1.2]  # параметры модели",
+    "category": "notation",
+    "related": [
+      "greek-letters"
+    ],
+    "level": "foundations",
+    "say": "theta",
+    "accept": [
+      "theta",
+      "thita"
+    ],
+    "unit": "greek"
+  },
+  {
+    "id": "epsilon",
+    "english": "epsilon",
+    "russian": "эпсилон (очень маленькое число)",
+    "spoken": "epsilon",
+    "transcription": "эпсилон",
+    "latex": "\\varepsilon",
+    "python": "eps = 1e-8  # чтобы не делить на ноль\n1 / (0 + eps)",
+    "category": "notation",
+    "related": [
+      "greek-letters"
+    ],
+    "level": "foundations",
+    "say": "epsilon",
+    "accept": [
+      "epsilon",
+      "upsilon",
+      "apsilon"
+    ],
+    "unit": "greek"
+  },
+  {
+    "id": "phi",
+    "english": "phi",
+    "russian": "фи (угол, функция)",
+    "spoken": "phi",
+    "transcription": "фай",
+    "latex": "\\varphi",
+    "python": "import math\nphi = (1 + math.sqrt(5)) / 2  # золотое сечение 1.618…",
+    "category": "notation",
+    "related": [
+      "theta"
+    ],
+    "level": "foundations",
+    "say": "phi",
+    "accept": [
+      "fi",
+      "fie",
+      "fly"
+    ],
+    "unit": "greek"
+  },
+  {
+    "id": "gamma",
+    "english": "gamma",
+    "russian": "гамма",
+    "spoken": "gamma",
+    "transcription": "гэмма",
+    "latex": "\\gamma",
+    "python": "gamma = 0.99  # в ML так часто называют коэффициент дисконтирования",
+    "category": "notation",
+    "related": [
+      "greek-letters"
+    ],
+    "level": "foundations",
+    "say": "gamma",
+    "accept": [
+      "gamma",
+      "gama",
+      "grammar",
+      "gummer"
+    ],
+    "unit": "greek"
+  },
+  {
+    "id": "belongs-to",
+    "english": "x belongs to A",
+    "russian": "x принадлежит множеству A",
+    "spoken": "x belongs to a",
+    "latex": "x \\in A",
+    "python": "A = {1, 2, 3}\n2 in A  # True",
+    "category": "notation",
+    "related": [
+      "not-belongs",
+      "subset"
+    ],
+    "level": "foundations",
+    "say": "x belongs to a",
+    "accept": [
+      "x is in a",
+      "x is an element of a",
+      "ex belongs to a",
+      "x belongs to eight"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "not-belongs",
+    "english": "x does not belong to A",
+    "russian": "x не принадлежит множеству A",
+    "spoken": "x does not belong to a",
+    "latex": "x \\notin A",
+    "python": "A = {1, 2, 3}\n5 not in A  # True",
+    "category": "notation",
+    "related": [
+      "belongs-to"
+    ],
+    "level": "foundations",
+    "say": "x does not belong to a",
+    "accept": [
+      "x is not in a",
+      "x doesnt belong to a",
+      "x is not an element of a"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "subset",
+    "english": "A is a subset of B",
+    "russian": "A — подмножество B",
+    "spoken": "a is a subset of b",
+    "latex": "A \\subset B",
+    "python": "{1, 2} <= {1, 2, 3}  # True",
+    "category": "notation",
+    "related": [
+      "belongs-to",
+      "union"
+    ],
+    "level": "foundations",
+    "say": "a is a subset of b",
+    "accept": [
+      "a subset of b",
+      "a is subset of b",
+      "eight is a subset of b"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "union",
+    "english": "A union B",
+    "russian": "объединение множеств A и B",
+    "spoken": "a union b",
+    "latex": "A \\cup B",
+    "python": "{1, 2} | {2, 3}  # {1, 2, 3}",
+    "category": "notation",
+    "related": [
+      "intersection"
+    ],
+    "level": "foundations",
+    "say": "a union b",
+    "accept": [
+      "a union be",
+      "the union of a and b",
+      "eight union b",
+      "a onion b"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "intersection",
+    "english": "A intersect B",
+    "russian": "пересечение множеств A и B",
+    "spoken": "a intersect b",
+    "latex": "A \\cap B",
+    "python": "{1, 2} & {2, 3}  # {2}",
+    "category": "notation",
+    "related": [
+      "union"
+    ],
+    "level": "foundations",
+    "say": "a intersect b",
+    "accept": [
+      "a intersection b",
+      "the intersection of a and b",
+      "a intersects b",
+      "eight intersect b"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "empty-set",
+    "english": "the empty set",
+    "russian": "пустое множество",
+    "spoken": "the empty set",
+    "latex": "\\varnothing",
+    "python": "set()  # пустое множество",
+    "category": "notation",
+    "related": [
+      "subset"
+    ],
+    "level": "foundations",
+    "say": "the empty set",
+    "accept": [
+      "empty set",
+      "an empty set"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "real-numbers",
+    "english": "the real numbers",
+    "russian": "множество действительных (вещественных) чисел",
+    "spoken": "the real numbers",
+    "latex": "\\mathbb{R}",
+    "python": "x = 3.14  # float — действительное число",
+    "category": "notation",
+    "related": [
+      "natural-numbers"
+    ],
+    "level": "foundations",
+    "say": "the real numbers",
+    "accept": [
+      "real numbers",
+      "the set of real numbers"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "natural-numbers",
+    "english": "the natural numbers",
+    "russian": "множество натуральных чисел: 1, 2, 3, …",
+    "spoken": "the natural numbers",
+    "latex": "\\mathbb{N}",
+    "python": "list(range(1, 6))  # [1, 2, 3, 4, 5]",
+    "category": "notation",
+    "related": [
+      "real-numbers"
+    ],
+    "level": "foundations",
+    "say": "the natural numbers",
+    "accept": [
+      "natural numbers",
+      "the set of natural numbers"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "closed-interval",
+    "english": "the closed interval from a to b",
+    "russian": "отрезок от a до b (концы входят)",
+    "spoken": "the closed interval from a to b",
+    "latex": "[a, b]",
+    "python": "a, b = 0, 1\nx = 1\na <= x <= b  # True",
+    "category": "notation",
+    "related": [
+      "open-interval"
+    ],
+    "level": "foundations",
+    "say": "the closed interval from a to b",
+    "accept": [
+      "closed interval from a to b",
+      "the closed interval a b",
+      "the closed interval from a to be"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "open-interval",
+    "english": "the open interval from a to b",
+    "russian": "интервал от a до b (концы не входят)",
+    "spoken": "the open interval from a to b",
+    "latex": "(a, b)",
+    "python": "a, b = 0, 1\nx = 1\na < x < b  # False",
+    "category": "notation",
+    "related": [
+      "closed-interval"
+    ],
+    "level": "foundations",
+    "say": "the open interval from a to b",
+    "accept": [
+      "open interval from a to b",
+      "the open interval a b",
+      "the open interval from a to be"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "for-all",
+    "english": "for all x",
+    "russian": "для любого x (квантор всеобщности)",
+    "spoken": "for all x",
+    "latex": "\\forall x",
+    "python": "all(x * 0 == 0 for x in range(10))  # True",
+    "category": "notation",
+    "related": [
+      "exists"
+    ],
+    "level": "foundations",
+    "say": "for all x",
+    "accept": [
+      "for all ex",
+      "for every x",
+      "for each x"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "exists",
+    "english": "there exists x",
+    "russian": "существует x (квантор существования)",
+    "spoken": "there exists x",
+    "latex": "\\exists x",
+    "python": "any(x * x == 9 for x in range(10))  # True",
+    "category": "notation",
+    "related": [
+      "for-all"
+    ],
+    "level": "foundations",
+    "say": "there exists x",
+    "accept": [
+      "there exists ex",
+      "there is x",
+      "there exist x"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "implies",
+    "english": "A implies B",
+    "russian": "из A следует B",
+    "spoken": "a implies b",
+    "latex": "A \\Rightarrow B",
+    "python": "A, B = True, True\n(not A) or B  # «A ⇒ B» в логике",
+    "category": "notation",
+    "related": [
+      "iff"
+    ],
+    "level": "foundations",
+    "say": "a implies b",
+    "accept": [
+      "a implies be",
+      "eight implies b",
+      "a employees b"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "iff",
+    "english": "A if and only if B",
+    "russian": "A равносильно B (тогда и только тогда)",
+    "spoken": "a if and only if b",
+    "latex": "A \\Leftrightarrow B",
+    "python": "A, B = True, True\nA == B  # «A ⇔ B»",
+    "category": "notation",
+    "related": [
+      "implies"
+    ],
+    "level": "foundations",
+    "say": "a if and only if b",
+    "accept": [
+      "a if and only if be",
+      "eight if and only if b",
+      "a if only if b"
+    ],
+    "unit": "sets"
+  },
+  {
+    "id": "vector-length",
+    "english": "the length of vector a",
+    "russian": "длина (модуль) вектора a",
+    "spoken": "the length of vector a",
+    "latex": "|\\vec{a}|",
+    "python": "import math\nmath.hypot(3, 4)  # 5.0",
+    "category": "notation",
+    "related": [
+      "vector-a"
+    ],
+    "level": "foundations",
+    "say": "the length of vector a",
+    "accept": [
+      "the magnitude of vector a",
+      "length of vector a",
+      "the length of the vector a",
+      "the modulus of vector a"
+    ],
+    "unit": "vectors"
+  },
+  {
+    "id": "dot-vectors",
+    "english": "a dot b (scalar product)",
+    "russian": "скалярное произведение векторов a и b",
+    "spoken": "a dot b",
+    "latex": "\\vec{a} \\cdot \\vec{b}",
+    "python": "a, b = (1, 2), (3, 4)\nsum(x * y for x, y in zip(a, b))  # 11",
+    "category": "notation",
+    "related": [
+      "cross-vectors",
+      "vector-a"
+    ],
+    "level": "foundations",
+    "say": "a dot b",
+    "accept": [
+      "a dot be",
+      "eight dot b",
+      "vector a dot vector b"
+    ],
+    "unit": "vectors"
+  },
+  {
+    "id": "cross-vectors",
+    "english": "a cross b (vector product)",
+    "russian": "векторное произведение векторов a и b",
+    "spoken": "a cross b",
+    "latex": "\\vec{a} \\times \\vec{b}",
+    "python": "import numpy as np\nnp.cross([1, 0, 0], [0, 1, 0])  # [0, 0, 1]",
+    "category": "notation",
+    "related": [
+      "dot-vectors"
+    ],
+    "level": "foundations",
+    "say": "a cross b",
+    "accept": [
+      "a cross be",
+      "eight cross b",
+      "vector a cross vector b",
+      "a cross bee"
+    ],
+    "unit": "vectors"
+  },
+  {
+    "id": "matrix-a",
+    "english": "an m by n matrix A",
+    "russian": "матрица A размера m на n (m строк, n столбцов)",
+    "spoken": "a m by n matrix a",
+    "latex": "A_{m \\times n}",
+    "python": "A = [[1, 2, 3], [4, 5, 6]]  # 2 × 3",
+    "category": "notation",
+    "related": [
+      "a-sub-ij",
+      "transpose-t"
+    ],
+    "level": "foundations",
+    "say": "a m by n matrix a",
+    "accept": [
+      "an m by n matrix a",
+      "m by n matrix a",
+      "a m by n matrix"
+    ],
+    "unit": "vectors"
+  },
+  {
+    "id": "transpose-t",
+    "english": "A transpose",
+    "russian": "транспонированная матрица A (строки становятся столбцами)",
+    "spoken": "a transpose",
+    "transcription": "эй трэнспóуз",
+    "latex": "A^T",
+    "python": "import numpy as np\nnp.array([[1, 2], [3, 4]]).T  # [[1, 3], [2, 4]]",
+    "category": "notation",
+    "related": [
+      "matrix-a",
+      "inverse-a"
+    ],
+    "level": "foundations",
+    "say": "a transpose",
+    "accept": [
+      "a transposed",
+      "eight transpose",
+      "the transpose of a"
+    ],
+    "unit": "vectors"
+  },
+  {
+    "id": "inverse-a",
+    "english": "A inverse",
+    "russian": "обратная матрица к A",
+    "spoken": "a inverse",
+    "transcription": "эй инвёрс",
+    "latex": "A^{-1}",
+    "python": "import numpy as np\nnp.linalg.inv([[2, 0], [0, 4]])  # [[0.5, 0], [0, 0.25]]",
+    "category": "notation",
+    "related": [
+      "transpose-t",
+      "determinant"
+    ],
+    "level": "foundations",
+    "say": "a inverse",
+    "accept": [
+      "a inverse",
+      "eight inverse",
+      "the inverse of a",
+      "a in verse"
+    ],
+    "unit": "vectors"
+  },
+  {
+    "id": "determinant",
+    "english": "the determinant of A",
+    "russian": "определитель матрицы A",
+    "spoken": "the determinant of a",
+    "transcription": "зэ дитёрминант оф эй",
+    "latex": "\\det A",
+    "python": "import numpy as np\nnp.linalg.det([[1, 2], [3, 4]])  # -2.0",
+    "category": "notation",
+    "related": [
+      "inverse-a",
+      "matrix-a"
+    ],
+    "level": "foundations",
+    "say": "the determinant of a",
+    "accept": [
+      "determinant of a",
+      "the determinant of eight"
+    ],
+    "unit": "vectors"
+  },
+  {
+    "id": "sum",
+    "english": "sum (sigma notation)",
+    "russian": "сумма",
+    "spoken": "the sum of x sub i, for i from one to n",
+    "latex": "\\sum_{i=1}^{n} x_i",
+    "python": "x = [1, 2, 3]\nsum(x)  # 6",
+    "category": "calculus",
+    "related": [
+      "mean",
+      "dot-product"
+    ],
+    "level": "foundations",
+    "say": "the sum of x sub i for i from one to n",
+    "accept": [
+      "sum from i equals one to n of x sub i",
+      "the sum of x sub i from i equals one to n"
+    ],
+    "unit": "calculus"
+  },
+  {
+    "id": "infinity",
+    "english": "n tends to infinity",
+    "russian": "n стремится к бесконечности",
+    "spoken": "n tends to infinity",
+    "latex": "n \\to \\infty",
+    "python": "import math\nmath.inf  # бесконечность",
+    "category": "notation",
+    "related": [
+      "sum",
+      "derivative"
+    ],
+    "level": "foundations",
+    "say": "n tends to infinity",
+    "accept": [
+      "n goes to infinity",
+      "and tends to infinity",
+      "n approaches infinity"
+    ],
+    "unit": "calculus"
+  },
+  {
+    "id": "limit",
+    "english": "the limit of f of x as x tends to a",
+    "russian": "предел f(x) при x, стремящемся к a",
+    "spoken": "the limit of f of x as x tends to a",
+    "latex": "\\lim_{x \\to a} f(x)",
+    "python": "f = lambda x: (x**2 - 1) / (x - 1)\nf(1.000001)  # ≈ 2 — предел при x → 1",
+    "category": "calculus",
+    "related": [
+      "infinity",
+      "f-prime"
+    ],
+    "level": "foundations",
+    "say": "the limit of f of x as x tends to a",
+    "accept": [
+      "the limit of f of x as x approaches a",
+      "limit of f of x as x tends to a",
+      "the limit as x tends to a of f of x",
+      "the limit as x approaches a of f of x"
+    ],
+    "unit": "calculus"
+  },
+  {
+    "id": "f-prime",
+    "english": "f prime of x",
+    "russian": "производная функции f",
+    "spoken": "f prime of x",
+    "transcription": "эф прайм оф экс",
+    "latex": "f'(x)",
+    "python": "f = lambda x: x**2\nh = 1e-6\n(f(3 + h) - f(3)) / h  # ≈ 6 = f'(3)",
+    "category": "calculus",
+    "related": [
+      "dy-dx",
+      "f-double-prime"
+    ],
+    "level": "foundations",
+    "say": "f prime of x",
+    "accept": [
+      "f prime x",
+      "ef prime of x",
+      "f prime of ex"
+    ],
+    "unit": "calculus"
+  },
+  {
+    "id": "f-double-prime",
+    "english": "f double prime of x",
+    "russian": "вторая производная функции f",
+    "spoken": "f double prime of x",
+    "latex": "f''(x)",
+    "python": "# f(x) = x³ → f'(x) = 3x² → f''(x) = 6x\nx = 2\n6 * x  # 12",
+    "category": "calculus",
+    "related": [
+      "f-prime"
+    ],
+    "level": "foundations",
+    "say": "f double prime of x",
+    "accept": [
+      "f double prime x",
+      "ef double prime of x",
+      "f second derivative of x"
+    ],
+    "unit": "calculus"
+  },
+  {
+    "id": "dy-dx",
+    "english": "d y by d x",
+    "russian": "производная y по x",
+    "spoken": "d y by d x",
+    "transcription": "ди уай бай ди экс",
+    "latex": "\\frac{dy}{dx}",
+    "python": "# dy/dx — во сколько раз y меняется быстрее x\ny = lambda x: 5 * x\n(y(2.001) - y(2)) / 0.001  # ≈ 5",
+    "category": "calculus",
+    "related": [
+      "f-prime",
+      "delta-ratio"
+    ],
+    "level": "foundations",
+    "say": "d y by d x",
+    "accept": [
+      "d y over d x",
+      "dy by dx",
+      "dy dx",
+      "dy over dx",
+      "d y d x",
+      "the y by the x"
+    ],
+    "unit": "calculus"
+  },
+  {
+    "id": "delta-ratio",
+    "english": "delta y over delta x",
+    "russian": "отношение приращений: насколько изменился y, делённое на изменение x",
+    "spoken": "delta y over delta x",
+    "latex": "\\frac{\\Delta y}{\\Delta x}",
+    "python": "x1, x2 = 1, 3\ny1, y2 = 2, 8\n(y2 - y1) / (x2 - x1)  # 3.0",
+    "category": "calculus",
+    "related": [
+      "dy-dx",
+      "delta"
+    ],
+    "level": "foundations",
+    "say": "delta y over delta x",
+    "accept": [
+      "delta why over delta x",
+      "delta y by delta x"
+    ],
+    "unit": "calculus"
+  },
+  {
+    "id": "integral",
+    "english": "the integral of f of x d x",
+    "russian": "неопределённый интеграл от f(x) по x",
+    "spoken": "the integral of f of x d x",
+    "latex": "\\int f(x)\\,dx",
+    "python": "# ∫ 2x dx = x² + C\nimport sympy as sp\nx = sp.symbols(\"x\")\nsp.integrate(2 * x, x)  # x**2",
+    "category": "calculus",
+    "related": [
+      "definite-integral"
+    ],
+    "level": "foundations",
+    "say": "the integral of f of x d x",
+    "accept": [
+      "integral of f of x d x",
+      "the integral of f of x dx",
+      "the integral of f of x the x",
+      "integral f of x dx"
+    ],
+    "unit": "calculus"
+  },
+  {
+    "id": "definite-integral",
+    "english": "the integral from a to b of f of x d x",
+    "russian": "определённый интеграл от a до b: площадь под графиком",
+    "spoken": "the integral from a to b of f of x d x",
+    "latex": "\\int_a^b f(x)\\,dx",
+    "python": "# ∫₀¹ x dx = 0.5\nn = 1000\nsum((i / n) * (1 / n) for i in range(n))  # ≈ 0.5",
+    "category": "calculus",
+    "related": [
+      "integral"
+    ],
+    "level": "foundations",
+    "say": "the integral from a to b of f of x d x",
+    "accept": [
+      "integral from a to b of f of x d x",
+      "the integral from a to b of f of x dx",
+      "the integral from a to be of f of x d x"
+    ],
+    "unit": "calculus"
+  },
+  {
     "id": "mean",
     "english": "mean (x bar)",
     "russian": "среднее арифметическое",
@@ -11,6 +1784,11 @@
       "sum",
       "variance",
       "groupby"
+    ],
+    "level": "essentials",
+    "say": "mean",
+    "accept": [
+      "the mean"
     ]
   },
   {
@@ -24,7 +1802,9 @@
     "related": [
       "mean",
       "standard-deviation"
-    ]
+    ],
+    "level": "essentials",
+    "say": "variance"
   },
   {
     "id": "standard-deviation",
@@ -37,188 +1817,22 @@
     "related": [
       "variance",
       "mean"
-    ]
+    ],
+    "level": "essentials",
+    "say": "standard deviation"
   },
   {
-    "id": "probability-given",
-    "english": "conditional probability (probability given)",
-    "russian": "условная вероятность",
-    "spoken": "the probability of A given B equals the probability of A and B over the probability of B",
-    "latex": "P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}",
-    "python": "# P(A | B) по таблице частот\np_a_and_b = 0.12\np_b = 0.4\np_a_given_b = p_a_and_b / p_b  # 0.3",
-    "category": "statistics",
+    "id": "comparison-operators",
+    "english": "comparison operators (==, !=, >=)",
+    "russian": "операторы сравнения",
+    "spoken": "x double equals three, meaning x is equal to three. x not equals three. x greater than or equal to three.",
+    "python": "x == 3   # \"x double equals three\"\nx != 3   # \"x not equals three\"\nx >= 3   # \"x greater than or equal to three\"",
+    "category": "Python syntax",
     "related": [
-      "mean"
-    ]
-  },
-  {
-    "id": "sum",
-    "english": "sum (sigma notation)",
-    "russian": "сумма",
-    "spoken": "the sum of x sub i, for i from one to n",
-    "latex": "\\sum_{i=1}^{n} x_i",
-    "python": "x = [1, 2, 3]\nsum(x)  # 6",
-    "category": "calculus",
-    "related": [
-      "mean",
-      "dot-product"
-    ]
-  },
-  {
-    "id": "derivative",
-    "english": "derivative",
-    "russian": "производная",
-    "spoken": "d f d x, or: the derivative of f with respect to x",
-    "latex": "\\frac{df}{dx} = f'(x)",
-    "python": "# численная производная f(x) = x**2 в точке 3\nf = lambda x: x ** 2\nh = 1e-6\n(f(3 + h) - f(3)) / h  # ≈ 6",
-    "category": "calculus",
-    "related": [
-      "partial-derivative",
-      "gradient"
-    ]
-  },
-  {
-    "id": "partial-derivative",
-    "english": "partial derivative",
-    "russian": "частная производная",
-    "spoken": "partial L by partial w, or: the partial derivative of L with respect to w",
-    "latex": "\\frac{\\partial L}{\\partial w}",
-    "python": "# L(w, b) = (w*x + b - y)**2, производная по w\nx, y, w, b = 2.0, 5.0, 1.0, 0.0\ndL_dw = 2 * (w * x + b - y) * x  # -12.0",
-    "category": "calculus",
-    "related": [
-      "derivative",
-      "gradient"
-    ]
-  },
-  {
-    "id": "gradient",
-    "english": "gradient",
-    "russian": "градиент",
-    "spoken": "nabla theta of J of theta, or: the gradient of J with respect to theta",
-    "latex": "\\nabla_{\\theta} J(\\theta)",
-    "python": "# градиент MSE для линейной регрессии\ngrad = 2 / len(y) * X.T @ (X @ theta - y)",
-    "category": "calculus",
-    "related": [
-      "partial-derivative",
-      "gradient-descent",
-      "mse"
-    ]
-  },
-  {
-    "id": "dot-product",
-    "english": "dot product",
-    "russian": "скалярное произведение",
-    "spoken": "a dot b equals the sum over i of a sub i times b sub i",
-    "latex": "\\mathbf{a} \\cdot \\mathbf{b} = \\sum_{i} a_i b_i",
-    "python": "a = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\na @ b  # 32  (или np.dot(a, b))",
-    "category": "linear algebra",
-    "related": [
-      "sum",
-      "norm",
-      "matmul-operator"
-    ]
-  },
-  {
-    "id": "norm",
-    "english": "L2 norm (vector length)",
-    "russian": "евклидова норма (длина вектора)",
-    "spoken": "the L two norm of x equals the square root of the sum of x sub i squared",
-    "latex": "\\lVert \\mathbf{x} \\rVert_2 = \\sqrt{\\sum_{i} x_i^2}",
-    "python": "x = np.array([3, 4])\nnp.linalg.norm(x)  # 5.0",
-    "category": "linear algebra",
-    "related": [
-      "dot-product"
-    ]
-  },
-  {
-    "id": "transpose",
-    "english": "transpose",
-    "russian": "транспонирование",
-    "spoken": "A transpose",
-    "latex": "A^{\\top}",
-    "python": "A = np.array([[1, 2, 3],\n              [4, 5, 6]])\nA.T.shape  # (3, 2)",
-    "category": "linear algebra",
-    "related": [
-      "matrix-inverse",
-      "matmul-operator"
-    ]
-  },
-  {
-    "id": "matrix-inverse",
-    "english": "matrix inverse",
-    "russian": "обратная матрица",
-    "spoken": "A inverse; A times A inverse equals the identity matrix I",
-    "latex": "A^{-1}, \\quad A A^{-1} = I",
-    "python": "A = np.array([[2, 0], [0, 4]])\nnp.linalg.inv(A)  # [[0.5, 0], [0, 0.25]]",
-    "category": "linear algebra",
-    "related": [
-      "transpose"
-    ]
-  },
-  {
-    "id": "y-hat",
-    "english": "y-hat (prediction)",
-    "russian": "предсказание модели (игрек с крышкой)",
-    "spoken": "y hat equals f of x",
-    "latex": "\\hat{y} = f(x)",
-    "python": "y_hat = model.predict(X)",
-    "category": "ML basics",
-    "related": [
-      "mse",
-      "sigmoid"
-    ]
-  },
-  {
-    "id": "mse",
-    "english": "mean squared error (MSE)",
-    "russian": "среднеквадратичная ошибка",
-    "spoken": "M S E equals one over n times the sum of y sub i minus y hat sub i, squared",
-    "latex": "\\mathrm{MSE} = \\frac{1}{n}\\sum_{i=1}^{n} (y_i - \\hat{y}_i)^2",
-    "python": "from sklearn.metrics import mean_squared_error\nmean_squared_error(y, y_hat)\n# или вручную: np.mean((y - y_hat) ** 2)",
-    "category": "ML basics",
-    "related": [
-      "y-hat",
-      "variance",
-      "argmin"
-    ]
-  },
-  {
-    "id": "argmin",
-    "english": "arg min",
-    "russian": "аргумент минимума (argmin)",
-    "spoken": "theta hat equals the arg min over theta of L of theta",
-    "latex": "\\hat{\\theta} = \\arg\\min_{\\theta} L(\\theta)",
-    "python": "losses = np.array([0.9, 0.3, 0.5])\nnp.argmin(losses)  # 1 — индекс, а не значение",
-    "category": "ML basics",
-    "related": [
-      "gradient-descent",
-      "mse"
-    ]
-  },
-  {
-    "id": "gradient-descent",
-    "english": "gradient descent update",
-    "russian": "шаг градиентного спуска",
-    "spoken": "theta gets theta minus alpha times the gradient of L with respect to theta",
-    "latex": "\\theta \\leftarrow \\theta - \\alpha \\nabla_{\\theta} L(\\theta)",
-    "python": "alpha = 0.01  # learning rate\nfor _ in range(1000):\n    theta -= alpha * grad(theta)",
-    "category": "ML basics",
-    "related": [
-      "gradient",
-      "argmin"
-    ]
-  },
-  {
-    "id": "sigmoid",
-    "english": "sigmoid function",
-    "russian": "сигмоида",
-    "spoken": "sigma of z equals one over one plus e to the minus z",
-    "latex": "\\sigma(z) = \\frac{1}{1 + e^{-z}}",
-    "python": "def sigmoid(z):\n    return 1 / (1 + np.exp(-z))\n\nsigmoid(0)  # 0.5",
-    "category": "ML basics",
-    "related": [
-      "y-hat"
-    ]
+      "power-operator"
+    ],
+    "level": "essentials",
+    "say": "comparison operators"
   },
   {
     "id": "power-operator",
@@ -232,36 +1846,100 @@
       "variance",
       "norm",
       "comparison-operators"
+    ],
+    "level": "essentials",
+    "say": "power operator"
+  },
+  {
+    "id": "brackets",
+    "english": "brackets: ( ) [ ] { }",
+    "russian": "названия скобок",
+    "spoken": "parentheses, square brackets, and curly braces. In British English: round brackets, square brackets, and curly brackets.",
+    "transcription": "пэрэ́нтэсиз, сквэа брэ́китс, кёрли брэ́йсиз",
+    "python": "print(x)    # parentheses — круглые\nxs[0]       # square brackets — квадратные\n{\"a\": 1}    # curly braces — фигурные",
+    "category": "Python syntax",
+    "related": [
+      "list-comprehension",
+      "f-string",
+      "tuple"
+    ],
+    "level": "essentials",
+    "say": "brackets",
+    "accept": [
+      "brackets",
+      "rackets"
     ]
   },
   {
-    "id": "matmul-operator",
-    "english": "matrix multiplication operator (@)",
-    "russian": "матричное умножение",
-    "spoken": "X times w. In Python code: X at w",
-    "latex": "X\\mathbf{w}",
-    "python": "X = np.array([[1, 2], [3, 4]])\nw = np.array([0.5, 1.0])\nX @ w  # array([2.5, 5.5])",
-    "category": "Python/pandas",
+    "id": "f-string",
+    "english": "f-string",
+    "russian": "форматированная строка",
+    "spoken": "f string. Short for formatted string literal.",
+    "transcription": "эф-стринг",
+    "python": "loss = 0.1234\nprint(f\"loss = {loss:.2f}\")  # loss = 0.12",
+    "category": "Python syntax",
     "related": [
-      "dot-product",
-      "transpose",
-      "numpy"
+      "brackets",
+      "regex"
+    ],
+    "level": "essentials",
+    "say": "f-string",
+    "accept": [
+      "f string",
+      "ef string",
+      "eff string"
     ]
   },
   {
-    "id": "groupby",
-    "english": "group by (pandas groupby)",
-    "russian": "группировка",
-    "spoken": "d f dot group by city, then price, dot mean. In math: y bar sub g, the mean of y within group g",
-    "latex": "\\bar{y}_g = \\frac{1}{n_g}\\sum_{i \\in g} y_i",
-    "python": "import pandas as pd\ndf.groupby(\"city\")[\"price\"].mean()",
-    "category": "Python/pandas",
+    "id": "tuple",
+    "english": "tuple",
+    "russian": "кортеж",
+    "spoken": "tuple. You can say too pull, or tup pull. Both are correct.",
+    "transcription": "тьюпл / тапл",
+    "python": "point = (3, 4)\nx, y = point  # распаковка кортежа\ndf.shape  # (rows, cols) — тоже кортеж",
+    "category": "Python syntax",
     "related": [
-      "mean",
-      "sum",
-      "pandas",
-      "sql"
+      "brackets"
+    ],
+    "level": "essentials",
+    "say": "tuple",
+    "accept": [
+      "topple",
+      "two pull",
+      "tupple"
     ]
+  },
+  {
+    "id": "snake-case",
+    "english": "snake_case and camelCase",
+    "russian": "стили именования переменных",
+    "spoken": "snake case, as in learning underscore rate. Camel case, as in learning rate with a capital R.",
+    "transcription": "снейк-кейс, кэ́мел-кейс",
+    "python": "learning_rate = 0.01   # snake_case — стиль Python (PEP 8)\nlearningRate = 0.01    # camelCase — стиль JavaScript\nclass LinearModel: ... # PascalCase — для классов",
+    "category": "Python syntax",
+    "related": [
+      "dunder"
+    ],
+    "level": "essentials",
+    "say": "snake case",
+    "accept": [
+      "snake case and camel case"
+    ]
+  },
+  {
+    "id": "import-as",
+    "english": "import … as (alias)",
+    "russian": "импорт с коротким именем (псевдонимом)",
+    "spoken": "import num pie as N P. Import pandas as P D.",
+    "transcription": "импорт нам-пай эз эн-пи",
+    "python": "import numpy as np\nimport pandas as pd",
+    "category": "Python syntax",
+    "related": [
+      "numpy",
+      "pandas"
+    ],
+    "level": "essentials",
+    "say": "import as"
   },
   {
     "id": "numpy",
@@ -275,6 +1953,14 @@
       "pandas",
       "scipy",
       "import-as"
+    ],
+    "level": "essentials",
+    "say": "NumPy",
+    "accept": [
+      "num pie",
+      "numb pie",
+      "num py",
+      "numpie"
     ]
   },
   {
@@ -289,112 +1975,12 @@
       "numpy",
       "groupby",
       "import-as"
-    ]
-  },
-  {
-    "id": "scipy",
-    "english": "SciPy",
-    "russian": "библиотека научных вычислений",
-    "spoken": "sigh pie. Short for scientific Python.",
-    "transcription": "сай-пай",
-    "python": "from scipy import stats\nstats.norm.pdf(0)  # 0.3989...",
-    "category": "libraries",
-    "related": [
-      "numpy",
-      "standard-deviation"
-    ]
-  },
-  {
-    "id": "scikit-learn",
-    "english": "scikit-learn (sklearn)",
-    "russian": "библиотека классического машинного обучения",
-    "spoken": "sy kit learn. People also say S K learn, after the import name.",
-    "transcription": "сай-кит лёрн",
-    "python": "from sklearn.linear_model import LinearRegression\nmodel = LinearRegression().fit(X, y)\ny_hat = model.predict(X)",
-    "category": "libraries",
-    "related": [
-      "y-hat",
-      "mse",
-      "pytorch"
-    ]
-  },
-  {
-    "id": "matplotlib",
-    "english": "Matplotlib",
-    "russian": "библиотека для графиков",
-    "spoken": "mat plot lib. Short for math plotting library.",
-    "transcription": "мэт-плот-либ",
-    "python": "import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [1, 4, 9])\nplt.show()",
-    "category": "libraries",
-    "related": [
-      "seaborn",
-      "import-as"
-    ]
-  },
-  {
-    "id": "seaborn",
-    "english": "seaborn",
-    "russian": "библиотека статистических графиков",
-    "spoken": "sea born",
-    "transcription": "си-борн",
-    "python": "import seaborn as sns\nsns.histplot(df[\"price\"])",
-    "category": "libraries",
-    "related": [
-      "matplotlib",
+    ],
+    "level": "essentials",
+    "say": "pandas",
+    "accept": [
+      "panda's",
       "pandas"
-    ]
-  },
-  {
-    "id": "pytorch",
-    "english": "PyTorch",
-    "russian": "фреймворк для нейросетей",
-    "spoken": "pie torch",
-    "transcription": "пай-торч",
-    "python": "import torch\nx = torch.tensor([1.0, 2.0], requires_grad=True)\n(x ** 2).sum().backward()\nx.grad  # tensor([2., 4.])",
-    "category": "libraries",
-    "related": [
-      "gradient",
-      "keras",
-      "scikit-learn"
-    ]
-  },
-  {
-    "id": "jupyter",
-    "english": "Jupyter Notebook",
-    "russian": "интерактивные блокноты для кода",
-    "spoken": "jupiter notebook, pronounced like the planet Jupiter.",
-    "transcription": "джу́питер ноутбук",
-    "python": "# магическая команда в ячейке Jupyter\n%timeit sum(range(1000))",
-    "category": "libraries",
-    "related": [
-      "pandas",
-      "matplotlib"
-    ]
-  },
-  {
-    "id": "keras",
-    "english": "Keras",
-    "russian": "высокоуровневый API для нейросетей",
-    "spoken": "keh russ. It rhymes with terrace.",
-    "transcription": "ке́рас",
-    "python": "from tensorflow import keras\nmodel = keras.Sequential([keras.layers.Dense(1)])",
-    "category": "libraries",
-    "related": [
-      "pytorch",
-      "sigmoid"
-    ]
-  },
-  {
-    "id": "sql",
-    "english": "SQL",
-    "russian": "язык запросов к базам данных",
-    "spoken": "sequel, or S Q L. Both are correct.",
-    "transcription": "си́квел / эс-кью-эл",
-    "python": "import pandas as pd\npd.read_sql(\"SELECT city, AVG(price) FROM flats GROUP BY city\", conn)",
-    "category": "libraries",
-    "related": [
-      "pandas",
-      "groupby"
     ]
   },
   {
@@ -408,55 +1994,30 @@
     "related": [
       "pandas",
       "brackets"
+    ],
+    "level": "essentials",
+    "say": "JSON",
+    "accept": [
+      "jason",
+      "j son"
     ]
   },
   {
-    "id": "regex",
-    "english": "regex (regular expression)",
-    "russian": "регулярное выражение",
-    "spoken": "rej ex. Short for regular expression.",
-    "transcription": "ре́джекс",
-    "python": "import re\nre.findall(r\"\\d+\", \"a1b22\")  # ['1', '22']",
+    "id": "jupyter",
+    "english": "Jupyter Notebook",
+    "russian": "интерактивные блокноты для кода",
+    "spoken": "jupiter notebook, pronounced like the planet Jupiter.",
+    "transcription": "джу́питер ноутбук",
+    "python": "# магическая команда в ячейке Jupyter\n%timeit sum(range(1000))",
     "category": "libraries",
     "related": [
-      "f-string"
-    ]
-  },
-  {
-    "id": "import-as",
-    "english": "import … as (alias)",
-    "russian": "импорт с коротким именем (псевдонимом)",
-    "spoken": "import num pie as N P. Import pandas as P D.",
-    "transcription": "импорт нам-пай эз эн-пи",
-    "python": "import numpy as np\nimport pandas as pd",
-    "category": "Python syntax",
-    "related": [
-      "numpy",
-      "pandas"
-    ]
-  },
-  {
-    "id": "dunder",
-    "english": "dunder (double underscore)",
-    "russian": "«магические» методы с двойным подчёркиванием",
-    "spoken": "dunder init. Dunder means double underscore, so the method with two underscores on each side of init is read as dunder init.",
-    "transcription": "да́ндер ини́т",
-    "python": "class Model:\n    def __init__(self, lr):  # «dunder init»\n        self.lr = lr",
-    "category": "Python syntax",
-    "related": [
-      "snake-case",
-      "args-kwargs"
-    ]
-  },
-  {
-    "id": "comparison-operators",
-    "english": "comparison operators (==, !=, >=)",
-    "russian": "операторы сравнения",
-    "spoken": "x double equals three, meaning x is equal to three. x not equals three. x greater than or equal to three.",
-    "python": "x == 3   # \"x double equals three\"\nx != 3   # \"x not equals three\"\nx >= 3   # \"x greater than or equal to three\"",
-    "category": "Python syntax",
-    "related": [
-      "power-operator"
+      "pandas",
+      "matplotlib"
+    ],
+    "level": "essentials",
+    "say": "Jupyter Notebook",
+    "accept": [
+      "jupiter notebook"
     ]
   },
   {
@@ -470,6 +2031,12 @@
     "related": [
       "list-comprehension",
       "sigmoid"
+    ],
+    "level": "essentials",
+    "say": "lambda",
+    "accept": [
+      "lamda",
+      "lamb da"
     ]
   },
   {
@@ -484,7 +2051,136 @@
       "lambda",
       "brackets",
       "power-operator"
+    ],
+    "level": "essentials",
+    "say": "list comprehension"
+  },
+  {
+    "id": "dataframe",
+    "english": "DataFrame",
+    "russian": "таблица pandas: строки — объекты, столбцы — признаки",
+    "spoken": "the data set D of pairs x sub i, y sub i, for i from one to m. In Python code: p d dot data frame",
+    "transcription": "дэ́йта-фрейм",
+    "latex": "D = \\{(\\mathbf{x}_i, y_i)\\}_{i=1}^{m}",
+    "python": "import pandas as pd\ndf = pd.DataFrame({\"city\": [\"A\", \"B\"], \"price\": [100, 250]})\ndf.head()  # первые строки таблицы",
+    "category": "Python/pandas",
+    "related": [
+      "groupby",
+      "iloc",
+      "boolean-mask",
+      "pandas"
+    ],
+    "level": "essentials",
+    "say": "DataFrame",
+    "accept": [
+      "data frame"
     ]
+  },
+  {
+    "id": "iloc",
+    "english": "iloc and loc (indexing)",
+    "russian": "индексация: iloc — по номеру, loc — по метке",
+    "spoken": "X sub i j, the element in row i and column j. In Python code: d f dot i loc, i comma j",
+    "transcription": "ай-лок, лок",
+    "latex": "X_{ij}",
+    "python": "df.iloc[0, 1]          # строка 0, столбец 1 (по позиции)\ndf.loc[0, \"price\"]     # строка с меткой 0, столбец price",
+    "category": "Python/pandas",
+    "related": [
+      "dataframe",
+      "boolean-mask"
+    ],
+    "level": "essentials",
+    "say": "iloc",
+    "accept": [
+      "i lock",
+      "eye lock",
+      "i loc"
+    ]
+  },
+  {
+    "id": "plot",
+    "english": "line plot (plt.plot)",
+    "russian": "линейный график функции или ряда",
+    "spoken": "the graph of y equals f of x. In Python code: p l t dot plot, x comma y",
+    "transcription": "плот",
+    "latex": "y = f(x)",
+    "python": "import matplotlib.pyplot as plt\nx = np.linspace(-3, 3, 100)\nplt.plot(x, x ** 2)\nplt.xlabel(\"x\"); plt.ylabel(\"y\")\nplt.show()",
+    "category": "Python/pandas",
+    "related": [
+      "histogram",
+      "sigmoid",
+      "matplotlib"
+    ],
+    "level": "essentials",
+    "say": "line plot"
+  },
+  {
+    "id": "histogram",
+    "english": "histogram (plt.hist)",
+    "russian": "гистограмма: сколько значений попало в каждый интервал",
+    "spoken": "n sub k equals the number of i such that x sub i is in bin k. In Python code: p l t dot hist, x, bins equals twenty",
+    "transcription": "хи́стограм",
+    "latex": "n_k = \\left|\\{\\, i : x_i \\in \\text{bin}_k \\,\\}\\right|",
+    "python": "x = np.random.randn(1000)\nplt.hist(x, bins=20)  # 20 интервалов\nplt.show()",
+    "category": "Python/pandas",
+    "related": [
+      "plot",
+      "variance",
+      "matplotlib"
+    ],
+    "level": "essentials",
+    "say": "histogram"
+  },
+  {
+    "id": "dot-product",
+    "english": "dot product",
+    "russian": "скалярное произведение",
+    "spoken": "a dot b equals the sum over i of a sub i times b sub i",
+    "latex": "\\mathbf{a} \\cdot \\mathbf{b} = \\sum_{i} a_i b_i",
+    "python": "a = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\na @ b  # 32  (или np.dot(a, b))",
+    "category": "linear algebra",
+    "related": [
+      "sum",
+      "norm",
+      "matmul-operator"
+    ],
+    "level": "practitioner",
+    "say": "dot product"
+  },
+  {
+    "id": "norm",
+    "english": "L2 norm (vector length)",
+    "russian": "евклидова норма (длина вектора)",
+    "spoken": "the L two norm of x equals the square root of the sum of x sub i squared",
+    "latex": "\\lVert \\mathbf{x} \\rVert_2 = \\sqrt{\\sum_{i} x_i^2}",
+    "python": "x = np.array([3, 4])\nnp.linalg.norm(x)  # 5.0",
+    "category": "linear algebra",
+    "related": [
+      "dot-product"
+    ],
+    "level": "practitioner",
+    "say": "L2 norm",
+    "accept": [
+      "l two norm",
+      "l to norm",
+      "el two norm",
+      "norm"
+    ]
+  },
+  {
+    "id": "transpose",
+    "english": "transpose",
+    "russian": "транспонирование",
+    "spoken": "A transpose",
+    "latex": "A^{\\top}",
+    "python": "A = np.array([[1, 2, 3],\n              [4, 5, 6]])\nA.T.shape  # (3, 2)",
+    "category": "linear algebra",
+    "related": [
+      "matrix-inverse",
+      "matmul-operator"
+    ],
+    "level": "practitioner",
+    "say": "transpose"
   },
   {
     "id": "args-kwargs",
@@ -497,57 +2193,33 @@
     "related": [
       "power-operator",
       "dunder"
+    ],
+    "level": "practitioner",
+    "say": "args and kwargs",
+    "accept": [
+      "args and quarks",
+      "args and k w args",
+      "arcs and kwargs",
+      "args and quargs"
     ]
   },
   {
-    "id": "f-string",
-    "english": "f-string",
-    "russian": "форматированная строка",
-    "spoken": "f string. Short for formatted string literal.",
-    "transcription": "эф-стринг",
-    "python": "loss = 0.1234\nprint(f\"loss = {loss:.2f}\")  # loss = 0.12",
+    "id": "dunder",
+    "english": "dunder (double underscore)",
+    "russian": "«магические» методы с двойным подчёркиванием",
+    "spoken": "dunder init. Dunder means double underscore, so the method with two underscores on each side of init is read as dunder init.",
+    "transcription": "да́ндер ини́т",
+    "python": "class Model:\n    def __init__(self, lr):  # «dunder init»\n        self.lr = lr",
     "category": "Python syntax",
     "related": [
-      "brackets",
-      "regex"
-    ]
-  },
-  {
-    "id": "tuple",
-    "english": "tuple",
-    "russian": "кортеж",
-    "spoken": "tuple. You can say too pull, or tup pull. Both are correct.",
-    "transcription": "тьюпл / тапл",
-    "python": "point = (3, 4)\nx, y = point  # распаковка кортежа\ndf.shape  # (rows, cols) — тоже кортеж",
-    "category": "Python syntax",
-    "related": [
-      "brackets"
-    ]
-  },
-  {
-    "id": "snake-case",
-    "english": "snake_case and camelCase",
-    "russian": "стили именования переменных",
-    "spoken": "snake case, as in learning underscore rate. Camel case, as in learning rate with a capital R.",
-    "transcription": "снейк-кейс, кэ́мел-кейс",
-    "python": "learning_rate = 0.01   # snake_case — стиль Python (PEP 8)\nlearningRate = 0.01    # camelCase — стиль JavaScript\nclass LinearModel: ... # PascalCase — для классов",
-    "category": "Python syntax",
-    "related": [
+      "snake-case",
+      "args-kwargs"
+    ],
+    "level": "practitioner",
+    "say": "dunder",
+    "accept": [
+      "dander",
       "dunder"
-    ]
-  },
-  {
-    "id": "brackets",
-    "english": "brackets: ( ) [ ] { }",
-    "russian": "названия скобок",
-    "spoken": "parentheses, square brackets, and curly braces. In British English: round brackets, square brackets, and curly brackets.",
-    "transcription": "пэрэ́нтэсиз, сквэа брэ́китс, кёрли брэ́йсиз",
-    "python": "print(x)    # parentheses — круглые\nxs[0]       # square brackets — квадратные\n{\"a\": 1}    # curly braces — фигурные",
-    "category": "Python syntax",
-    "related": [
-      "list-comprehension",
-      "f-string",
-      "tuple"
     ]
   },
   {
@@ -564,7 +2236,9 @@
       "broadcasting",
       "dot-product",
       "numpy"
-    ]
+    ],
+    "level": "practitioner",
+    "say": "NumPy array"
   },
   {
     "id": "array-shape",
@@ -579,7 +2253,9 @@
       "numpy-array",
       "transpose",
       "axis"
-    ]
+    ],
+    "level": "practitioner",
+    "say": "array shape"
   },
   {
     "id": "axis",
@@ -594,52 +2270,9 @@
       "mean",
       "array-shape",
       "sum"
-    ]
-  },
-  {
-    "id": "broadcasting",
-    "english": "broadcasting",
-    "russian": "транслирование: операция между массивами разной формы без циклов",
-    "spoken": "x sub i minus x bar, for every i. In Python code: x minus x dot mean",
-    "transcription": "бро́дкастинг",
-    "latex": "x_i - \\bar{x}, \\quad i = 1, \\dots, n",
-    "python": "x = np.array([2, 4, 6])\nx - x.mean()  # array([-2., 0., 2.])\n# скаляр «растягивается» до формы x, цикл не нужен",
-    "category": "Python/pandas",
-    "related": [
-      "numpy-array",
-      "mean",
-      "standard-scaler"
-    ]
-  },
-  {
-    "id": "dataframe",
-    "english": "DataFrame",
-    "russian": "таблица pandas: строки — объекты, столбцы — признаки",
-    "spoken": "the data set D of pairs x sub i, y sub i, for i from one to m. In Python code: p d dot data frame",
-    "transcription": "дэ́йта-фрейм",
-    "latex": "D = \\{(\\mathbf{x}_i, y_i)\\}_{i=1}^{m}",
-    "python": "import pandas as pd\ndf = pd.DataFrame({\"city\": [\"A\", \"B\"], \"price\": [100, 250]})\ndf.head()  # первые строки таблицы",
-    "category": "Python/pandas",
-    "related": [
-      "groupby",
-      "iloc",
-      "boolean-mask",
-      "pandas"
-    ]
-  },
-  {
-    "id": "iloc",
-    "english": "iloc and loc (indexing)",
-    "russian": "индексация: iloc — по номеру, loc — по метке",
-    "spoken": "X sub i j, the element in row i and column j. In Python code: d f dot i loc, i comma j",
-    "transcription": "ай-лок, лок",
-    "latex": "X_{ij}",
-    "python": "df.iloc[0, 1]          # строка 0, столбец 1 (по позиции)\ndf.loc[0, \"price\"]     # строка с меткой 0, столбец price",
-    "category": "Python/pandas",
-    "related": [
-      "dataframe",
-      "boolean-mask"
-    ]
+    ],
+    "level": "practitioner",
+    "say": "axis"
   },
   {
     "id": "boolean-mask",
@@ -653,7 +2286,9 @@
     "related": [
       "dataframe",
       "iloc"
-    ]
+    ],
+    "level": "practitioner",
+    "say": "boolean mask"
   },
   {
     "id": "missing-values",
@@ -668,6 +2303,213 @@
       "dataframe",
       "mean",
       "pandas"
+    ],
+    "level": "practitioner",
+    "say": "missing values"
+  },
+  {
+    "id": "matplotlib",
+    "english": "Matplotlib",
+    "russian": "библиотека для графиков",
+    "spoken": "mat plot lib. Short for math plotting library.",
+    "transcription": "мэт-плот-либ",
+    "python": "import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [1, 4, 9])\nplt.show()",
+    "category": "libraries",
+    "related": [
+      "seaborn",
+      "import-as"
+    ],
+    "level": "practitioner",
+    "say": "Matplotlib",
+    "accept": [
+      "mat plot lib",
+      "matplot lib"
+    ]
+  },
+  {
+    "id": "seaborn",
+    "english": "seaborn",
+    "russian": "библиотека статистических графиков",
+    "spoken": "sea born",
+    "transcription": "си-борн",
+    "python": "import seaborn as sns\nsns.histplot(df[\"price\"])",
+    "category": "libraries",
+    "related": [
+      "matplotlib",
+      "pandas"
+    ],
+    "level": "practitioner",
+    "say": "seaborn",
+    "accept": [
+      "sea born",
+      "seaborne",
+      "sea bourne"
+    ]
+  },
+  {
+    "id": "derivative",
+    "english": "derivative",
+    "russian": "производная",
+    "spoken": "d f d x, or: the derivative of f with respect to x",
+    "latex": "\\frac{df}{dx} = f'(x)",
+    "python": "# численная производная f(x) = x**2 в точке 3\nf = lambda x: x ** 2\nh = 1e-6\n(f(3 + h) - f(3)) / h  # ≈ 6",
+    "category": "calculus",
+    "related": [
+      "partial-derivative",
+      "gradient"
+    ],
+    "level": "practitioner",
+    "say": "derivative"
+  },
+  {
+    "id": "matrix-inverse",
+    "english": "matrix inverse",
+    "russian": "обратная матрица",
+    "spoken": "A inverse; A times A inverse equals the identity matrix I",
+    "latex": "A^{-1}, \\quad A A^{-1} = I",
+    "python": "A = np.array([[2, 0], [0, 4]])\nnp.linalg.inv(A)  # [[0.5, 0], [0, 0.25]]",
+    "category": "linear algebra",
+    "related": [
+      "transpose"
+    ],
+    "level": "practitioner",
+    "say": "matrix inverse"
+  },
+  {
+    "id": "matmul-operator",
+    "english": "matrix multiplication operator (@)",
+    "russian": "матричное умножение",
+    "spoken": "X times w. In Python code: X at w",
+    "latex": "X\\mathbf{w}",
+    "python": "X = np.array([[1, 2], [3, 4]])\nw = np.array([0.5, 1.0])\nX @ w  # array([2.5, 5.5])",
+    "category": "Python/pandas",
+    "related": [
+      "dot-product",
+      "transpose",
+      "numpy"
+    ],
+    "level": "practitioner",
+    "say": "matrix multiplication"
+  },
+  {
+    "id": "broadcasting",
+    "english": "broadcasting",
+    "russian": "транслирование: операция между массивами разной формы без циклов",
+    "spoken": "x sub i minus x bar, for every i. In Python code: x minus x dot mean",
+    "transcription": "бро́дкастинг",
+    "latex": "x_i - \\bar{x}, \\quad i = 1, \\dots, n",
+    "python": "x = np.array([2, 4, 6])\nx - x.mean()  # array([-2., 0., 2.])\n# скаляр «растягивается» до формы x, цикл не нужен",
+    "category": "Python/pandas",
+    "related": [
+      "numpy-array",
+      "mean",
+      "standard-scaler"
+    ],
+    "level": "practitioner",
+    "say": "broadcasting"
+  },
+  {
+    "id": "groupby",
+    "english": "group by (pandas groupby)",
+    "russian": "группировка",
+    "spoken": "d f dot group by city, then price, dot mean. In math: y bar sub g, the mean of y within group g",
+    "latex": "\\bar{y}_g = \\frac{1}{n_g}\\sum_{i \\in g} y_i",
+    "python": "import pandas as pd\ndf.groupby(\"city\")[\"price\"].mean()",
+    "category": "Python/pandas",
+    "related": [
+      "mean",
+      "sum",
+      "pandas",
+      "sql"
+    ],
+    "level": "practitioner",
+    "say": "group by",
+    "accept": [
+      "group buy",
+      "groupby"
+    ]
+  },
+  {
+    "id": "sql",
+    "english": "SQL",
+    "russian": "язык запросов к базам данных",
+    "spoken": "sequel, or S Q L. Both are correct.",
+    "transcription": "си́квел / эс-кью-эл",
+    "python": "import pandas as pd\npd.read_sql(\"SELECT city, AVG(price) FROM flats GROUP BY city\", conn)",
+    "category": "libraries",
+    "related": [
+      "pandas",
+      "groupby"
+    ],
+    "level": "practitioner",
+    "say": "SQL",
+    "accept": [
+      "sequel",
+      "s q l",
+      "esque el"
+    ]
+  },
+  {
+    "id": "regex",
+    "english": "regex (regular expression)",
+    "russian": "регулярное выражение",
+    "spoken": "rej ex. Short for regular expression.",
+    "transcription": "ре́джекс",
+    "python": "import re\nre.findall(r\"\\d+\", \"a1b22\")  # ['1', '22']",
+    "category": "libraries",
+    "related": [
+      "f-string"
+    ],
+    "level": "practitioner",
+    "say": "regex",
+    "accept": [
+      "reg ex",
+      "rejects",
+      "red jacks",
+      "regular expression"
+    ]
+  },
+  {
+    "id": "scipy",
+    "english": "SciPy",
+    "russian": "библиотека научных вычислений",
+    "spoken": "sigh pie. Short for scientific Python.",
+    "transcription": "сай-пай",
+    "python": "from scipy import stats\nstats.norm.pdf(0)  # 0.3989...",
+    "category": "libraries",
+    "related": [
+      "numpy",
+      "standard-deviation"
+    ],
+    "level": "practitioner",
+    "say": "SciPy",
+    "accept": [
+      "sci pie",
+      "sigh pie",
+      "psy pie",
+      "scipie"
+    ]
+  },
+  {
+    "id": "scikit-learn",
+    "english": "scikit-learn (sklearn)",
+    "russian": "библиотека классического машинного обучения",
+    "spoken": "sy kit learn. People also say S K learn, after the import name.",
+    "transcription": "сай-кит лёрн",
+    "python": "from sklearn.linear_model import LinearRegression\nmodel = LinearRegression().fit(X, y)\ny_hat = model.predict(X)",
+    "category": "libraries",
+    "related": [
+      "y-hat",
+      "mse",
+      "pytorch"
+    ],
+    "level": "expert",
+    "say": "scikit-learn",
+    "accept": [
+      "sci kit learn",
+      "sky kit learn",
+      "psychic learn",
+      "sidekick learn"
     ]
   },
   {
@@ -683,7 +2525,9 @@
       "fit-predict",
       "accuracy-score",
       "scikit-learn"
-    ]
+    ],
+    "level": "expert",
+    "say": "train test split"
   },
   {
     "id": "fit-predict",
@@ -698,7 +2542,9 @@
       "y-hat",
       "train-test-split",
       "linear-regression"
-    ]
+    ],
+    "level": "expert",
+    "say": "fit and predict"
   },
   {
     "id": "linear-regression",
@@ -713,7 +2559,9 @@
       "fit-predict",
       "mse",
       "matmul-operator"
-    ]
+    ],
+    "level": "expert",
+    "say": "linear regression"
   },
   {
     "id": "standard-scaler",
@@ -729,7 +2577,9 @@
       "standard-deviation",
       "broadcasting",
       "scikit-learn"
-    ]
+    ],
+    "level": "expert",
+    "say": "standard scaler"
   },
   {
     "id": "accuracy-score",
@@ -743,36 +2593,189 @@
     "related": [
       "fit-predict",
       "y-hat"
-    ]
+    ],
+    "level": "expert",
+    "say": "accuracy"
   },
   {
-    "id": "plot",
-    "english": "line plot (plt.plot)",
-    "russian": "линейный график функции или ряда",
-    "spoken": "the graph of y equals f of x. In Python code: p l t dot plot, x comma y",
-    "transcription": "плот",
-    "latex": "y = f(x)",
-    "python": "import matplotlib.pyplot as plt\nx = np.linspace(-3, 3, 100)\nplt.plot(x, x ** 2)\nplt.xlabel(\"x\"); plt.ylabel(\"y\")\nplt.show()",
-    "category": "Python/pandas",
+    "id": "mse",
+    "english": "mean squared error (MSE)",
+    "russian": "среднеквадратичная ошибка",
+    "spoken": "M S E equals one over n times the sum of y sub i minus y hat sub i, squared",
+    "latex": "\\mathrm{MSE} = \\frac{1}{n}\\sum_{i=1}^{n} (y_i - \\hat{y}_i)^2",
+    "python": "from sklearn.metrics import mean_squared_error\nmean_squared_error(y, y_hat)\n# или вручную: np.mean((y - y_hat) ** 2)",
+    "category": "ML basics",
     "related": [
-      "histogram",
-      "sigmoid",
-      "matplotlib"
-    ]
-  },
-  {
-    "id": "histogram",
-    "english": "histogram (plt.hist)",
-    "russian": "гистограмма: сколько значений попало в каждый интервал",
-    "spoken": "n sub k equals the number of i such that x sub i is in bin k. In Python code: p l t dot hist, x, bins equals twenty",
-    "transcription": "хи́стограм",
-    "latex": "n_k = \\left|\\{\\, i : x_i \\in \\text{bin}_k \\,\\}\\right|",
-    "python": "x = np.random.randn(1000)\nplt.hist(x, bins=20)  # 20 интервалов\nplt.show()",
-    "category": "Python/pandas",
-    "related": [
-      "plot",
+      "y-hat",
       "variance",
-      "matplotlib"
+      "argmin"
+    ],
+    "level": "expert",
+    "say": "mean squared error",
+    "accept": [
+      "m s e",
+      "mean square error"
+    ]
+  },
+  {
+    "id": "probability-given",
+    "english": "conditional probability (probability given)",
+    "russian": "условная вероятность",
+    "spoken": "the probability of A given B equals the probability of A and B over the probability of B",
+    "latex": "P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}",
+    "python": "# P(A | B) по таблице частот\np_a_and_b = 0.12\np_b = 0.4\np_a_given_b = p_a_and_b / p_b  # 0.3",
+    "category": "statistics",
+    "related": [
+      "mean"
+    ],
+    "level": "expert",
+    "say": "conditional probability"
+  },
+  {
+    "id": "partial-derivative",
+    "english": "partial derivative",
+    "russian": "частная производная",
+    "spoken": "partial L by partial w, or: the partial derivative of L with respect to w",
+    "latex": "\\frac{\\partial L}{\\partial w}",
+    "python": "# L(w, b) = (w*x + b - y)**2, производная по w\nx, y, w, b = 2.0, 5.0, 1.0, 0.0\ndL_dw = 2 * (w * x + b - y) * x  # -12.0",
+    "category": "calculus",
+    "related": [
+      "derivative",
+      "gradient"
+    ],
+    "level": "expert",
+    "say": "partial derivative"
+  },
+  {
+    "id": "gradient",
+    "english": "gradient",
+    "russian": "градиент",
+    "spoken": "nabla theta of J of theta, or: the gradient of J with respect to theta",
+    "latex": "\\nabla_{\\theta} J(\\theta)",
+    "python": "# градиент MSE для линейной регрессии\ngrad = 2 / len(y) * X.T @ (X @ theta - y)",
+    "category": "calculus",
+    "related": [
+      "partial-derivative",
+      "gradient-descent",
+      "mse"
+    ],
+    "level": "expert",
+    "say": "gradient"
+  },
+  {
+    "id": "argmin",
+    "english": "arg min",
+    "russian": "аргумент минимума (argmin)",
+    "spoken": "theta hat equals the arg min over theta of L of theta",
+    "latex": "\\hat{\\theta} = \\arg\\min_{\\theta} L(\\theta)",
+    "python": "losses = np.array([0.9, 0.3, 0.5])\nnp.argmin(losses)  # 1 — индекс, а не значение",
+    "category": "ML basics",
+    "related": [
+      "gradient-descent",
+      "mse"
+    ],
+    "level": "expert",
+    "say": "arg min",
+    "accept": [
+      "argument",
+      "arc min"
+    ]
+  },
+  {
+    "id": "gradient-descent",
+    "english": "gradient descent update",
+    "russian": "шаг градиентного спуска",
+    "spoken": "theta gets theta minus alpha times the gradient of L with respect to theta",
+    "latex": "\\theta \\leftarrow \\theta - \\alpha \\nabla_{\\theta} L(\\theta)",
+    "python": "alpha = 0.01  # learning rate\nfor _ in range(1000):\n    theta -= alpha * grad(theta)",
+    "category": "ML basics",
+    "related": [
+      "gradient",
+      "argmin"
+    ],
+    "level": "expert",
+    "say": "gradient descent"
+  },
+  {
+    "id": "sigmoid",
+    "english": "sigmoid function",
+    "russian": "сигмоида",
+    "spoken": "sigma of z equals one over one plus e to the minus z",
+    "latex": "\\sigma(z) = \\frac{1}{1 + e^{-z}}",
+    "python": "def sigmoid(z):\n    return 1 / (1 + np.exp(-z))\n\nsigmoid(0)  # 0.5",
+    "category": "ML basics",
+    "related": [
+      "y-hat"
+    ],
+    "level": "expert",
+    "say": "sigmoid function",
+    "accept": [
+      "sigma it",
+      "sigmoid function"
+    ]
+  },
+  {
+    "id": "relu",
+    "english": "ReLU (rectified linear unit)",
+    "russian": "функция активации ReLU: отрицательное → 0",
+    "spoken": "ReLU of x equals the maximum of zero and x. In Python code: torch dot relu, x. ReLU is read ray loo",
+    "transcription": "рэ́й-лу",
+    "latex": "\\operatorname{ReLU}(x) = \\max(0, x)",
+    "python": "x = torch.tensor([-2.0, 0.0, 3.0])\ntorch.relu(x)  # tensor([0., 0., 3.])",
+    "category": "Python/pandas",
+    "related": [
+      "sigmoid",
+      "tensor"
+    ],
+    "level": "expert",
+    "say": "ReLU",
+    "accept": [
+      "ray lou",
+      "ray lu",
+      "rel u",
+      "re lu",
+      "relu"
+    ]
+  },
+  {
+    "id": "pytorch",
+    "english": "PyTorch",
+    "russian": "фреймворк для нейросетей",
+    "spoken": "pie torch",
+    "transcription": "пай-торч",
+    "python": "import torch\nx = torch.tensor([1.0, 2.0], requires_grad=True)\n(x ** 2).sum().backward()\nx.grad  # tensor([2., 4.])",
+    "category": "libraries",
+    "related": [
+      "gradient",
+      "keras",
+      "scikit-learn"
+    ],
+    "level": "expert",
+    "say": "PyTorch",
+    "accept": [
+      "pie torch",
+      "pi torch",
+      "py torch"
+    ]
+  },
+  {
+    "id": "keras",
+    "english": "Keras",
+    "russian": "высокоуровневый API для нейросетей",
+    "spoken": "keh russ. It rhymes with terrace.",
+    "transcription": "ке́рас",
+    "python": "from tensorflow import keras\nmodel = keras.Sequential([keras.layers.Dense(1)])",
+    "category": "libraries",
+    "related": [
+      "pytorch",
+      "sigmoid"
+    ],
+    "level": "expert",
+    "say": "Keras",
+    "accept": [
+      "kerris",
+      "care us",
+      "karas"
     ]
   },
   {
@@ -789,7 +2792,9 @@
       "array-shape",
       "backward",
       "pytorch"
-    ]
+    ],
+    "level": "expert",
+    "say": "tensor"
   },
   {
     "id": "backward",
@@ -805,6 +2810,11 @@
       "gradient",
       "optimizer-step",
       "pytorch"
+    ],
+    "level": "expert",
+    "say": "backpropagation",
+    "accept": [
+      "back propagation"
     ]
   },
   {
@@ -819,20 +2829,8 @@
     "related": [
       "gradient-descent",
       "backward"
-    ]
-  },
-  {
-    "id": "relu",
-    "english": "ReLU (rectified linear unit)",
-    "russian": "функция активации ReLU: отрицательное → 0",
-    "spoken": "ReLU of x equals the maximum of zero and x. In Python code: torch dot relu, x. ReLU is read ray loo",
-    "transcription": "рэ́й-лу",
-    "latex": "\\operatorname{ReLU}(x) = \\max(0, x)",
-    "python": "x = torch.tensor([-2.0, 0.0, 3.0])\ntorch.relu(x)  # tensor([0., 0., 3.])",
-    "category": "Python/pandas",
-    "related": [
-      "sigmoid",
-      "tensor"
-    ]
+    ],
+    "level": "expert",
+    "say": "optimizer step"
   }
 ]

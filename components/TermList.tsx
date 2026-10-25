@@ -42,11 +42,10 @@ export default function TermList({ terms, formulas }: Props) {
       <input
         type="search"
         className="search"
-        placeholder="Поиск: derivative, дисперсия, numpy, lambda… (опечатки прощаются)"
+        placeholder="derivative, дисперсия, numpy…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         aria-label="Поиск термина"
-        autoFocus
       />
 
       <div className="filters" role="group" aria-label="Фильтр по категориям">
