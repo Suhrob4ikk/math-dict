@@ -245,10 +245,23 @@ const SYMBOLS: [RegExp, string][] = [
   [/∞/g, " infinity "],
   [/→/g, " tends to "],
   [/[Δδ∆]/g, " delta "],
+  // Буквы и знаки из высшей математики (конспект Письменного).
+  [/[φϕ]/g, " phi "],
+  [/ψ/g, " psi "],
+  [/ω/g, " omega "],
+  [/η/g, " eta "],
+  [/τ/g, " tau "],
+  [/σ/g, " sigma "],
+  [/∇/g, " nabla "],
+  [/∂/g, " partial "],
+  [/[∫∮]/g, " integral "],
   [/α/g, " alpha "],
   [/β/g, " beta "],
   [/λ/g, " lambda "],
   [/π/g, " pi "],
+  [/γ/g, " gamma "],
+  [/θ/g, " theta "],
+  [/±/g, " plus or minus "],
   [/\^/g, " to the power of "],
   [/\|/g, " absolute value "],
 ];
@@ -277,14 +290,17 @@ const LETTERS: Record<string, string[]> = {
   e: ["ee"],
   f: ["ef", "eff"],
   g: ["gee", "jee"],
+  h: ["aitch", "age"],
   i: ["eye", "aye", "ai"],
   j: ["jay"],
   k: ["kay", "okay", "car", "cay", "key"],
   m: ["em"],
   n: ["en", "and", "end"],
+  o: ["oh", "owe"],
   p: ["pee", "pea"],
   q: ["queue", "cue"],
   r: ["ar", "are"],
+  s: ["es", "ess"],
   t: ["tee", "tea"],
   u: ["you"],
   v: ["vee"],
@@ -297,6 +313,12 @@ const LETTERS: Record<string, string[]> = {
 // Частые ошибки распознавателя на словах из формул (проверено на телефоне):
 // «lambda» → «London», «tends» → «thanks».
 const SOUNDALIKES: Record<string, string[]> = {
+  // Греческие буквы из высшей математики.
+  phi: ["fi", "fee", "fie"],
+  psi: ["sigh", "sai", "psy", "sy"],
+  eta: ["ita", "eater", "ether"],
+  tau: ["tao", "tow", "towel"],
+  nabla: ["nobla", "navla", "nebula"],
   lambda: ["london", "lamb", "lander", "lambada"],
   tends: ["thanks", "tens", "tense", "tents", "ends", "tend"],
   sub: ["sup", "subs", "sab"],
@@ -308,6 +330,11 @@ const SOUNDALIKES: Record<string, string[]> = {
   theta: ["thita", "teta"],
   tilde: ["toyota", "tilda", "tilder", "tutor", "tilt", "tilday"],
   squared: ["square"],
+  // Тригонометрия: распознаватель часто пишет сокращения.
+  cosine: ["cos", "cosign", "cosines"],
+  tangent: ["tan", "tangents"],
+  sine: ["sin", "sign", "sines"],
+  pi: ["pie", "pai"],
 };
 
 function levenshtein(a: string, b: string): number {
@@ -371,16 +398,60 @@ function soundKey(text: string): string {
 // - Короткое слово (sub, bar, hat, case) — только точное совпадение звучания:
 //   «keys» = «case», но «park» ≠ «bar».
 // - Длинное слово — нечётко: по буквам или по звучанию.
+// Слово с отрицательной приставкой — это противоположный термин:
+// «inconsistent» ≠ «consistent», «nonhomogeneous» ≠ «homogeneous», «antiderivative» ≠ «derivative».
+const NEGATION = /^(in|non|un|dis|anti)/;
+
+function negated(a: string, b: string): boolean {
+  const [long, short] = a.length > b.length ? [a, b] : [b, a];
+  const prefix = long.slice(0, long.length - short.length);
+  return long.endsWith(short) && NEGATION.test(prefix) && NEGATION.exec(prefix)![0] === prefix;
+}
+
+// Первый звук слова: «h» в начале слышно, хотя soundKey его отбрасывает
+// («hyperbola» ≠ «parabola»), а слова на гласную сравниваем только по буквам.
+function firstSound(word: string): string {
+  if (/^[aeiouy]/.test(word)) return "V";
+  if (word.startsWith("h")) return "H";
+  return soundKey(word).charAt(0);
+}
+
+// Похожие по звучанию, но разные термины: нечёткое сравнение их не путает.
+const DISTINCT: [string, string][] = [
+  ["parabola", "paraboloid"],
+  ["hyperbola", "hyperboloid"],
+  ["hyperbola", "hyperbolic"],
+  ["hyperbolic", "hyperboloid"],
+  ["collinear", "coplanar"],
+  ["colinear", "coplanar"],
+  ["hyperbole", "hyperbolic"],
+  ["tangent", "cotangent"],
+  ["sine", "sinh"],
+  ["rank", "range"],
+  ["ratio", "root"],
+  ["integral", "interval"],
+  ["factor", "cofactor"],
+  ["constant", "continuous"],
+  ["constant", "continuity"],
+  ["augmented", "argument"],
+];
+
+function distinct(a: string, b: string): boolean {
+  return DISTINCT.some(([x, y]) => (a === x && b === y) || (a === y && b === x));
+}
+
 function tokenMatch(heard: string, target: string): boolean {
   if (heard === target) return true;
+  if (distinct(heard, target)) return false;
   if (target.length === 1) return LETTERS[target]?.includes(heard) ?? false;
   if (SOUNDALIKES[target]?.includes(heard)) return true;
   if (heard.length === 1) return false;
+  if (negated(heard, target)) return false;
   const hk = soundKey(heard);
   const tk = soundKey(target);
   if (target.length <= 4) return tk !== "" && hk === tk && Math.abs(heard.length - target.length) <= 1;
   if (similarity(heard, target) >= 0.75) return true;
-  return similarity(heard, target) >= 0.5 && similarity(hk, tk) >= 0.8;
+  return similarity(heard, target) >= 0.5 && similarity(hk, tk) >= 0.8 && firstSound(heard) === firstSound(target);
 }
 
 // Склейка частей («group by» = «groupby») — только почти точное совпадение по буквам,
@@ -414,6 +485,7 @@ function heardTokens(heard: string): string[] {
 // Слова-уточнения: без них или с ними получается другое обозначение.
 const MEANINGFUL = new Set([
   "not",
+  "non",
   "doesnt",
   "approximately",
   "identically",
@@ -451,6 +523,32 @@ const MEANINGFUL = new Set([
   "only",
   "exists",
   "all",
+  // Слова, которыми различаются термины высшей математики:
+  // «residue theorem» — не «residue», «Fourier sine series» — не «Fourier series».
+  "theorem",
+  "test",
+  "equation",
+  "system",
+  "sine",
+  "cosine",
+  "complex",
+  "total",
+  "implicit",
+  "logarithmic",
+  "expansion",
+  "equivalent",
+  "slope",
+  "line",
+  "plane",
+  "asymptote",
+  "asymptotes",
+  "vertical",
+  "oblique",
+  "fourier",
+  "original",
+  "hyperbolic",
+  "elliptic",
+  "transform",
 ]);
 
 export interface WordMark {
