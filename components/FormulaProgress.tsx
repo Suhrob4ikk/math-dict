@@ -35,3 +35,16 @@ export function FormulaMark({ id }: { id: string }) {
     </span>
   );
 }
+
+// Рекорд игры в карточке игры: проценты или число (у спринта).
+export function GameBest({ game, unit = "%" }: { game: string; unit?: string }) {
+  const { progress } = useProgress();
+  const best = progress.games[game];
+  if (best === undefined) return <Icon name="chevron-right" className="level-chevron" />;
+  return (
+    <span className="formula-best" aria-label={`Рекорд: ${best}${unit}`}>
+      <Icon name="star" size={14} /> {best}
+      {unit}
+    </span>
+  );
+}

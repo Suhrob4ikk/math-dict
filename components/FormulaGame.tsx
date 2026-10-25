@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
+import GameResult from "@/components/GameResult";
 import Icon from "@/components/Icon";
 import LongReader from "@/components/LongReader";
 import { SpeechFeedback, useSpeechCheck } from "@/components/SpeechCheck";
 import { asLong, nameTargets, spokenName, type NamedFormula } from "@/lib/formulas";
+import { shuffle, stars, time } from "@/lib/game";
 import { useProgress } from "@/lib/progress";
 import { speak } from "@/lib/speech";
 
@@ -27,28 +29,7 @@ interface Round {
 
 type Phase = "name" | "read";
 
-function shuffle<T>(list: T[]): T[] {
-  const out = [...list];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
-
 const maxPoints = (f: NamedFormula) => NAME_POINTS + f.parts.length;
-
-function stars(percent: number): number {
-  if (percent >= 90) return 3;
-  if (percent >= 70) return 2;
-  if (percent >= 40) return 1;
-  return 0;
-}
-
-function time(ms: number): string {
-  const s = Math.round(ms / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-}
 
 // Игра «Узнай и прочитай»: по картинке формулы назвать её по-английски, затем прочитать
 // по частям. Очки за каждую часть, серия — сколько формул подряд без единой ошибки.
@@ -102,56 +83,22 @@ export default function FormulaGame({ topic, formulas, rounds }: Props) {
     const got = results.reduce((s, r) => s + r.name + r.parts, 0);
     const total = deck.reduce((s, f) => s + maxPoints(f), 0);
     const percent = Math.round((got / total) * 100);
-    const n = stars(percent);
     return (
-      <div className="practice practice-done">
-        <div className="game-stars" aria-label={`Звёзд: ${n} из 3`}>
-          {[0, 1, 2].map((i) => (
-            <Icon key={i} name="star" size={44} className={i < n ? "star-on" : "star-off"} />
-          ))}
-        </div>
-        <h1>{percent >= 70 ? "Отлично!" : percent >= 40 ? "Неплохо" : "Попробуйте ещё раз"}</h1>
-        <div className="game-stats">
-          <span>
-            <strong>{got}</strong>
-            <span className="muted">из {total} очков</span>
-          </span>
-          <span>
-            <strong>{time(elapsed)}</strong>
-            <span className="muted">время</span>
-          </span>
-          <span>
-            <strong>{bestCombo}</strong>
-            <span className="muted">лучшая серия</span>
-          </span>
-        </div>
-        {best !== undefined && <p className="muted">Рекорд в теме: {best}%</p>}
-        <ul className="game-review">
-          {deck.map((f, i) => {
-            const r = results[i];
-            const ok = r && r.name > 0 && r.parts === f.parts.length;
-            return (
-              <li key={f.id}>
-                <Link href={`/formula/${f.id}`} className={ok ? "ok" : "miss"}>
-                  <Icon name={ok ? "check" : "close"} size={18} />
-                  <span>
-                    <span lang="en">{spokenName(f)}</span>
-                    <span className="muted">{f.russian}</span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="done-actions">
-          <Link href="/formulas" className="btn btn-secondary">
-            Все формулы
-          </Link>
-          <button type="button" className="btn btn-primary" onClick={newGame}>
-            Ещё раз
-          </button>
-        </div>
-      </div>
+      <GameResult
+        stars={stars(percent)}
+        title={percent >= 70 ? "Отлично!" : percent >= 40 ? "Неплохо" : "Попробуйте ещё раз"}
+        stats={[
+          { value: got, label: `из ${total} очков` },
+          { value: time(elapsed), label: "время" },
+          { value: bestCombo, label: "лучшая серия" },
+        ]}
+        record={best !== undefined ? `Рекорд в теме: ${best}%` : undefined}
+        review={deck.map((f, i) => ({
+          formula: f,
+          ok: !!results[i] && results[i].name > 0 && results[i].parts === f.parts.length,
+        }))}
+        onAgain={newGame}
+      />
     );
   }
 

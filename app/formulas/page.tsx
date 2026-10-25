@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Formula from "@/components/Formula";
-import FormulaProgress, { FormulaMark } from "@/components/FormulaProgress";
+import FormulaProgress, { FormulaMark, GameBest } from "@/components/FormulaProgress";
 import Icon from "@/components/Icon";
 import { FORMULA_TOPICS, FORMULAS, formulasOf, spokenName } from "@/lib/formulas";
 
@@ -20,16 +20,52 @@ export default function FormulasPage() {
       <section className="intro">
         <h1>Знаменитые формулы</h1>
         <p>
-          Игра в два шага: узнайте формулу по картинке и назовите её по-английски, затем прочитайте вслух по частям.
-          Начинаем со школы, дальше — университет.
+          Учитесь узнавать и читать вслух главные формулы по-английски. Три игры на выбор; начинаем со школы,
+          дальше — университет.
         </p>
       </section>
 
-      <Link href="/formulas/play/all" className="btn btn-primary btn-block">
-        <Icon name="mic" size={20} /> Играть: все темы
-      </Link>
+      <h2 className="section-title">Игры</h2>
+      <ul className="game-list">
+        <li>
+          <Link href="/formulas/play/all" className="game-card">
+            <span className="game-card-icon">
+              <Icon name="bulb" size={24} />
+            </span>
+            <span>
+              <strong>Узнай и прочитай</strong>
+              <span className="muted">Назовите формулу по картинке, затем прочитайте по частям</span>
+            </span>
+            <GameBest game="all" />
+          </Link>
+        </li>
+        <li>
+          <Link href="/formulas/build" className="game-card">
+            <span className="game-card-icon">
+              <Icon name="puzzle" size={24} />
+            </span>
+            <span>
+              <strong>Собери формулу</strong>
+              <span className="muted">Сложите формулу из частей по порядку и прочитайте её</span>
+            </span>
+            <GameBest game="build" />
+          </Link>
+        </li>
+        <li>
+          <Link href="/formulas/sprint" className="game-card">
+            <span className="game-card-icon">
+              <Icon name="timer" size={24} />
+            </span>
+            <span>
+              <strong>Спринт 60 секунд</strong>
+              <span className="muted">Сколько формул успеете прочитать целиком за минуту</span>
+            </span>
+            <GameBest game="sprint" unit="" />
+          </Link>
+        </li>
+      </ul>
 
-      <h2 className="section-title">Школа</h2>
+      <h2 className="section-title">Школа · узнай и прочитай по темам</h2>
       <ol className="level-list">
         {FORMULA_TOPICS.filter((t) => t.stage === "school").map((topic) => {
           const list = formulasOf(topic.id);
@@ -44,7 +80,7 @@ export default function FormulasPage() {
                     {topic.english}
                   </span>
                   <span className="level-name">{topic.name}</span>
-                  <span className="level-subtitle">{list.length} формул · играть</span>
+                  <span className="level-subtitle">{list.length} формул</span>
                   <FormulaProgress topic={topic.id} ids={list.map((f) => f.id)} />
                 </span>
                 <Icon name="chevron-right" className="level-chevron" />

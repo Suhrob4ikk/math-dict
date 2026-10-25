@@ -70,6 +70,14 @@ const PATHS = {
       <path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" />
     </>
   ),
+  puzzle: (
+    <>
+      <rect x="3" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5" />
+      <path d="M17.25 14v6.5M14 17.25h6.5" />
+    </>
+  ),
   timer: (
     <>
       <circle cx="12" cy="13" r="8" />
