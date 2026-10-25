@@ -1,0 +1,109 @@
+/* Офлайн-режим: плашка «Нет интернета» и ход скачивания (components/OfflineStatus.tsx). */
+
+.offline-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+.offline-bar .icon {
+  flex-shrink: 0;
+}
+
+.offline-toast {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + 10px);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 10px 6px 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 28px rgba(22, 26, 35, 0.14);
+  font-size: 0.88rem;
+  animation: offline-in 0.25s ease-out;
+}
+.offline-toast > .icon {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.offline-toast-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.offline-toast-body .muted {
+  font-size: 0.8rem;
+}
+.offline-meter {
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  overflow: hidden;
+}
+.offline-meter span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+.offline-percent {
+  min-width: 44px;
+  padding-right: 8px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--muted);
+}
+.offline-toast .icon-button {
+  width: 40px;
+  height: 40px;
+  color: var(--muted);
+}
+.offline-install {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 0.88rem;
+}
+
+/* Подсказка вместо проверки голосом, когда нет сети. */
+.feedback-offline {
+  align-items: center;
+  color: var(--warning);
+  background: var(--warning-soft);
+  text-align: left;
+  justify-content: flex-start;
+  font-size: 0.86rem;
+}
+.feedback-offline .icon {
+  flex-shrink: 0;
+}
+.say-it .feedback-offline {
+  padding-left: 12px;
+}
+
+@keyframes offline-in {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .offline-toast {
+    animation: none;
+  }
+}

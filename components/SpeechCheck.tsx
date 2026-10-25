@@ -5,6 +5,8 @@ import Icon from "@/components/Icon";
 import {
   checkPronunciation,
   listen,
+  canRecognizeNow,
+  checkLocalRecognition,
   recognitionSupported,
   type CheckResult,
   type Listener,
@@ -16,6 +18,8 @@ export type CheckMode = "word" | "phrase";
 export interface SpeechCheckState {
   supported: boolean;
   listening: boolean;
+  // Нет интернета, а распознавать на устройстве браузер не умеет.
+  offline: boolean;
   // Что распознаватель уже услышал, пока идёт запись.
   interim: string;
   result: CheckResult | null;
@@ -29,11 +33,21 @@ export function useSpeechCheck() {
   const [interim, setInterim] = useState("");
   const [result, setResult] = useState<CheckResult | null>(null);
   const [error, setError] = useState<ListenError | null>(null);
+  const [offline, setOffline] = useState(false);
   const listener = useRef<Listener | null>(null);
 
   useEffect(() => {
     setSupported(recognitionSupported());
-    return () => listener.current?.cancel();
+    const update = () => setOffline(!canRecognizeNow());
+    update();
+    void checkLocalRecognition().then(update);
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      listener.current?.cancel();
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
   }, []);
 
   const reset = useCallback(() => {
@@ -49,6 +63,11 @@ export function useSpeechCheck() {
     (targets: string[], mode: CheckMode, onResult?: (r: CheckResult) => void) => {
       if (listener.current) {
         listener.current.stop();
+        return;
+      }
+      if (!canRecognizeNow()) {
+        setResult(null);
+        setError("offline");
         return;
       }
       // Иначе микрофон услышит синтезатор речи вместо человека.
@@ -82,13 +101,17 @@ export function useSpeechCheck() {
     [],
   );
 
-  return { state: { supported, listening, interim, result, error } as SpeechCheckState, start, reset };
+  return { state: { supported, listening, offline, interim, result, error } as SpeechCheckState, start, reset };
 }
+
+const OFFLINE_TEXT =
+  "Без интернета проверка голосом не работает. Слушать произношение и листать карточки можно.";
 
 const ERRORS: Record<ListenError, string> = {
   "not-allowed": "Нет доступа к микрофону. Разрешите его в настройках браузера для этого сайта.",
   "no-speech": "Ничего не услышал. Нажмите на микрофон и говорите сразу, чуть громче.",
   network: "Для распознавания нужен интернет. Проверьте подключение.",
+  offline: OFFLINE_TEXT,
   other: "Не получилось распознать. Попробуйте ещё раз.",
 };
 
@@ -107,7 +130,7 @@ function Marks({ result }: { result: CheckResult }) {
 }
 
 export function SpeechFeedback({ state }: { state: SpeechCheckState }) {
-  const { supported, listening, interim, result, error } = state;
+  const { supported, listening, offline, interim, result, error } = state;
 
   if (!supported) {
     return (
@@ -130,6 +153,14 @@ export function SpeechFeedback({ state }: { state: SpeechCheckState }) {
             <span className="feedback-hint">Закончили — нажмите стоп или просто помолчите пару секунд.</span>
           )}
         </div>
+      </div>
+    );
+  }
+  if ((offline && !result) || error === "offline") {
+    return (
+      <div className="feedback feedback-muted feedback-offline" aria-live="polite">
+        <Icon name="wifi-off" />
+        <span>{OFFLINE_TEXT}</span>
       </div>
     );
   }

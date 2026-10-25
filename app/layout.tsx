@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import OfflineStatus from "@/components/OfflineStatus";
 import BottomNav from "@/components/BottomNav";
 import WordLookup from "@/components/WordLookup";
 import "katex/dist/katex.min.css";
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Link>
           </div>
         </header>
+        <OfflineStatus />
         <main className="container">{children}</main>
         <WordLookup />
         <BottomNav />
