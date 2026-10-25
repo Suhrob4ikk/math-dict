@@ -15,14 +15,16 @@ interface Props {
   hints?: boolean;
   // Кнопка «пропустить часть»; на экзамене её нет — там своя кнопка «следующее задание».
   skip?: boolean;
-  onDone: (allCorrect: boolean) => void;
+  // Вся формула целиком над частями — когда части по отдельности не похожи на неё (дробь).
+  full?: string;
+  onDone: (allCorrect: boolean, okParts: number) => void;
 }
 
 type PartState = "todo" | "ok" | "miss";
 
 // Длинная формула читается по частям: текущая часть подсвечена, каждая проверяется
 // отдельно, после верного ответа подсветка переходит к следующей.
-export default function LongReader({ formula, maxAttempts, hints = true, skip = true, onDone }: Props) {
+export default function LongReader({ formula, maxAttempts, hints = true, skip = true, full, onDone }: Props) {
   const [current, setCurrent] = useState(0);
   const [states, setStates] = useState<PartState[]>(() => formula.parts.map(() => "todo"));
   const [attempts, setAttempts] = useState(0);
@@ -37,6 +39,11 @@ export default function LongReader({ formula, maxAttempts, hints = true, skip = 
         ? null
         : formula.parts.map((p) => katex.renderToString(p.text, { displayMode: false, throwOnError: false })),
     [formula],
+  );
+  const fullHtml = useMemo(
+    // Если формула не делится на части, она и так видна целиком.
+    () => (full && formula.parts.length > 1 ? katex.renderToString(full, { displayMode: true, throwOnError: false }) : null),
+    [full, formula],
   );
 
   useEffect(() => {
@@ -57,7 +64,10 @@ export default function LongReader({ formula, maxAttempts, hints = true, skip = 
       reset();
       setBusy(false);
       setCurrent((c) => c + 1);
-      if (current + 1 >= formula.parts.length) onDone(next.every((s) => s === "ok"));
+      if (current + 1 >= formula.parts.length) onDone(
+          next.every((s) => s === "ok"),
+          next.filter((s) => s === "ok").length,
+        );
     }, 700);
   }
 
@@ -75,6 +85,7 @@ export default function LongReader({ formula, maxAttempts, hints = true, skip = 
         <span className="exam-task">
           {finished ? "Формула прочитана" : `Часть ${current + 1} из ${formula.parts.length}`}
         </span>
+        {fullHtml && <div className="long-full" dangerouslySetInnerHTML={{ __html: fullHtml }} />}
         <div className={formula.code ? "long-parts long-parts-code" : "long-parts"}>
           {formula.parts.map((p, i) => (
             <span

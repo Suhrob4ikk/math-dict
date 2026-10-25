@@ -249,6 +249,9 @@ const SYMBOLS: [RegExp, string][] = [
   [/β/g, " beta "],
   [/λ/g, " lambda "],
   [/π/g, " pi "],
+  [/γ/g, " gamma "],
+  [/θ/g, " theta "],
+  [/±/g, " plus or minus "],
   [/\^/g, " to the power of "],
   [/\|/g, " absolute value "],
 ];
@@ -277,6 +280,7 @@ const LETTERS: Record<string, string[]> = {
   e: ["ee"],
   f: ["ef", "eff"],
   g: ["gee", "jee"],
+  h: ["aitch", "age"],
   i: ["eye", "aye", "ai"],
   j: ["jay"],
   k: ["kay", "okay", "car", "cay", "key"],
@@ -285,6 +289,7 @@ const LETTERS: Record<string, string[]> = {
   p: ["pee", "pea"],
   q: ["queue", "cue"],
   r: ["ar", "are"],
+  s: ["es", "ess"],
   t: ["tee", "tea"],
   u: ["you"],
   v: ["vee"],
@@ -308,6 +313,11 @@ const SOUNDALIKES: Record<string, string[]> = {
   theta: ["thita", "teta"],
   tilde: ["toyota", "tilda", "tilder", "tutor", "tilt", "tilday"],
   squared: ["square"],
+  // Тригонометрия: распознаватель часто пишет сокращения.
+  cosine: ["cos", "cosign", "cosines"],
+  tangent: ["tan", "tangents"],
+  sine: ["sin", "sign", "sines"],
+  pi: ["pie", "pai"],
 };
 
 function levenshtein(a: string, b: string): number {
