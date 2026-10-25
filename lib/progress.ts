@@ -1,31 +1,69 @@
 "use client";
 
-// Прогресс хранится только в этом браузере (localStorage): какие термины уже произнесены верно.
+// Прогресс хранится только в этом браузере (localStorage): какие термины уже произнесены
+// верно, где были ошибки, результаты экзаменов и где пользователь остановился.
 
 import { useCallback, useSyncExternalStore } from "react";
 
-const KEY = "math-dict:mastered";
+export const EXAM_PASS = 8;
+export const EXAM_SIZE = 10;
+
+export interface Progress {
+  mastered: string[];
+  // Термины с ошибкой — для «Повторить ошибки». Верный ответ убирает термин отсюда.
+  review: string[];
+  // Лучший результат экзамена по ступеням (из EXAM_SIZE).
+  exams: Record<string, number>;
+  onboarded: boolean;
+  resume?: { level: string; index: number };
+}
+
+const KEY = "math-dict:progress:v2";
+const OLD_KEY = "math-dict:mastered";
 const EVENT = "math-dict:progress";
-const EMPTY: string[] = [];
+const EMPTY: Progress = { mastered: [], review: [], exams: {}, onboarded: false };
 
-let cache: string[] | null = null;
+let cache: Progress | null = null;
 
-function read(): string[] {
+function parse(raw: string | null): Progress {
+  const data: unknown = raw ? JSON.parse(raw) : null;
+  if (!data || typeof data !== "object") return EMPTY;
+  const d = data as Partial<Progress>;
+  const strings = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []);
+  return {
+    mastered: strings(d.mastered),
+    review: strings(d.review),
+    exams: d.exams && typeof d.exams === "object" ? d.exams : {},
+    onboarded: d.onboarded === true,
+    resume: d.resume,
+  };
+}
+
+export function readProgress(): Progress {
+  return read();
+}
+
+function read(): Progress {
   if (cache) return cache;
   try {
     const raw = window.localStorage.getItem(KEY);
-    const parsed: unknown = raw ? JSON.parse(raw) : [];
-    cache = Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+    if (raw) {
+      cache = parse(raw);
+    } else {
+      // Перенос прогресса из первой версии, где хранился только список выученных.
+      const old = window.localStorage.getItem(OLD_KEY);
+      cache = { ...EMPTY, mastered: old ? parse(`{"mastered":${old}}`).mastered : [] };
+    }
   } catch {
-    cache = [];
+    cache = EMPTY;
   }
   return cache;
 }
 
-function write(ids: string[]) {
-  cache = ids;
+function write(next: Progress) {
+  cache = next;
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(ids));
+    window.localStorage.setItem(KEY, JSON.stringify(next));
   } catch {
     // Приватный режим или запрет хранилища — прогресс живёт до перезагрузки.
   }
@@ -47,11 +85,46 @@ function subscribe(onChange: () => void) {
   };
 }
 
+const without = (list: string[], id: string) => list.filter((x) => x !== id);
+
+export function useProgress() {
+  const progress = useSyncExternalStore(subscribe, read, () => EMPTY);
+
+  const update = useCallback((fn: (p: Progress) => Progress) => write(fn(read())), []);
+
+  const markMastered = useCallback(
+    (id: string) =>
+      update((p) => ({
+        ...p,
+        mastered: p.mastered.includes(id) ? p.mastered : [...p.mastered, id],
+        review: without(p.review, id),
+      })),
+    [update],
+  );
+
+  const markMistake = useCallback(
+    (id: string) => update((p) => (p.review.includes(id) ? p : { ...p, review: [...p.review, id] })),
+    [update],
+  );
+
+  const recordExam = useCallback(
+    (level: string, score: number) =>
+      update((p) => ({ ...p, exams: { ...p.exams, [level]: Math.max(score, p.exams[level] ?? 0) } })),
+    [update],
+  );
+
+  const setResume = useCallback(
+    (level: string, index: number) => update((p) => ({ ...p, resume: { level, index } })),
+    [update],
+  );
+
+  const finishOnboarding = useCallback(() => update((p) => ({ ...p, onboarded: true })), [update]);
+
+  return { progress, markMastered, markMistake, recordExam, setResume, finishOnboarding };
+}
+
+// Короткий вариант для компонентов, которым нужен только список выученных.
 export function useMastered() {
-  const mastered = useSyncExternalStore(subscribe, read, () => EMPTY);
-  const markMastered = useCallback((id: string) => {
-    const current = read();
-    if (!current.includes(id)) write([...current, id]);
-  }, []);
-  return { mastered, markMastered };
+  const { progress, markMastered } = useProgress();
+  return { mastered: progress.mastered, markMastered };
 }

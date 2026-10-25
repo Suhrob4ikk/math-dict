@@ -207,17 +207,18 @@
       "dot-product"
     ],
     "level": "foundations",
-    "say": "sum",
+    "say": "the sum of x sub i for i from one to n",
     "accept": [
-      "some"
+      "sum from i equals one to n of x sub i",
+      "the sum of x sub i from i equals one to n"
     ]
   },
   {
     "id": "y-hat",
     "english": "y-hat (prediction)",
     "russian": "предсказание модели (игрек с крышкой)",
-    "spoken": "y hat equals f of x",
-    "latex": "\\hat{y} = f(x)",
+    "spoken": "y hat",
+    "latex": "\\hat{y}",
     "python": "y_hat = model.predict(X)",
     "category": "ML basics",
     "related": [

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import HomeGuide from "@/components/HomeGuide";
 import Icon from "@/components/Icon";
 import LevelProgress from "@/components/LevelProgress";
 import { LEVELS } from "@/lib/levels";
@@ -15,6 +16,9 @@ export default function HomePage() {
         </p>
       </section>
 
+      <HomeGuide levels={LEVELS.map((l) => ({ id: l.id, name: l.name, ids: termsByLevel(l.id).map((t) => t.id) }))} />
+
+      <h2 className="section-title">Ступени</h2>
       <ol className="level-list">
         {LEVELS.map((level, i) => {
           const ids = termsByLevel(level.id).map((t) => t.id);
@@ -30,7 +34,7 @@ export default function HomePage() {
                     {level.name}
                   </span>
                   <span className="level-subtitle">{level.subtitle}</span>
-                  <LevelProgress ids={ids} />
+                  <LevelProgress ids={ids} levelId={level.id} />
                 </span>
                 <Icon name="chevron-right" className="level-chevron" />
               </Link>

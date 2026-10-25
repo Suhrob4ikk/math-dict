@@ -1011,3 +1011,281 @@ code {
 body:has(.practice) {
   padding-bottom: 0;
 }
+
+/* ---------- Путь обучения: главная, шаги, экзамен ---------- */
+
+.section-title {
+  margin: 28px 0 10px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.home-guide {
+  display: grid;
+  gap: 12px;
+}
+.home-guide-placeholder {
+  min-height: 84px;
+}
+
+.onboarding {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.onboarding h2 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+}
+.onboarding ol {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.onboarding li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.95rem;
+}
+.onboarding-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.onboarding .btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.continue-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(47, 91, 234, 0.3);
+  transition: transform 0.1s;
+}
+.continue-card:active {
+  transform: scale(0.99);
+}
+.continue-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.continue-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.continue-body strong {
+  font-size: 1.1rem;
+}
+.continue-body span {
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+.continue-done {
+  background: var(--success);
+  box-shadow: none;
+}
+.review-link {
+  margin-top: 0;
+}
+.review-link > .icon:first-child {
+  color: var(--warning);
+}
+
+.passed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+.steps {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.step {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.step-current {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.step-num {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--border);
+  color: var(--muted);
+  font-weight: 700;
+}
+.step-current .step-num {
+  background: var(--accent);
+  color: #fff;
+}
+.step-done .step-num {
+  background: var(--success);
+  color: #fff;
+}
+.step-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.step-body .progress {
+  flex: none;
+  margin: 2px 0 4px;
+}
+.step-body .btn {
+  align-self: stretch;
+}
+
+.marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.marks span {
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.mark-ok {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.mark-miss {
+  background: #fff;
+  color: var(--danger);
+  text-decoration: underline wavy;
+  text-underline-offset: 3px;
+}
+.mark-optional {
+  color: var(--muted);
+  font-weight: 400 !important;
+}
+
+.exam-card {
+  cursor: default;
+}
+.exam-task {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.round-button-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.exam-result {
+  align-items: center;
+  text-align: center;
+  padding-top: 24px;
+}
+.exam-result h1 {
+  margin: 16px 0 4px;
+  font-size: 1.5rem;
+}
+.exam-score {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.done-icon-fail {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.exam-review {
+  list-style: none;
+  width: 100%;
+  margin: 20px 0 0;
+  padding: 0;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.exam-review li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+}
+.exam-review li + li {
+  border-top: 1px solid var(--border);
+}
+.exam-review li > .icon {
+  margin-top: 3px;
+}
+.exam-review li.ok > .icon {
+  color: var(--success);
+}
+.exam-review li.miss > .icon {
+  color: var(--danger);
+}
+.exam-review li > span {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.exam-review-formula {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.exam-review-formula .formula-display {
+  font-size: 1rem;
+  margin: 0;
+}
+.exam-review-answer {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.action-bar-center {
+  justify-content: center;
+  gap: 28px;
+}

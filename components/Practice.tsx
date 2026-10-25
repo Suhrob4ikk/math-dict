@@ -4,14 +4,17 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Icon from "@/components/Icon";
 import { SpeechFeedback, useSpeechCheck, type CheckMode } from "@/components/SpeechCheck";
-import type { Level } from "@/lib/levels";
-import { useMastered } from "@/lib/progress";
+import { useProgress } from "@/lib/progress";
 import { speak, speechSupported } from "@/lib/speech";
 import type { Term } from "@/lib/terms";
 
 interface Props {
-  level: Level;
-  nextLevel?: Level;
+  title: string;
+  backHref: string;
+  // Ступень, для которой запоминаем, на какой карточке остановились.
+  resumeKey?: string;
+  // Куда вести после последней карточки.
+  finish: { href: string; label: string };
   terms: Term[];
   // Формулы отрендерены на сервере и переданы готовыми узлами по id термина.
   formulas: Record<string, ReactNode>;
@@ -19,19 +22,39 @@ interface Props {
 
 const SWIPE = 60;
 
-export default function Practice({ level, nextLevel, terms, formulas }: Props) {
+export default function Practice({ title, backHref, resumeKey, finish, terms, formulas }: Props) {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [mode, setMode] = useState<CheckMode>("word");
-  const { mastered, markMastered } = useMastered();
+  const { progress, markMastered, markMistake, setResume } = useProgress();
+  const { mastered } = progress;
+  const resumed = useRef(false);
   const { state, start, reset } = useSpeechCheck();
   const touchX = useRef<number | null>(null);
 
   const done = index >= terms.length;
   const term = terms[Math.min(index, terms.length - 1)];
   const target = mode === "word" ? term.say : term.spoken;
-  const readFormula = term.category === "notation" && formulas[term.id] !== undefined;
+  // Обозначения учим наоборот: видим формулу, вспоминаем, как она читается.
+  const readFormula = term.level === "foundations" && formulas[term.id] !== undefined;
   const masteredHere = terms.filter((t) => mastered.includes(t.id)).length;
+
+  // Продолжаем с карточки, на которой остановились в прошлый раз.
+  useEffect(() => {
+    if (resumed.current || !resumeKey) return;
+    const r = progress.resume;
+    if (r?.level === resumeKey && r.index > 0 && r.index < terms.length) {
+      resumed.current = true;
+      setIndex(r.index);
+    }
+  }, [progress.resume, resumeKey, terms.length]);
+
+  useEffect(() => {
+    if (resumeKey && index > 0) {
+      resumed.current = true;
+      setResume(resumeKey, index < terms.length ? index : 0);
+    }
+  }, [index, resumeKey, setResume, terms.length]);
 
   useEffect(() => {
     reset();
@@ -46,7 +69,7 @@ export default function Practice({ level, nextLevel, terms, formulas }: Props) {
 
   function onMic() {
     const targets = mode === "word" ? [term.say, term.english, ...(term.accept ?? [])] : [term.spoken];
-    start(targets, mode, () => markMastered(term.id));
+    start(targets, mode, (r) => (r.verdict === "correct" ? markMastered(term.id) : markMistake(term.id)));
   }
 
   if (done) {
@@ -55,7 +78,7 @@ export default function Practice({ level, nextLevel, terms, formulas }: Props) {
         <div className="done-icon">
           <Icon name="check" size={40} />
         </div>
-        <h1>{level.name} пройдена</h1>
+        <h1>Карточки пройдены</h1>
         <p className="muted">
           Произнесено верно: {masteredHere} из {terms.length}
         </p>
@@ -63,16 +86,10 @@ export default function Practice({ level, nextLevel, terms, formulas }: Props) {
           <button type="button" className="btn btn-secondary" onClick={() => setIndex(0)}>
             Ещё раз
           </button>
-          {nextLevel ? (
-            <Link href={`/level/${nextLevel.id}/practice`} className="btn btn-primary">
-              {nextLevel.name}
-              <Icon name="chevron-right" size={20} />
-            </Link>
-          ) : (
-            <Link href="/" className="btn btn-primary">
-              Все ступени
-            </Link>
-          )}
+          <Link href={finish.href} className="btn btn-primary">
+            {finish.label}
+            <Icon name="chevron-right" size={20} />
+          </Link>
         </div>
       </div>
     );
@@ -81,11 +98,11 @@ export default function Practice({ level, nextLevel, terms, formulas }: Props) {
   return (
     <div className="practice">
       <div className="practice-top">
-        <Link href={`/level/${level.id}`} className="icon-button" aria-label="Назад к ступени">
+        <Link href={backHref} className="icon-button" aria-label="Назад">
           <Icon name="arrow-left" />
         </Link>
         <div className="practice-title">
-          <span>{level.name}</span>
+          <span>{title}</span>
           <span className="muted">
             {index + 1} / {terms.length}
           </span>
@@ -157,7 +174,7 @@ export default function Practice({ level, nextLevel, terms, formulas }: Props) {
           )}
         </button>
 
-        {term.spoken !== term.say && (
+        {term.spoken !== term.say && !readFormula && (
           <div className="segmented" role="group" aria-label="Что произносить">
             <button
               type="button"

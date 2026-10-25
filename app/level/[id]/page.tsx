@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
-import LevelProgress from "@/components/LevelProgress";
+import LevelSteps from "@/components/LevelSteps";
 import MasteredMark from "@/components/MasteredMark";
 import { getLevel, LEVELS } from "@/lib/levels";
 import { termsByLevel } from "@/lib/terms";
@@ -46,12 +46,10 @@ export default async function LevelPage({ params }: Props) {
         </div>
       </header>
       <p className="muted">{level.topics}</p>
-      <LevelProgress ids={terms.map((t) => t.id)} />
 
-      <Link href={`/level/${level.id}/practice`} className="btn btn-primary btn-block">
-        <Icon name="mic" size={20} /> Начать тренировку
-      </Link>
+      <LevelSteps levelId={level.id} ids={terms.map((t) => t.id)} />
 
+      <h2 className="section-title">Все термины ступени</h2>
       <ul className="term-rows">
         {terms.map((t) => (
           <li key={t.id}>

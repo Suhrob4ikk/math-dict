@@ -102,15 +102,77 @@ const DIGITS: Record<string, string> = {
   "9": "nine",
 };
 
-// «Scikit-Learn» → «scikit learn», «x²» и знаки препинания убираем, цифры пишем словами.
+// Распознаватель иногда пишет символы вместо слов («√x», «x²», «a = b») — переводим их обратно.
+const SYMBOLS: [RegExp, string][] = [
+  [/\u0304/g, " bar "], // x̄ (комбинирующая черта)
+  [/\u0302/g, " hat "], // x̂
+  [/[√∛]/g, " square root of "],
+  [/[∑Σ]/g, " sum of "],
+  [/²/g, " squared "],
+  [/³/g, " cubed "],
+  [/≈/g, " approximately equal to "],
+  [/≠/g, " not equal to "],
+  [/≤/g, " less than or equal to "],
+  [/≥/g, " greater than or equal to "],
+  [/</g, " less than "],
+  [/>/g, " greater than "],
+  [/=/g, " equals "],
+  [/\+/g, " plus "],
+  [/(^|\s)[-−–](?=\s|\d)/g, " minus "],
+  [/[×*·]/g, " times "],
+  [/÷/g, " divided by "],
+  [/\//g, " over "],
+  [/∞/g, " infinity "],
+  [/→/g, " tends to "],
+  [/[Δδ∆]/g, " delta "],
+  [/α/g, " alpha "],
+  [/β/g, " beta "],
+  [/λ/g, " lambda "],
+  [/π/g, " pi "],
+  [/\^/g, " to the power of "],
+  [/\|/g, " absolute value "],
+];
+
+// «Scikit-Learn» → «scikit learn»: символы словами, цифры словами, остальное убираем.
 export function normalize(text: string): string {
-  return text
+  let t = text.normalize("NFD");
+  for (const [re, to] of SYMBOLS) t = t.replace(re, to);
+  return t
     .toLowerCase()
     .replace(/[’']/g, "")
     .replace(/\d/g, (d) => ` ${DIGITS[d]} `)
     .replace(/[^a-z]+/g, " ")
     .trim();
 }
+
+// Слова, без которых смысл не меняется: «square root x» = «the square root of x».
+const OPTIONAL = new Set(["the", "of", "is", "an"]);
+
+// Как распознаватель записывает названия букв: «eye» = i, «ex» = x, «why» = y.
+const LETTERS: Record<string, string[]> = {
+  a: ["ay", "eh", "hey"],
+  b: ["be", "bee"],
+  c: ["see", "sea"],
+  d: ["dee"],
+  e: ["ee"],
+  f: ["ef", "eff"],
+  g: ["gee", "jee"],
+  i: ["eye", "aye", "ai"],
+  j: ["jay"],
+  k: ["kay", "okay"],
+  m: ["em"],
+  n: ["en"],
+  p: ["pee", "pea"],
+  q: ["queue", "cue"],
+  r: ["ar", "are"],
+  t: ["tee", "tea"],
+  u: ["you"],
+  v: ["vee"],
+  w: ["double you"],
+  x: ["ex", "ax"],
+  y: ["why", "wy"],
+  z: ["zee", "zed"],
+};
 
 function levenshtein(a: string, b: string): number {
   if (a === b) return 0;
@@ -168,52 +230,103 @@ function soundKey(text: string): string {
     .toUpperCase();
 }
 
-// Сходство по звучанию. Ключи короткие, поэтому дополнительно требуем хоть какого-то
-// сходства по буквам — иначе «banana» и «bonanza» стали бы одним словом.
-function soundScore(heard: string, target: string): number {
-  const h = soundKey(heard);
-  const t = soundKey(target);
-  if (!h || !t) return 0;
-  if (similarity(heard.replace(/ /g, ""), target.replace(/ /g, "")) < 0.4) return 0;
-  return similarity(h, t);
+// Совпадает ли услышанное слово с ожидаемым.
+// - Буква-переменная (x, i, b) — только она сама или её название («eye», «ex»).
+// - Короткое слово (sub, bar, hat, case) — только точное совпадение звучания:
+//   «keys» = «case», но «park» ≠ «bar».
+// - Длинное слово — нечётко: по буквам или по звучанию.
+function tokenMatch(heard: string, target: string): boolean {
+  if (heard === target) return true;
+  if (target.length === 1) return LETTERS[target]?.includes(heard) ?? false;
+  if (heard.length === 1) return false;
+  const hk = soundKey(heard);
+  const tk = soundKey(target);
+  if (target.length <= 4) return tk !== "" && hk === tk && Math.abs(heard.length - target.length) <= 1;
+  if (similarity(heard, target) >= 0.75) return true;
+  return similarity(heard, target) >= 0.5 && similarity(hk, tk) >= 0.8;
 }
 
-// Сходство одного фрагмента: лучшее из «по буквам» и «по звучанию».
-function fragmentScore(heard: string, target: string): number {
-  const h = heard.replace(/ /g, "");
-  const t = target.replace(/ /g, "");
-  if (!h || !t) return 0;
-  if (h === t) return 1;
-  return Math.max(similarity(h, t), soundScore(heard, target));
+// Склейка частей («group by» = «groupby») — только почти точное совпадение по буквам,
+// без сравнения по звучанию: иначе «sub» сойдётся с «sub eye».
+function joinedMatch(heard: string, target: string): boolean {
+  return heard === target || similarity(heard, target) >= 0.8;
 }
 
-// Сходство короткого термина: сравниваем без пробелов («group by» = «groupby»), а если
-// человек сказал лишнее («the variance»), ищем термин внутри фразы.
-function wordScore(heard: string, target: string): number {
-  let best = fragmentScore(heard, target);
-  const words = heard.split(" ");
-  const n = target.split(" ").length;
-  for (let i = 0; i + n <= words.length; i++) {
-    best = Math.max(best, fragmentScore(words.slice(i, i + n).join(" "), target));
-  }
-  return best;
+// «fx» → «f x»: короткие сочетания согласных распознаватель пишет слитно.
+function heardTokens(heard: string): string[] {
+  return heard
+    .split(" ")
+    .filter((w) => w && !OPTIONAL.has(w))
+    .flatMap((w) => (w.length <= 3 && !/[aeiouy]/.test(w) ? w.split("") : [w]));
 }
 
-// Сходство длинной фразы (чтение формулы): доля слов, совпавших по порядку (LCS).
-function phraseScore(heard: string, target: string): number {
-  const a = heard.split(" ").filter(Boolean);
-  const b = target.split(" ").filter(Boolean);
-  if (!a.length || !b.length) return 0;
-  const dp = Array.from({ length: a.length + 1 }, () => new Array<number>(b.length + 1).fill(0));
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      dp[i][j] =
-        fragmentScore(a[i - 1], b[j - 1]) >= 0.75
-          ? dp[i - 1][j - 1] + 1
-          : Math.max(dp[i - 1][j], dp[i][j - 1]);
+export interface WordMark {
+  word: string;
+  ok: boolean;
+  optional: boolean;
+}
+
+// Выравнивание услышанного с ожидаемым (как LCS), с учётом слитного и раздельного
+// написания: «data frame» = «dataframe», «groupby» = «group by».
+function align(heard: string[], target: string[]): { matched: number; marks: WordMark[] } {
+  const n = heard.length;
+  const m = target.length;
+  const opt = target.map((w) => OPTIONAL.has(w));
+  const dp = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+  type Step = "skipH" | "skipT" | "one" | "twoH" | "twoT";
+  const step: Step[][] = Array.from({ length: n + 1 }, () => new Array<Step>(m + 1).fill("skipT"));
+  for (let i = 0; i <= n; i++) {
+    for (let j = 0; j <= m; j++) {
+      if (i === 0 && j === 0) continue;
+      let best = -1;
+      let how: Step = "skipT";
+      const tryStep = (v: number, s: Step) => {
+        if (v > best) {
+          best = v;
+          how = s;
+        }
+      };
+      if (j > 0) tryStep(dp[i][j - 1], "skipT");
+      if (i > 0) tryStep(dp[i - 1][j], "skipH");
+      if (i > 0 && j > 0 && tokenMatch(heard[i - 1], target[j - 1])) {
+        tryStep(dp[i - 1][j - 1] + (opt[j - 1] ? 0 : 1), "one");
+      }
+      // Склейка только для частей составных слов, а не для букв: иначе «sub» + «a» = «sub».
+      if (i > 1 && j > 0 && heard[i - 2].length > 1 && heard[i - 1].length > 1 && joinedMatch(heard[i - 2] + heard[i - 1], target[j - 1])) {
+        tryStep(dp[i - 2][j - 1] + (opt[j - 1] ? 0 : 1), "twoH");
+      }
+      if (i > 0 && j > 1 && target[j - 2].length > 1 && target[j - 1].length > 1 && joinedMatch(heard[i - 1], target[j - 2] + target[j - 1])) {
+        tryStep(dp[i - 1][j - 2] + (opt[j - 2] ? 0 : 1) + (opt[j - 1] ? 0 : 1), "twoT");
+      }
+      dp[i][j] = best;
+      step[i][j] = how;
     }
   }
-  return dp[a.length][b.length] / Math.max(a.length, b.length);
+  const ok = new Array<boolean>(m).fill(false);
+  let i = n;
+  let j = m;
+  while (i > 0 || j > 0) {
+    const s = step[i][j];
+    if (s === "skipT") j--;
+    else if (s === "skipH") i--;
+    else if (s === "one") {
+      ok[j - 1] = true;
+      i--;
+      j--;
+    } else if (s === "twoH") {
+      ok[j - 1] = true;
+      i -= 2;
+      j--;
+    } else {
+      ok[j - 1] = ok[j - 2] = true;
+      i--;
+      j -= 2;
+    }
+  }
+  return {
+    matched: dp[n][m],
+    marks: target.map((word, k) => ({ word, ok: ok[k], optional: opt[k] })),
+  };
 }
 
 export type Verdict = "correct" | "close" | "wrong";
@@ -223,6 +336,8 @@ export interface CheckResult {
   // Самый похожий вариант из услышанного — его показываем пользователю.
   heard: string;
   score: number;
+  // Ожидаемые слова с отметкой, какие из них услышаны.
+  marks: WordMark[];
 }
 
 export function checkPronunciation(
@@ -230,16 +345,38 @@ export function checkPronunciation(
   targets: string[],
   mode: "word" | "phrase" = "word",
 ): CheckResult {
-  const normTargets = targets.map(normalize).filter(Boolean);
-  let best: CheckResult = { verdict: "wrong", heard: transcripts[0] ?? "", score: 0 };
+  let best: CheckResult = { verdict: "wrong", heard: transcripts[0]?.trim() ?? "", score: 0, marks: [] };
+  let fromMain = true;
+  // Отметки показываем по основному варианту (первому), даже если засчитан запасной.
+  const main = normalize(targets[0] ?? "").split(" ").filter(Boolean);
   for (const raw of transcripts) {
-    const heard = normalize(raw);
-    for (const target of normTargets) {
-      const score = mode === "word" ? wordScore(heard, target) : phraseScore(heard, target);
-      if (score > best.score) best = { verdict: "wrong", heard: raw.trim(), score };
+    const heard = heardTokens(normalize(raw));
+    if (!heard.length) continue;
+    for (const target of targets) {
+      const words = normalize(target).split(" ").filter(Boolean);
+      const required = words.filter((w) => !OPTIONAL.has(w)).length;
+      if (!required) continue;
+      const { matched, marks } = align(heard, words);
+      // Лишние слова в чтении формулы немного снижают оценку; в одиночном термине — нет.
+      const extra = mode === "phrase" ? Math.max(0, heard.length - required) * 0.5 : 0;
+      const score = matched / (required + extra);
+      if (score > best.score) {
+        fromMain = target === targets[0];
+        best = {
+          verdict: "wrong",
+          heard: raw.trim(),
+          score,
+          marks: target === targets[0] ? marks : align(heard, main).marks,
+        };
+      }
     }
   }
-  const [pass, near] = mode === "word" ? [0.8, 0.6] : [0.75, 0.5];
-  best.verdict = best.score >= pass ? "correct" : best.score >= near ? "close" : "wrong";
+  best.verdict = best.score >= 0.8 ? "correct" : best.score >= 0.5 ? "close" : "wrong";
+  // Перепутанная переменная (x sub a вместо x sub i) — это ошибка, даже если остальное верно.
+  const wrongLetter = best.marks.some((m) => !m.ok && !m.optional && m.word.length === 1);
+  if (best.verdict === "correct" && fromMain && wrongLetter) best.verdict = "close";
+  // Засчитано по запасному варианту («num pie» для NumPy) — основной текст весь зелёный.
+  if (best.verdict === "correct" && !fromMain) best.marks = best.marks.map((m) => ({ ...m, ok: true }));
+  if (!best.marks.length) best.marks = main.map((word) => ({ word, ok: false, optional: OPTIONAL.has(word) }));
   return best;
 }

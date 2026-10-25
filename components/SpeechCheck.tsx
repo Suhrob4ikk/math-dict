@@ -42,7 +42,7 @@ export function useSpeechCheck() {
   }, []);
 
   const start = useCallback(
-    (targets: string[], mode: CheckMode, onCorrect?: () => void) => {
+    (targets: string[], mode: CheckMode, onResult?: (r: CheckResult) => void) => {
       if (listener.current) {
         listener.current.stop();
         return;
@@ -57,7 +57,7 @@ export function useSpeechCheck() {
           onResult: (transcripts) => {
             const r = checkPronunciation(transcripts, targets, mode);
             setResult(r);
-            if (r.verdict === "correct") onCorrect?.();
+            onResult?.(r);
           },
           onError: setError,
           onEnd: () => {
@@ -83,6 +83,20 @@ const ERRORS: Record<ListenError, string> = {
   network: "Для распознавания нужен интернет. Проверьте подключение.",
   other: "Не получилось распознать. Попробуйте ещё раз.",
 };
+
+// Ожидаемые слова: зелёные — услышаны, красные — нет.
+function Marks({ result }: { result: CheckResult }) {
+  if (result.marks.length < 2) return null;
+  return (
+    <span className="marks" lang="en">
+      {result.marks.map((m, i) => (
+        <span key={i} className={m.ok ? "mark-ok" : m.optional ? "mark-optional" : "mark-miss"}>
+          {m.word}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export function SpeechFeedback({ state }: { state: SpeechCheckState }) {
   const { supported, listening, result, error } = state;
@@ -135,6 +149,7 @@ export function SpeechFeedback({ state }: { state: SpeechCheckState }) {
       <div>
         <strong>{result.verdict === "close" ? "Почти. Послушайте и повторите" : "Не совсем. Попробуйте ещё раз"}</strong>
         {heard}
+        <Marks result={result} />
       </div>
     </div>
   );

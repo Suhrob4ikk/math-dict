@@ -25,10 +25,18 @@ export default async function PracticePage({ params }: Props) {
   const level = getLevel((await params).id);
   if (!level) notFound();
   const terms = termsByLevel(level.id);
-  const nextLevel = LEVELS[LEVELS.indexOf(level) + 1];
   const formulas = Object.fromEntries(
     terms.filter((t) => t.latex).map((t) => [t.id, <Formula key={t.id} latex={t.latex!} display />]),
   );
 
-  return <Practice level={level} nextLevel={nextLevel} terms={terms} formulas={formulas} />;
+  return (
+    <Practice
+      title={level.name}
+      backHref={`/level/${level.id}`}
+      resumeKey={level.id}
+      finish={{ href: `/level/${level.id}/exam`, label: "К экзамену" }}
+      terms={terms}
+      formulas={formulas}
+    />
+  );
 }
