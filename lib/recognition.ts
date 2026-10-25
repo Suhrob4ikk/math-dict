@@ -245,6 +245,16 @@ const SYMBOLS: [RegExp, string][] = [
   [/∞/g, " infinity "],
   [/→/g, " tends to "],
   [/[Δδ∆]/g, " delta "],
+  // Буквы и знаки из высшей математики (конспект Письменного).
+  [/[φϕ]/g, " phi "],
+  [/ψ/g, " psi "],
+  [/ω/g, " omega "],
+  [/η/g, " eta "],
+  [/τ/g, " tau "],
+  [/σ/g, " sigma "],
+  [/∇/g, " nabla "],
+  [/∂/g, " partial "],
+  [/[∫∮]/g, " integral "],
   [/α/g, " alpha "],
   [/β/g, " beta "],
   [/λ/g, " lambda "],
@@ -286,6 +296,7 @@ const LETTERS: Record<string, string[]> = {
   k: ["kay", "okay", "car", "cay", "key"],
   m: ["em"],
   n: ["en", "and", "end"],
+  o: ["oh", "owe"],
   p: ["pee", "pea"],
   q: ["queue", "cue"],
   r: ["ar", "are"],
@@ -381,16 +392,84 @@ function soundKey(text: string): string {
 // - Короткое слово (sub, bar, hat, case) — только точное совпадение звучания:
 //   «keys» = «case», но «park» ≠ «bar».
 // - Длинное слово — нечётко: по буквам или по звучанию.
+// Слово с отрицательной приставкой — это противоположный термин:
+// «inconsistent» ≠ «consistent», «nonhomogeneous» ≠ «homogeneous», «antiderivative» ≠ «derivative».
+const NEGATION = /^(in|non|un|dis|anti)/;
+
+function negated(a: string, b: string): boolean {
+  const [long, short] = a.length > b.length ? [a, b] : [b, a];
+  const prefix = long.slice(0, long.length - short.length);
+  return long.endsWith(short) && NEGATION.test(prefix) && NEGATION.exec(prefix)![0] === prefix;
+}
+
+// Первый звук слова: «h» в начале слышно, хотя soundKey его отбрасывает
+// («hyperbola» ≠ «parabola»), а слова на гласную сравниваем только по буквам.
+function firstSound(word: string): string {
+  if (/^[aeiouy]/.test(word)) return "V";
+  if (word.startsWith("h")) return "H";
+  return soundKey(word).charAt(0);
+}
+
+// Греческие буквы и короткие слова, которые распознаватель пишет «как слышит»
+// (проверено на телефоне: μ/λ → «new over Lumber», «you over Atlanta», «new oven Lambda»).
+// Буква засчитывается только там, где она в формуле есть, поэтому «new» = mu не мешает
+// другим заданиям. ν (nu) на сайте не встречается, поэтому «new»/«nu» отдаём mu;
+// «you» — это ещё и буква u, но u и μ в одной позиции формулы у нас не стоят.
+const GREEK_SOUNDALIKES: Record<string, string[]> = {
+  mu: ["new", "knew", "nu", "you", "mew", "moo", "mute", "meow", "mule", "mi", "me", "mo"],
+  lambda: ["lumber", "atlanta", "lambo", "lamba", "landa", "lambert", "llama", "lamda", "lumbar"],
+  over: ["oven", "offer", "ova", "overt"],
+  beta: ["better", "bait", "beater", "bita", "vita", "bayta", "baita"],
+  theta: ["data", "feta", "fita", "tata", "theater", "seta"],
+  delta: ["delt", "deltas", "dolta", "dealta"],
+  sigma: ["sigmar", "segma", "sickma", "zigma"],
+  epsilon: ["epsylon", "apsilon", "ipsilon", "absolon", "epsilom"],
+  alpha: ["alfa", "elfa", "alpa", "alfie"],
+  gamma: ["gama", "grammar", "gummer", "gamer"],
+  omega: ["omaga", "omiga", "omegas"],
+  phi: ["fi", "fee", "fie", "fy", "fai", "fly", "phy"],
+  psi: ["sigh", "sai", "psy", "sy", "cy", "sci"],
+  eta: ["ita", "eater", "ether", "etta", "aita", "ayta", "ada"],
+  tau: ["tao", "tow", "towel", "taw", "toe"],
+  nabla: ["nobla", "navla", "nebula", "napla", "nable", "nobel"],
+};
+
+// Похожие по звучанию, но разные термины: нечёткое сравнение их не путает.
+const DISTINCT: [string, string][] = [
+  ["parabola", "paraboloid"],
+  ["hyperbola", "hyperboloid"],
+  ["hyperbola", "hyperbolic"],
+  ["hyperbolic", "hyperboloid"],
+  ["collinear", "coplanar"],
+  ["colinear", "coplanar"],
+  ["hyperbole", "hyperbolic"],
+  ["tangent", "cotangent"],
+  ["sine", "sinh"],
+  ["rank", "range"],
+  ["ratio", "root"],
+  ["integral", "interval"],
+  ["factor", "cofactor"],
+  ["constant", "continuous"],
+  ["constant", "continuity"],
+  ["augmented", "argument"],
+];
+
+function distinct(a: string, b: string): boolean {
+  return DISTINCT.some(([x, y]) => (a === x && b === y) || (a === y && b === x));
+}
+
 function tokenMatch(heard: string, target: string): boolean {
   if (heard === target) return true;
+  if (distinct(heard, target)) return false;
   if (target.length === 1) return LETTERS[target]?.includes(heard) ?? false;
-  if (SOUNDALIKES[target]?.includes(heard)) return true;
+  if (SOUNDALIKES[target]?.includes(heard) || GREEK_SOUNDALIKES[target]?.includes(heard)) return true;
   if (heard.length === 1) return false;
+  if (negated(heard, target)) return false;
   const hk = soundKey(heard);
   const tk = soundKey(target);
   if (target.length <= 4) return tk !== "" && hk === tk && Math.abs(heard.length - target.length) <= 1;
   if (similarity(heard, target) >= 0.75) return true;
-  return similarity(heard, target) >= 0.5 && similarity(hk, tk) >= 0.8;
+  return similarity(heard, target) >= 0.5 && similarity(hk, tk) >= 0.8 && firstSound(heard) === firstSound(target);
 }
 
 // Склейка частей («group by» = «groupby») — только почти точное совпадение по буквам,
@@ -424,6 +503,7 @@ function heardTokens(heard: string): string[] {
 // Слова-уточнения: без них или с ними получается другое обозначение.
 const MEANINGFUL = new Set([
   "not",
+  "non",
   "doesnt",
   "approximately",
   "identically",
@@ -461,6 +541,35 @@ const MEANINGFUL = new Set([
   "only",
   "exists",
   "all",
+  // Слова, которыми различаются термины высшей математики:
+  // «residue theorem» — не «residue», «Fourier sine series» — не «Fourier series».
+  "theorem",
+  "test",
+  "equation",
+  "system",
+  "sine",
+  "cosine",
+  "complex",
+  "total",
+  "implicit",
+  "logarithmic",
+  "expansion",
+  "equivalent",
+  "slope",
+  "line",
+  "plane",
+  "asymptote",
+  "asymptotes",
+  "vertical",
+  "oblique",
+  "fourier",
+  "original",
+  "hyperbolic",
+  "elliptic",
+  "transform",
+  // «tends to zero» и «tends to infinity» — разные пределы.
+  "zero",
+  "infinity",
 ]);
 
 export interface WordMark {
