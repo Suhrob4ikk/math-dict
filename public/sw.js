@@ -238,6 +238,8 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin || url.pathname === "/sw.js") return;
+  // Файл приложения для Android качается напрямую, в офлайн-кэш он не нужен.
+  if (url.pathname.endsWith(".apk")) return;
   // Данные для переходов внутри приложения (RSC) не кэшируем: без сети Next.js сам
   // перезагрузит страницу обычной навигацией, и её отдаст кэш.
   if (request.headers.get("RSC") || url.searchParams.has("_rsc")) return;

@@ -3,6 +3,8 @@
 // распознаётся на серверах Google, поэтому нужен интернет. Без интернета распознаём на
 // устройстве, если браузер это умеет (SpeechRecognition.available / processLocally).
 
+import { AndroidRecognition, inAndroidApp } from "@/lib/android";
+
 interface RecognitionAlternative {
   transcript: string;
   confidence: number;
@@ -43,6 +45,8 @@ type RecognitionCtor = (new () => Recognition) & {
 
 function getCtor(): RecognitionCtor | undefined {
   if (typeof window === "undefined") return undefined;
+  // В Android-приложении — системное распознавание через мост (lib/android.ts).
+  if (inAndroidApp()) return AndroidRecognition.supported() ? (AndroidRecognition as unknown as RecognitionCtor) : undefined;
   const w = window as unknown as { SpeechRecognition?: RecognitionCtor; webkitSpeechRecognition?: RecognitionCtor };
   return w.SpeechRecognition ?? w.webkitSpeechRecognition;
 }
@@ -63,7 +67,7 @@ export function checkLocalRecognition(fresh = false): Promise<LocalRecognition> 
   if (localCheck && !fresh) return localCheck;
   const Ctor = getCtor();
   localCheck = (async () => {
-    if (!Ctor?.available) return "unavailable";
+    if (inAndroidApp() || !Ctor?.available) return "unavailable";
     try {
       localStatus = await Ctor.available(LOCAL);
     } catch {
@@ -89,6 +93,8 @@ export async function installLocalRecognition(): Promise<boolean> {
 
 // Можно ли сейчас распознавать речь: с интернетом — всегда, без него — только на устройстве.
 export function canRecognizeNow(): boolean {
+  // Приложение пробует распознать и без сети: Android умеет это, если скачан офлайн-пакет.
+  if (inAndroidApp()) return true;
   return typeof navigator === "undefined" || navigator.onLine || localStatus === "available";
 }
 

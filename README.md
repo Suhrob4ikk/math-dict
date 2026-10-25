@@ -58,6 +58,24 @@ app/precache.json/    список всех страниц, которые servi
 components/OfflineStatus.tsx  регистрация service worker, ход скачивания, плашка «Нет интернета»
 ```
 
+### Android-приложение (APK)
+
+`android/` — маленькое приложение: сайт в WebView плюс мост `window.AndroidSpeech` к системным
+SpeechRecognizer и TextToSpeech (в WebView нет Web Speech API). Веб-часть моста — `lib/android.ts`.
+Готовый файл лежит в `public/math-aloud.apk`, страница со ссылкой и инструкциями — `/install`.
+
+Сборка (нужны JDK 17+, Android SDK 35, Gradle 8.11+):
+
+```
+cd android
+echo "sdk.dir=/путь/к/android-sdk" > local.properties
+MATH_ALOUD_KEYSTORE=/путь/к/keystore.properties gradle assembleRelease
+cp app/build/outputs/apk/release/app-release.apk ../public/math-aloud.apk
+```
+
+Обновления ставятся поверх только с тем же ключом подписи — его нельзя терять; в репозиторий
+он не попадает. При изменении приложения увеличьте `versionCode` в `android/app/build.gradle.kts`.
+
 ### Офлайн-режим
 
 При первом заходе service worker скачивает все страницы (~25 МБ в хранилище браузера), после

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import Icon from "@/components/Icon";
 import { SpeechFeedback, useSpeechCheck, type CheckMode } from "@/components/SpeechCheck";
 import { useProgress } from "@/lib/progress";
-import { speak, speechSupported } from "@/lib/speech";
+import { speak, speechSupported, stopSpeaking } from "@/lib/speech";
 import type { Term } from "@/lib/terms";
 
 interface Props {
@@ -60,7 +60,7 @@ export default function Practice({ title, backHref, resumeKey, finish, terms, fo
     reset();
     setFlipped(false);
     setMode("word");
-    if (speechSupported()) window.speechSynthesis.cancel();
+    stopSpeaking();
   }, [index, reset]);
 
   function go(delta: number) {

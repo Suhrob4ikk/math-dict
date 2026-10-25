@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import words from "@/data/words.json";
 import Icon from "@/components/Icon";
-import { speak, speechSupported } from "@/lib/speech";
+import { speak, speechSupported, warmUpVoices } from "@/lib/speech";
 
 const glossary = words as Record<string, string>;
 
@@ -103,7 +103,7 @@ export default function WordLookup() {
   }, []);
 
   useEffect(() => {
-    if (speechSupported()) window.speechSynthesis.getVoices();
+    if (speechSupported()) warmUpVoices();
 
     function onClick(e: MouseEvent) {
       const target = e.target as Element | null;
