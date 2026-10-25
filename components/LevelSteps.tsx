@@ -30,7 +30,7 @@ export default function LevelSteps({ levelId, ids, units }: Props) {
           <strong>Учить карточки</strong>
           <span className="muted">
             {units
-              ? `${units.length} тем, в каждой несколько обозначений. Слушайте и произносите каждое. Выучено ${learned} из ${ids.length}.`
+              ? `${units.length} тем, в каждой несколько карточек. Слушайте и произносите каждую. Выучено ${learned} из ${ids.length}.`
               : `Слушайте и произносите каждый термин. Выучено ${learned} из ${ids.length}.`}
           </span>
           <div className="progress" aria-hidden="true">

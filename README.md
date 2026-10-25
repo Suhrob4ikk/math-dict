@@ -85,11 +85,11 @@ app/manifest.ts       PWA: установка на телефон как при�
    | `transcription` | *необязательно.* Русская транскрипция: `"нам-пай"` |
    | `latex`    | *необязательно* (у библиотек формулы нет). Формула в LaTeX. **В JSON каждый `\` удваивается**: `\frac` → `"\\frac"` |
    | `python`   | короткий пример; перенос строки — `\n` |
-   | `category` | одна из: `notation`, `statistics`, `linear algebra`, `calculus`, `ML basics`, `Python/pandas`, `Python syntax`, `libraries` |
+   | `category` | одна из: `notation`, `statistics`, `linear algebra`, `calculus`, `ML basics`, `Python/pandas`, `Python syntax`, `libraries`, `geometry`, `complex numbers`, `series`, `differential equations` |
    | `level`    | ступень обучения: `foundations`, `essentials`, `practitioner`, `expert`. Порядок в тренировке — как в файле |
    | `say`      | что пользователь произносит в тренировке: короткое название без скобок (`"L2 norm"`, а не `"L2 norm (vector length)"`) |
    | `accept`   | *необязательно.* Как распознаватель может записать правильное произношение: `["num pie", "numb pie"]` для NumPy |
-   | `unit`     | *необязательно.* Тема внутри ступени (список тем — `units` в `lib/levels.ts`). Сейчас темы есть у Foundations: каждая тренируется отдельным уроком `/level/foundations/practice/<тема>` |
+   | `unit`     | тема внутри ступени (список тем — `units` в `lib/levels.ts`). Темы есть у всех ступеней: каждая тренируется отдельным уроком `/level/<ступень>/practice/<тема>` |
    | `related`  | массив `id` других терминов (они должны существовать) |
 
 3. Проверьте: `npm run build`. Новая страница появится по адресу `/term/<id>`.
@@ -102,4 +102,10 @@ app/manifest.ts       PWA: установка на телефон как при�
 ## Идеи на будущее
 
 - Переключатель языка интерфейса
-- Больше терминов: integral, eigenvalue, likelihood, softmax, cross-entropy, TensorFlow, Git…
+- Больше терминов: likelihood, softmax, cross-entropy, TensorFlow, Git…
+
+## Источники
+
+Термины высшей математики (матрицы, векторы, аналитическая геометрия, пределы, производные, интегралы,
+ряды, дифференциальные уравнения, теория поля, комплексный анализ, преобразование Лапласа) взяты по
+главам «Конспекта лекций по высшей математике» Д. Т. Письменного.

@@ -10,6 +10,10 @@ export const CATEGORIES = [
   "Python/pandas",
   "Python syntax",
   "libraries",
+  "geometry",
+  "complex numbers",
+  "series",
+  "differential equations",
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
@@ -23,6 +27,10 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   "Python/pandas": "Python и API библиотек",
   "Python syntax": "Синтаксис Python",
   libraries: "Библиотеки и инструменты",
+  geometry: "Аналитическая геометрия",
+  "complex numbers": "Комплексные числа",
+  series: "Ряды",
+  "differential equations": "Дифференциальные уравнения",
 };
 
 export interface Term {
