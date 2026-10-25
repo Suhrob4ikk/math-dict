@@ -5,7 +5,10 @@ export function speechSupported(): boolean {
 }
 
 function pickVoice(): SpeechSynthesisVoice | undefined {
-  const voices = window.speechSynthesis.getVoices();
+  let voices = window.speechSynthesis.getVoices();
+  // Без интернета работают только голоса, установленные на устройстве (localService).
+  if (!navigator.onLine && voices.some((v) => v.localService && v.lang.startsWith("en")))
+    voices = voices.filter((v) => v.localService);
   return (
     voices.find((v) => v.lang === "en-US") ??
     voices.find((v) => v.lang.startsWith("en"))

@@ -1,6 +1,7 @@
 // Распознавание речи через встроенный в браузер SpeechRecognition (Web Speech API) и
 // проверка, правильно ли произнесён термин. Бесплатно, без ключей; в Chrome звук
-// распознаётся на серверах Google, поэтому нужен интернет.
+// распознаётся на серверах Google, поэтому нужен интернет. Без интернета распознаём на
+// устройстве, если браузер это умеет (SpeechRecognition.available / processLocally).
 
 interface RecognitionAlternative {
   transcript: string;
@@ -21,6 +22,7 @@ interface Recognition {
   continuous: boolean;
   interimResults: boolean;
   maxAlternatives: number;
+  processLocally?: boolean;
   onresult: ((e: RecognitionEvent) => void) | null;
   onerror: ((e: RecognitionErrorEvent) => void) | null;
   onend: (() => void) | null;
@@ -29,7 +31,15 @@ interface Recognition {
   abort(): void;
 }
 
-type RecognitionCtor = new () => Recognition;
+type LocalOptions = { langs: string[]; processLocally: true };
+
+// Статус языкового пакета для распознавания без интернета.
+export type LocalRecognition = "available" | "downloadable" | "downloading" | "unavailable";
+
+type RecognitionCtor = (new () => Recognition) & {
+  available?: (o: LocalOptions) => Promise<LocalRecognition>;
+  install?: (o: LocalOptions) => Promise<boolean>;
+};
 
 function getCtor(): RecognitionCtor | undefined {
   if (typeof window === "undefined") return undefined;
@@ -41,7 +51,48 @@ export function recognitionSupported(): boolean {
   return getCtor() !== undefined;
 }
 
-export type ListenError = "not-allowed" | "no-speech" | "network" | "other";
+const LOCAL: LocalOptions = { langs: ["en-US"], processLocally: true };
+let localStatus: LocalRecognition = "unavailable";
+
+// Умеет ли браузер распознавать английский прямо на устройстве. Пока это есть только в
+// свежем Chrome на компьютерах; Chrome на Android всегда отправляет звук на сервер.
+// Ответ кэшируется: проверку зовут многие компоненты, а браузеру достаточно спросить один раз.
+let localCheck: Promise<LocalRecognition> | null = null;
+
+export function checkLocalRecognition(fresh = false): Promise<LocalRecognition> {
+  if (localCheck && !fresh) return localCheck;
+  const Ctor = getCtor();
+  localCheck = (async () => {
+    if (!Ctor?.available) return "unavailable";
+    try {
+      localStatus = await Ctor.available(LOCAL);
+    } catch {
+      localStatus = "unavailable";
+    }
+    return localStatus;
+  })();
+  return localCheck;
+}
+
+// Скачивает языковой пакет (нужен интернет и нажатие пользователя).
+export async function installLocalRecognition(): Promise<boolean> {
+  const Ctor = getCtor();
+  if (!Ctor?.install) return false;
+  try {
+    const ok = await Ctor.install(LOCAL);
+    await checkLocalRecognition(true);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
+// Можно ли сейчас распознавать речь: с интернетом — всегда, без него — только на устройстве.
+export function canRecognizeNow(): boolean {
+  return typeof navigator === "undefined" || navigator.onLine || localStatus === "available";
+}
+
+export type ListenError = "not-allowed" | "no-speech" | "network" | "offline" | "other";
 
 export interface Listener {
   // Закончить и проверить сказанное.
@@ -139,6 +190,8 @@ export function listen(handlers: {
     rec.interimResults = true;
     // Чем больше вариантов, тем выше шанс, что среди них есть правильный.
     rec.maxAlternatives = 10;
+    // Без интернета — распознавание на устройстве (если пакет скачан).
+    if (!navigator.onLine && localStatus === "available" && "processLocally" in rec) rec.processLocally = true;
     current = [];
 
     rec.onresult = (e) => {
@@ -169,7 +222,7 @@ export function listen(handlers: {
       failed = true;
       finished = true;
       if (e.error === "not-allowed" || e.error === "service-not-allowed") handlers.onError("not-allowed");
-      else if (e.error === "network") handlers.onError("network");
+      else if (e.error === "network") handlers.onError(navigator.onLine ? "network" : "offline");
       else handlers.onError("other");
     };
     rec.onend = () => {

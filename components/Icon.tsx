@@ -113,6 +113,30 @@ const PATHS = {
       <path d="M22 9.5V15" />
     </>
   ),
+  "wifi-off": (
+    <>
+      <path d="M12 20h.01" />
+      <path d="M8.5 16.4a5 5 0 0 1 7 0" />
+      <path d="M5 12.9a10 10 0 0 1 5.2-2.7" />
+      <path d="M19 12.9a10 10 0 0 0-2.2-1.6" />
+      <path d="M2 8.8a15 15 0 0 1 4.2-2.7" />
+      <path d="M22 8.8A15 15 0 0 0 10.7 5" />
+      <path d="m2 2 20 20" />
+    </>
+  ),
+  download: (
+    <>
+      <path d="M12 4v11" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M5 20h14" />
+    </>
+  ),
+  offline: (
+    <>
+      <path d="M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.6 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.6 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
 } as const;
 
 export type IconName = keyof typeof PATHS;
