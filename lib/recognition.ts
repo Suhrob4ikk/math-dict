@@ -549,6 +549,9 @@ const MEANINGFUL = new Set([
   "hyperbolic",
   "elliptic",
   "transform",
+  // «tends to zero» и «tends to infinity» — разные пределы.
+  "zero",
+  "infinity",
 ]);
 
 export interface WordMark {
