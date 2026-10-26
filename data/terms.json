@@ -1825,6 +1825,70 @@
     "unit": "statistics"
   },
   {
+    "id": "median",
+    "english": "median",
+    "russian": "медиана",
+    "spoken": "the median of x is the middle value of the sorted data",
+    "latex": "\\operatorname{median}(x) = x_{\\left(\\frac{n+1}{2}\\right)}",
+    "python": "x = np.array([7, 1, 3, 9, 4])\nnp.median(x)  # 4.0\n# в pandas: df[\"col\"].median()",
+    "category": "statistics",
+    "related": [
+      "mean",
+      "variance"
+    ],
+    "level": "essentials",
+    "say": "median",
+    "accept": [
+      "the median",
+      "medium"
+    ],
+    "unit": "statistics"
+  },
+  {
+    "id": "expected-value",
+    "english": "expected value (E of X)",
+    "russian": "математическое ожидание",
+    "spoken": "E of X equals the sum of x sub i times p sub i",
+    "latex": "\\mathbb{E}[X] = \\sum_{i} x_i\\, p_i",
+    "python": "x = np.array([1, 2, 3])\np = np.array([0.2, 0.5, 0.3])\nnp.sum(x * p)  # 2.1",
+    "category": "statistics",
+    "related": [
+      "mean",
+      "variance",
+      "probability-given"
+    ],
+    "level": "essentials",
+    "say": "E of X",
+    "accept": [
+      "e of x",
+      "expected value",
+      "ee of x"
+    ],
+    "unit": "statistics"
+  },
+  {
+    "id": "correlation",
+    "english": "correlation coefficient (Pearson r)",
+    "russian": "коэффициент корреляции Пирсона",
+    "spoken": "r equals the covariance of x and y over sigma x times sigma y",
+    "latex": "r = \\frac{\\operatorname{cov}(x, y)}{\\sigma_x \\sigma_y}",
+    "python": "x = np.array([1, 2, 3, 4])\ny = np.array([2, 4, 5, 8])\nnp.corrcoef(x, y)[0, 1]  # 0.98...\n# в pandas: df.corr()",
+    "category": "statistics",
+    "related": [
+      "standard-deviation",
+      "variance",
+      "mean"
+    ],
+    "level": "essentials",
+    "say": "correlation coefficient",
+    "accept": [
+      "correlation",
+      "pearson r",
+      "correlation co efficient"
+    ],
+    "unit": "statistics"
+  },
+  {
     "id": "comparison-operators",
     "english": "comparison operators (==, !=, >=)",
     "russian": "операторы сравнения",
@@ -6320,6 +6384,51 @@
     "accept": [
       "sigma it",
       "sigmoid function"
+    ],
+    "unit": "optimization"
+  },
+  {
+    "id": "softmax",
+    "english": "softmax function",
+    "russian": "функция softmax (нормированная экспонента)",
+    "spoken": "softmax of z sub i equals e to the z sub i over the sum over j of e to the z sub j",
+    "transcription": "софт-макс",
+    "latex": "\\operatorname{softmax}(z)_i = \\frac{e^{z_i}}{\\sum_{j} e^{z_j}}",
+    "python": "def softmax(z):\n    e = np.exp(z - z.max())  # вычитаем максимум для устойчивости\n    return e / e.sum()\n\nsoftmax(np.array([1.0, 2.0, 3.0]))  # [0.09, 0.24, 0.67]",
+    "category": "ML basics",
+    "related": [
+      "sigmoid",
+      "cross-entropy",
+      "y-hat"
+    ],
+    "level": "expert",
+    "say": "softmax function",
+    "accept": [
+      "soft max",
+      "soft max function",
+      "softmax"
+    ],
+    "unit": "optimization"
+  },
+  {
+    "id": "cross-entropy",
+    "english": "cross-entropy loss",
+    "russian": "перекрёстная энтропия (функция потерь)",
+    "spoken": "L equals minus the sum of y sub i times log of y hat sub i",
+    "latex": "L = -\\sum_{i} y_i \\log \\hat{y}_i",
+    "python": "from sklearn.metrics import log_loss\nlog_loss(y, y_proba)\n# в PyTorch: torch.nn.CrossEntropyLoss()",
+    "category": "ML basics",
+    "related": [
+      "softmax",
+      "y-hat",
+      "mse"
+    ],
+    "level": "expert",
+    "say": "cross entropy loss",
+    "accept": [
+      "cross entropy",
+      "cross-entropy loss",
+      "cross and tropy loss"
     ],
     "unit": "optimization"
   },
